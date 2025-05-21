@@ -1,0 +1,36 @@
+{
+  "name": "zenithcore",
+  "version": "0.1.0",
+  "description": "Hyper-performant modular TypeScript microkernel framework with WASM support",
+  "bin": {
+    "zenith": "./cli/zenith.ts"
+  },
+  "scripts": {
+    "build:ts": "tsc",
+    "build:asc": "asc assembly/index.ts -b dist/module.wasm -t dist/module.wat --sourceMap",
+    "build": "npm run build:ts && npm run build:asc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "create:module": "bun ./cli/zenith.ts create module",
+    "install:framework": "node install.mjs"
+  },
+  "keywords": [
+    "microkernel",
+    "wasm",
+    "framework",
+    "typescript",
+    "ecs"
+  ],
+  "author": "Future Framework Architect",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "assemblyscript": "^0.27.36",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "@noble/hashes": "^1.8.0",
+    "vite-tsconfig-paths": "^5.1.4"
+  }
+}

@@ -1,0 +1,4 @@
+name = "zenithkernel"
+entry = "src/main.ts"
+outdir = "dist"
+compat = true
