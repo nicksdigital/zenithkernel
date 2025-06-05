@@ -20,3 +20,5 @@ dist/
 /as-pect.config.js
 /jest.config.js
 /.bunfig.toml
+old
+vendors

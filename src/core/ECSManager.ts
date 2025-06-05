@@ -1,21 +1,19 @@
-import { ZenithKernel } from "./ZenithKernel";
-import { BaseSystem } from "./BaseSystem";
-import { RegistryMeta } from "../components/registryMeta";
-import { EventEmitter } from "./utils/EventEmitter";
+import { ZenithKernel } from "./ZenithKernel"; // Assuming path is correct
+import { BaseSystem } from "./BaseSystem"; // Assuming path is correct
+// import { RegistryMeta } from "../components/registryMeta"; // Assuming path is correct
+import { EventEmitter } from "./utils/EventEmitter"; // Assuming path is correct
 
-// Import types from the optimized ECS implementation
+// Assuming SignalComponentData and SignalECSComponent are defined elsewhere (e.g., signals.ts)
+// and accessible for type checking if needed, or use generic constraints.
+import { SignalComponentData, SignalECSComponent } from './signals'; // Example import
+
 export type Entity = number;
-export type ComponentType<T> = new (...args: any[]) => T;
+// ComponentType now expects a constructor that produces T, and an optional static 'typeName' for mapping
+export type ComponentType<T> = (new (...args: any[]) => T) & { typeName?: string };
 export type QueryId = string;
 
-// Constants for optimized ECS
 const DEFAULT_ENTITY_POOL_SIZE = 10000;
-const COMPONENT_RESIZE_MULTIPLIER = 2;
 
-/**
- * SparseSet for efficient entity tracking
- * Provides O(1) operations for add, remove, and has
- */
 class SparseSet {
   private sparse: Uint32Array;
   private dense: Uint32Array;
@@ -30,9 +28,7 @@ class SparseSet {
     if (id >= this.sparse.length) {
       this.resize(id + 1);
     }
-
     if (this.has(id)) return false;
-
     this.dense[this._count] = id;
     this.sparse[id] = this._count;
     this._count++;
@@ -41,10 +37,8 @@ class SparseSet {
 
   remove(id: number): boolean {
     if (!this.has(id)) return false;
-
     const denseIndex = this.sparse[id];
     const lastId = this.dense[this._count - 1];
-
     this.dense[denseIndex] = lastId;
     this.sparse[lastId] = denseIndex;
     this._count--;
@@ -57,19 +51,13 @@ class SparseSet {
            this.dense[this.sparse[id]] === id;
   }
 
-  get count(): number {
-    return this._count;
-  }
-
-  get entities(): Uint32Array {
-    return this.dense.subarray(0, this._count);
-  }
+  get count(): number { return this._count; }
+  get entities(): Uint32Array { return this.dense.subarray(0, this._count); }
 
   private resize(newCapacity: number): void {
     const newSparse = new Uint32Array(newCapacity);
     newSparse.set(this.sparse);
     this.sparse = newSparse;
-
     if (newCapacity > this.dense.length) {
       const newDense = new Uint32Array(newCapacity);
       newDense.set(this.dense);
@@ -78,9 +66,6 @@ class SparseSet {
   }
 }
 
-/**
- * Query class for efficient entity filtering
- */
 export class Query {
   private _id: QueryId;
   private _required: string[] = [];
@@ -98,120 +83,62 @@ export class Query {
     this._entities = new SparseSet();
   }
 
-  get id(): QueryId {
-    return this._id;
-  }
+  get id(): QueryId { return this._id; }
+  get required(): string[] { return [...this._required]; }
+  get excluded(): string[] { return [...this._excluded]; }
+  get entities(): Uint32Array { return this._entities.entities; }
+  get count(): number { return this._entities.count; }
 
-  get required(): string[] {
-    return [...this._required];
-  }
-
-  get excluded(): string[] {
-    return [...this._excluded];
-  }
-
-  get entities(): Uint32Array {
-    return this._entities.entities;
-  }
-
-  get count(): number {
-    return this._entities.count;
-  }
-
-  setBitflags(componentId: string, flag: number): void {
-    this._bitflags.set(componentId, flag);
-
-    // Recalculate masks
-    this._requiredMask = 0;
-    for (const compId of this._required) {
-      const flag = this._bitflags.get(compId);
-      if (flag !== undefined) {
-        this._requiredMask |= flag;
-      }
-    }
-
-    this._excludedMask = 0;
-    for (const compId of this._excluded) {
-      const flag = this._bitflags.get(compId);
-      if (flag !== undefined) {
-        this._excludedMask |= flag;
-      }
-    }
-
+  setBitflags(componentName: string, flag: number): void {
+    this._bitflags.set(componentName, flag);
+    this._recalculateMasks();
     this._dirty = true;
+  }
+  
+  private _recalculateMasks(): void {
+    this._requiredMask = 0;
+    for (const compName of this._required) {
+      this._requiredMask |= (this._bitflags.get(compName) || 0);
+    }
+    this._excludedMask = 0;
+    for (const compName of this._excluded) {
+      this._excludedMask |= (this._bitflags.get(compName) || 0);
+    }
   }
 
   matches(entityMask: number): boolean {
-    // Entity must have all required components
-    if ((entityMask & this._requiredMask) !== this._requiredMask) {
-      return false;
-    }
-
-    // Entity must not have any excluded components
-    if ((entityMask & this._excludedMask) !== 0) {
-      return false;
-    }
-
-    return true;
+    return (entityMask & this._requiredMask) === this._requiredMask && (entityMask & this._excludedMask) === 0;
   }
 
-  addEntity(entityId: Entity): void {
-    this._entities.add(entityId);
-  }
-
-  removeEntity(entityId: Entity): void {
-    this._entities.remove(entityId);
-  }
-
-  hasEntity(entityId: Entity): boolean {
-    return this._entities.has(entityId);
-  }
-
-  markDirty(): void {
-    this._dirty = true;
-  }
-
-  isDirty(): boolean {
-    return this._dirty;
-  }
-
-  markClean(): void {
-    this._dirty = false;
-  }
+  addEntity(entityId: Entity): void { this._entities.add(entityId); }
+  removeEntity(entityId: Entity): void { this._entities.remove(entityId); }
+  hasEntity(entityId: Entity): boolean { return this._entities.has(entityId); }
+  markDirty(): void { this._dirty = true; }
+  isDirty(): boolean { return this._dirty; }
+  markClean(): void { this._dirty = false; }
 }
 
 export class ECSManager extends EventEmitter {
-    // Legacy storage for backward compatibility
+    // Using ComponentType.name as key for storing instances.
+    // The value is a Map of Entity -> ComponentInstance (of type T)
     private components = new Map<string, Map<Entity, any>>();
 
-    // Optimized storage
     private nextEntityId: Entity = 0;
     private removedEntities: Entity[] = [];
     private entities: SparseSet = new SparseSet(DEFAULT_ENTITY_POOL_SIZE);
     private entityMasks: Map<Entity, number> = new Map();
-    private entityComponents: Map<Entity, Set<string>> = new Map();
-    private componentBitflags: Map<string, number> = new Map();
+    private entityComponentNames: Map<Entity, Set<string>> = new Map(); // Stores names of components for an entity
+    private componentNameBitflags: Map<string, number> = new Map(); // Component name to bitflag
     private nextComponentBitflag: number = 1;
 
-    // Query system
     private queries: Map<QueryId, Query> = new Map();
-
-    // Systems
     private kernelRef?: ZenithKernel;
     private systems: BaseSystem[] = [];
 
-    constructor() {
-        super();
-    }
+    constructor() { super(); }
 
-    setKernel(kernel: ZenithKernel) {
-        this.kernelRef = kernel;
-    }
-
-    getSystems(): BaseSystem[] {
-        return [...this.systems];
-    }
-
+    setKernel(kernel: ZenithKernel) { this.kernelRef = kernel; }
+    getSystems(): BaseSystem[] { return [...this.systems]; }
 
     get kernel(): ZenithKernel {
         if (!this.kernelRef) throw new Error("Kernel reference not set in ECSManager.");
@@ -220,362 +147,248 @@ export class ECSManager extends EventEmitter {
 
     addSystem(system: BaseSystem) {
         this.systems.push(system);
-        system.ecs = this; // 🔁 Inject ECS if needed
-        if (typeof system?.onLoad === "function") {
-            system.onLoad();
-        }
+        system.ecs = this; 
+        if (typeof system?.onLoad === "function") { system.onLoad(); }
     }
 
-    update() {
-        for (const system of this.systems) {
-            system.update();
-        }
+    updateSystems() { // Renamed from update to avoid conflict if EventEmitter has update
+        for (const system of this.systems) { system.update(); }
     }
 
-    /**
-     * Create a new entity with optimized ID recycling
-     */
     createEntity(): Entity {
-        let entityId: Entity;
-
-        // Reuse removed entity IDs if available
-        if (this.removedEntities.length > 0) {
-            entityId = this.removedEntities.pop()!;
-        } else {
-            entityId = this.nextEntityId++;
-        }
-
-        // Add to optimized storage
+        const entityId: Entity = this.removedEntities.length > 0 ? this.removedEntities.pop()! : this.nextEntityId++;
         this.entities.add(entityId);
         this.entityMasks.set(entityId, 0);
-        this.entityComponents.set(entityId, new Set());
-
+        this.entityComponentNames.set(entityId, new Set());
         this.emit('entityCreated', entityId);
         return entityId;
     }
 
-    /**
-     * Remove an entity and all its components
-     */
     destroyEntity(entity: Entity): void {
-        // Remove from legacy storage
-        for (const compMap of this.components.values()) {
-            compMap.delete(entity);
+        if (!this.entities.has(entity)) return;
+
+        const componentNames = this.entityComponentNames.get(entity);
+        if (componentNames) {
+            // Iterate over a copy for safe removal
+            [...componentNames].forEach(compName => this.removeComponentByTypeName(entity, compName));
         }
 
-        // Remove from optimized storage
-        if (this.entities.has(entity)) {
-            // Remove all components from this entity
-            const components = this.entityComponents.get(entity);
-            if (components) {
-                for (const componentId of components) {
-                    this.removeComponentById(entity, componentId);
-                }
-            }
-
-            // Update entity collections
-            this.entities.remove(entity);
-            this.entityMasks.delete(entity);
-            this.entityComponents.delete(entity);
-            this.removedEntities.push(entity);
-
-            this.emit('entityRemoved', entity);
-        }
+        this.entities.remove(entity);
+        this.entityMasks.delete(entity);
+        this.entityComponentNames.delete(entity);
+        this.removedEntities.push(entity);
+        this.emit('entityRemoved', entity);
+    }
+    
+    // Helper to get component name from type
+    private _getComponentTypeName<T>(type: ComponentType<T>): string {
+        return type.typeName || type.name;
     }
 
     /**
-     * Add a component to an entity
+     * Add a component instance to an entity. If a component of this type already exists,
+     * its instance is replaced with the new one.
      */
-    addComponent<T>(entity: Entity, type: ComponentType<T>, instance: T): void {
-        const typeName = type.name;
+    addComponent<T>(entity: Entity, type: ComponentType<T>, instance: T): T {
+        const typeName = this._getComponentTypeName(type);
 
-        // Add to legacy storage
-        if (!this.components.has(typeName)) {
-            this.components.set(typeName, new Map());
-        }
-        this.components.get(typeName)!.set(entity, instance);
-
-        // Add to optimized storage
         if (!this.entities.has(entity)) {
-            // Create entity if it doesn't exist
-            this.entities.add(entity);
-            this.entityMasks.set(entity, 0);
-            this.entityComponents.set(entity, new Set());
+            console.warn(`ECSManager: Entity ${entity} does not exist. Component ${typeName} not added.`);
+            // Optionally create entity: this.createEntity() if entity is this one.
+            // Or throw an error if entities must pre-exist. For now, let's be lenient and just warn.
+            // To strictly follow the previous logic where it might add entity:
+            // if (!this.entities.has(entity)) this.createEntity(); // if entity === this.nextEntityId-1 for new
+            // Better to ensure entity exists or handle its creation explicitly.
         }
+        
+        let componentMap = this.components.get(typeName);
+        if (!componentMap) {
+            componentMap = new Map<Entity, T>();
+            this.components.set(typeName, componentMap);
+        }
+        componentMap.set(entity, instance); // Add or replace instance
 
-        // Assign a bitflag for this component type if not already assigned
-        if (!this.componentBitflags.has(typeName)) {
+        if (!this.componentNameBitflags.has(typeName)) {
             const bitflag = this.nextComponentBitflag;
-            this.nextComponentBitflag *= 2;
-            this.componentBitflags.set(typeName, bitflag);
-
-            // Update all queries with this component's bitflag
-            for (const query of this.queries.values()) {
+            this.nextComponentBitflag <<= 1; // Use bitwise shift for powers of 2
+            this.componentNameBitflags.set(typeName, bitflag);
+            this.queries.forEach(query => {
                 if (query.required.includes(typeName) || query.excluded.includes(typeName)) {
                     query.setBitflags(typeName, bitflag);
                 }
-            }
+            });
         }
 
-        // Update entity component tracking
-        this.entityComponents.get(entity)!.add(typeName);
+        const entityComponents = this.entityComponentNames.get(entity) || new Set();
+        entityComponents.add(typeName);
+        this.entityComponentNames.set(entity, entityComponents); // Ensure map has the set
 
-        // Update entity bitmask for efficient querying
-        const bitflag = this.componentBitflags.get(typeName)!;
-        const mask = this.entityMasks.get(entity)!;
-        this.entityMasks.set(entity, mask | bitflag);
+        const bitflag = this.componentNameBitflags.get(typeName)!;
+        const currentMask = this.entityMasks.get(entity) || 0;
+        this.entityMasks.set(entity, currentMask | bitflag);
 
-        // Update queries
-        this.updateEntityQueries(entity);
-
-        this.emit('componentAdded', { entity, componentType: typeName });
+        this._updateEntityQueries(entity);
+        this.emit('componentAdded', { entity, componentType: typeName, instance });
+        return instance;
     }
 
     /**
-     * Get a component from an entity
+     * Updates an existing component's data on an entity.
+     * Returns true if updated, false if component or entity not found.
+     * For components like SignalECSComponent, this updates its 'data' property.
      */
+    updateComponent<T extends { data?: any }>(
+        entity: Entity,
+        type: ComponentType<T>,
+        updatedData: Partial<T extends SignalECSComponent ? T['data'] : T> // Prioritize T['data'] if T is SignalECSComponent
+    ): boolean {
+        const typeName = this._getComponentTypeName(type);
+        const componentMap = this.components.get(typeName);
+        if (!componentMap || !componentMap.has(entity)) {
+            console.warn(`ECSManager: Component ${typeName} not found on entity ${entity} for update.`);
+            return false;
+        }
+
+        const currentInstance = componentMap.get(entity) as T;
+
+        // Special handling for SignalECSComponent: update its 'data' property
+        if (currentInstance instanceof SignalECSComponent && typeof currentInstance.data === 'object' && currentInstance.data !== null) {
+            Object.assign(currentInstance.data, updatedData as Partial<SignalComponentData>);
+        } else if (typeof currentInstance === 'object' && currentInstance !== null) {
+            // Generic update for other component types by merging properties
+            Object.assign(currentInstance, updatedData as Partial<T>);
+        } else {
+            // If component is not an object or has no 'data', replace (though this path is less common for "updates")
+            // This case would imply updatedData should be a full T instance
+            // For now, we focus on object-based components
+             console.warn(`ECSManager: Component ${typeName} on entity ${entity} is not an updatable object.`);
+             return false;
+        }
+        
+        this.emit('componentUpdated', { entity, componentType: typeName, instance: currentInstance });
+        // Note: Query updates are typically based on component presence/absence (masks).
+        // If queries depend on component *data values*, they need a different mechanism or re-filtering.
+        return true;
+    }
+
+
     getComponent<T>(entity: Entity, type: ComponentType<T>): T | undefined {
-        // Use legacy storage for now
-        return this.components.get(type.name)?.get(entity);
+        const typeName = this._getComponentTypeName(type);
+        return this.components.get(typeName)?.get(entity) as T | undefined;
     }
 
-    /**
-     * Remove a component from an entity
-     */
-    removeComponent<T>(entity: Entity, type: ComponentType<T>): void {
-        const typeName = type.name;
-
-        // Remove from legacy storage
-        this.components.get(typeName)?.delete(entity);
-
-        // Remove from optimized storage
-        this.removeComponentById(entity, typeName);
+    removeComponent<T>(entity: Entity, type: ComponentType<T>): boolean {
+        const typeName = this._getComponentTypeName(type);
+        return this.removeComponentByTypeName(entity, typeName);
     }
 
-    /**
-     * Helper method to remove a component by ID
-     */
-    private removeComponentById(entity: Entity, componentId: string): void {
-        if (!this.entities.has(entity)) return;
+    private removeComponentByTypeName(entity: Entity, typeName: string): boolean {
+        if (!this.entities.has(entity)) return false;
 
-        // Update entity component tracking
-        const components = this.entityComponents.get(entity);
-        if (components && components.has(componentId)) {
-            components.delete(componentId);
-
-            // Update entity bitmask for efficient querying
-            const bitflag = this.componentBitflags.get(componentId);
-            if (bitflag !== undefined) {
-                const mask = this.entityMasks.get(entity)!;
-                this.entityMasks.set(entity, mask & ~bitflag);
-
-                // Update queries
-                this.updateEntityQueries(entity);
-            }
-
-            this.emit('componentRemoved', { entity, componentType: componentId });
+        const componentMap = this.components.get(typeName);
+        const existed = componentMap?.delete(entity) || false;
+        if (componentMap && componentMap.size === 0) {
+            this.components.delete(typeName);
         }
+
+        const entityComponents = this.entityComponentNames.get(entity);
+        if (entityComponents?.delete(typeName)) {
+            const bitflag = this.componentNameBitflags.get(typeName);
+            if (bitflag !== undefined) {
+                const currentMask = this.entityMasks.get(entity) || 0;
+                this.entityMasks.set(entity, currentMask & ~bitflag);
+                this._updateEntityQueries(entity);
+            }
+            this.emit('componentRemoved', { entity, componentType: typeName });
+            return true;
+        }
+        return existed;
     }
 
-    /**
-     * Update all queries for an entity
-     */
-    private updateEntityQueries(entity: Entity): void {
-        const mask = this.entityMasks.get(entity)!;
-
-        for (const query of this.queries.values()) {
+    private _updateEntityQueries(entity: Entity): void {
+        const mask = this.entityMasks.get(entity) || 0;
+        this.queries.forEach(query => {
             const matches = query.matches(mask);
             const hasEntity = query.hasEntity(entity);
-
-            if (matches && !hasEntity) {
-                query.addEntity(entity);
-            } else if (!matches && hasEntity) {
-                query.removeEntity(entity);
-            }
-        }
+            if (matches && !hasEntity) query.addEntity(entity);
+            else if (!matches && hasEntity) query.removeEntity(entity);
+        });
     }
 
-    /**
-     * Remove a system
-     */
     removeSystem(system: BaseSystem) {
         const index = this.systems.indexOf(system);
-        if (index !== -1) {
-            this.systems.splice(index, 1);
-        }
+        if (index !== -1) this.systems.splice(index, 1);
     }
-
-    /**
-     * Get all entities with a specific component type
-     */
+    
+    // Kept for API compatibility, but prefer query-based access
     getEntitiesWith<T>(type: ComponentType<T>): [Entity, T][] {
-        const map = this.components.get(type.name);
-        if (!map) return [];
-        return Array.from(map.entries()) as [Entity, T][];
+        const typeName = this._getComponentTypeName(type);
+        const map = this.components.get(typeName);
+        return map ? Array.from(map.entries()) as [Entity, T][] : [];
     }
 
-    /**
-     * Define a query to efficiently filter entities
-     */
-    defineQuery(id: QueryId, required: string[] = [], excluded: string[] = []): Query {
-        if (this.queries.has(id)) {
-            throw new Error(`Query ${id} already exists`);
-        }
-
-        const query = new Query(id, required, excluded);
-
-        // Set bitflags for all components in the query
-        for (const componentId of required) {
-            // If component type doesn't have a bitflag yet, assign one
-            if (!this.componentBitflags.has(componentId)) {
+    defineQuery(id: QueryId, requiredNames: string[] = [], excludedNames: string[] = []): Query {
+        if (this.queries.has(id)) throw new Error(`Query ${id} already exists`);
+        const query = new Query(id, requiredNames, excludedNames);
+        
+        const allQueryComponentNames = new Set([...requiredNames, ...excludedNames]);
+        allQueryComponentNames.forEach(compName => {
+            if (!this.componentNameBitflags.has(compName)) {
                 const bitflag = this.nextComponentBitflag;
-                this.nextComponentBitflag *= 2;
-                this.componentBitflags.set(componentId, bitflag);
+                this.nextComponentBitflag <<= 1;
+                this.componentNameBitflags.set(compName, bitflag);
             }
-
-            query.setBitflags(componentId, this.componentBitflags.get(componentId)!);
-        }
-
-        for (const componentId of excluded) {
-            // If component type doesn't have a bitflag yet, assign one
-            if (!this.componentBitflags.has(componentId)) {
-                const bitflag = this.nextComponentBitflag;
-                this.nextComponentBitflag *= 2;
-                this.componentBitflags.set(componentId, bitflag);
-            }
-
-            query.setBitflags(componentId, this.componentBitflags.get(componentId)!);
-        }
-
-        // Populate query with matching entities
-        for (const entityId of this.entities.entities) {
-            const mask = this.entityMasks.get(entityId)!;
-            if (query.matches(mask)) {
-                query.addEntity(entityId);
-            }
-        }
-
+            query.setBitflags(compName, this.componentNameBitflags.get(compName)!);
+        });
+        
+        this.entities.entities.forEach(entityId => {
+            const mask = this.entityMasks.get(entityId) || 0;
+            if (query.matches(mask)) query.addEntity(entityId);
+        });
         this.queries.set(id, query);
         return query;
     }
 
-    /**
-     * Get a query by ID
-     */
-    getQuery(id: QueryId): Query | undefined {
-        return this.queries.get(id);
-    }
+    getQuery(id: QueryId): Query | undefined { return this.queries.get(id); }
+    removeQuery(id: QueryId): void { this.queries.delete(id); }
+    
+    dumpComponentMap(): Map<string, Map<number, any>> { return this.components; }
 
-    /**
-     * Remove a query
-     */
-    removeQuery(id: QueryId): void {
-        this.queries.delete(id);
-    }
-
-    /**
-     * Dump the component map (for debugging)
-     */
-    dumpComponentMap(): Map<string, Map<number, any>> {
-        return this.components;
-    }
-
-    /**
-     * Get all entities that match a specific query
-     * This is much more efficient than filtering entities manually
-     */
     getEntitiesWithQuery(queryId: QueryId): Entity[] {
         const query = this.queries.get(queryId);
-        if (!query) {
-            throw new Error(`Query ${queryId} does not exist`);
-        }
-
+        if (!query) throw new Error(`Query ${queryId} does not exist`);
         return Array.from(query.entities);
     }
 
-    /**
-     * Check if an entity has a specific component
-     */
     hasComponent<T>(entity: Entity, type: ComponentType<T>): boolean {
-        const typeName = type.name;
-
-        // Check in legacy storage
-        if (this.components.get(typeName)?.has(entity)) {
-            return true;
-        }
-
-        // Check in optimized storage
-        if (this.entities.has(entity)) {
-            return this.entityComponents.get(entity)?.has(typeName) || false;
-        }
-
-        return false;
+        const typeName = this._getComponentTypeName(type);
+        return this.entityComponentNames.get(entity)?.has(typeName) || false;
     }
 
-    /**
-     * Get all components attached to an entity
-     */
     getEntityComponents(entity: Entity): string[] {
-        if (!this.entities.has(entity)) {
-            return [];
-        }
-
-        return Array.from(this.entityComponents.get(entity)!);
+        return this.entities.has(entity) ? Array.from(this.entityComponentNames.get(entity)!) : [];
     }
 
-    /**
-     * Get optimized entities with a component type
-     * This is more efficient than the legacy getEntitiesWith method
-     */
-    getEntitiesWithComponent(componentType: string): Entity[] {
-        // Create a query if one doesn't exist
-        const queryId = `__internal_${componentType}`;
-
+    getEntitiesWithComponent(componentTypeName: string): Entity[] {
+        const queryId = `__internal_query_for_${componentTypeName}`;
         if (!this.queries.has(queryId)) {
-            this.defineQuery(queryId, [componentType], []);
+            this.defineQuery(queryId, [componentTypeName]);
         }
-
         return this.getEntitiesWithQuery(queryId);
     }
 
-    /**
-     * Get the total number of entities
-     */
-    getEntityCount(): number {
-        return this.entities.count;
-    }
+    getEntityCount(): number { return this.entities.count; }
+    getComponentTypeCount(): number { return this.componentNameBitflags.size; }
+    getAllEntities(): Entity[] { return Array.from(this.entities.entities); }
 
-    /**
-     * Get the total number of component types
-     */
-    getComponentTypeCount(): number {
-        return this.componentBitflags.size;
-    }
-
-    /**
-     * Get all active entity IDs
-     */
-    getAllEntities(): Entity[] {
-        return Array.from(this.entities.entities);
-    }
-
-    /**
-     * Get performance statistics for the ECS system
-     */
     getPerformanceStats(): { entities: number, components: number, queries: number, recycledEntities: number } {
         return {
             entities: this.entities.count,
-            components: this.componentBitflags.size,
+            components: this.componentNameBitflags.size,
             queries: this.queries.size,
             recycledEntities: this.removedEntities.length
         };
     }
 
-    /**
-     * Export the SparseSet implementation for advanced users
-     * This allows direct access to the optimized data structures
-     */
-    static get SparseSet(): typeof SparseSet {
-        return SparseSet;
-    }
+    static get SparseSet(): typeof SparseSet { return SparseSet; }
 }
