@@ -1,0 +1,6 @@
+{
+  "file": "src/modules/Routing/adapters/BrowserHistoryAdapter.ts",
+  "dependencies": [
+    "src/modules/Routing/adapters/HistoryAdapter.ts"
+  ]
+}

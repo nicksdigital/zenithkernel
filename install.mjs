@@ -85,7 +85,7 @@ export class HealthSystem extends BaseSystem {
   }
 }`.trim());
 
-    write("src/modules/Health/index.ts", `export * from "./Health";\nexport * from "./HealthSystem";`);
+    write("src/modules/Health/zkp.ts", `export * from "./Health";\nexport * from "./HealthSystem";`);
     write("src/main.ts", `
 import { ZenithKernel } from "@core/ZenithKernel";
 import { loadAllSystems } from "@bootstrap/loadAllSystems";

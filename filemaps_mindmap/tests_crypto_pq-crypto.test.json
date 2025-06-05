@@ -1,0 +1,6 @@
+{
+  "file": "tests/crypto/pq-crypto.test.ts",
+  "dependencies": [
+    "src/modules/Crypto/pq-crypto.ts"
+  ]
+}

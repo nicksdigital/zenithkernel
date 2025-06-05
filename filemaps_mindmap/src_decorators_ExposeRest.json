@@ -1,0 +1,6 @@
+{
+  "file": "src/decorators/ExposeRest.ts",
+  "dependencies": [
+    "src/decorators/RegisterSystem.ts"
+  ]
+}

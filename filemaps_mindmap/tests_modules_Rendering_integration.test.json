@@ -1,0 +1,7 @@
+{
+  "file": "tests/modules/Rendering/integration.test.tsx",
+  "dependencies": [
+    "src/modules/Rendering/index.ts",
+    "src/modules/Rendering/island-loader.ts"
+  ]
+}

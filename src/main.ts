@@ -1,24 +1,44 @@
-import { ZenithKernel } from "@core/ZenithKernel";
-import { loadAllSystems } from "@bootstrap/loadAllSystems";
+import { bootstrapKernel } from "@bootstrap/bootstrapKernel";
+import { launchLoop } from "@bootstrap/launchLoop";
+import { initIslandSystem } from "@modules/Rendering/island-loader";
 
-const kernel = new ZenithKernel();
-
-async function main() {
-    console.log("🧠 Loading all systems...");
-    await loadAllSystems();
-
-    console.log("🔧 Initializing kernel...");
-    kernel.init();
-
-    // Simulate a game loop or tick engine
-    function tickLoop() {
-        kernel.update();
-        requestAnimationFrame(tickLoop);
+// Enhanced bootstrap with islands support
+async function initializeZenithKernel() {
+    try {
+        console.log('🌊 Initializing ZenithKernel...');
+        
+        // Bootstrap the core kernel
+        const kernel = await bootstrapKernel({ http: true });
+        
+        // Initialize the island system if we're in a browser environment
+        if (typeof window !== 'undefined') {
+            console.log('🏝️ Initializing Islands system...');
+            const cleanupIslands = initIslandSystem();
+            
+            // Make cleanup available globally for hot reload
+            (window as any).__zenithCleanup = cleanupIslands;
+            
+            // Auto-discover and hydrate islands
+            const { scanAndHydrateIslands } = await import('@modules/Rendering/island-loader');
+            await scanAndHydrateIslands();
+        }
+        
+        // Launch the main execution loop
+        launchLoop(kernel);
+        
+        // Make kernel globally available for debugging and island access
+        if (typeof window !== 'undefined') {
+            (window as any).ZenithKernel = kernel;
+        }
+        
+        console.log('✅ ZenithKernel initialized successfully!');
+        return kernel;
+        
+    } catch (error) {
+        console.error('❌ Failed to initialize ZenithKernel:', error);
+        throw error;
     }
-
-    tickLoop();
 }
 
-main().catch(err => {
-    console.error("💥 Kernel bootstrap error:", err);
-});
+// Auto-initialize when loaded
+initializeZenithKernel().catch(console.error);

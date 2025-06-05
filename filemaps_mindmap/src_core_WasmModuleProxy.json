@@ -1,0 +1,6 @@
+{
+  "file": "src/core/WasmModuleProxy.ts",
+  "dependencies": [
+    "src/core/ZenithKernel.ts"
+  ]
+}

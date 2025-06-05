@@ -1,0 +1,8 @@
+{
+  "file": "src/modules/Rendering/islands/ECSCounterIsland.tsx",
+  "dependencies": [
+    "src/lib/hydra-runtime.ts",
+    "src/modules/Rendering/jsx-runtime.ts",
+    "src/modules/Rendering/types.ts"
+  ]
+}

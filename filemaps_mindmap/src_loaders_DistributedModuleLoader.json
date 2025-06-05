@@ -1,0 +1,10 @@
+{
+  "file": "src/loaders/DistributedModuleLoader.ts",
+  "dependencies": [
+    "src/core/DynamicManifestResolver.ts",
+    "src/core/WasmModuleProxy.ts",
+    "src/core/ZenithKernel.ts",
+    "src/utils/Blake3Hash.ts",
+    "src/utils/constants.ts"
+  ]
+}

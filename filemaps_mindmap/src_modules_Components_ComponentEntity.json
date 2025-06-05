@@ -1,0 +1,9 @@
+{
+  "file": "src/modules/Components/ComponentEntity.ts",
+  "dependencies": [
+    "src/core/ECS.ts",
+    "src/core/ECSManager.ts",
+    "src/core/EntityBackedSystem.ts",
+    "src/core/SignalManager.ts"
+  ]
+}

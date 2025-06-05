@@ -1,0 +1,9 @@
+{
+  "file": "src/core/ECSManager.ts",
+  "dependencies": [
+    "src/components/registryMeta.ts",
+    "src/core/BaseSystem.ts",
+    "src/core/utils/EventEmitter.ts",
+    "src/core/ZenithKernel.ts"
+  ]
+}

@@ -1,23 +1,20 @@
-import { BaseSystem } from "../core/BaseSystem";
-
-type SystemClass = new (...args: any[]) => BaseSystem;
-
-interface RegisteredSystem {
-    cls: SystemClass;
+interface SystemRegistryEntry {
     id: string;
     dependsOn: string[];
+    cls: new (...args: any[]) => any;
 }
 
-const systemRegistry = new Map<string, RegisteredSystem>();
+const systemRegistry: SystemRegistryEntry[] = [];
+const registered = new Set<any>();
 
-export function RegisterSystem(config?: { id?: string; dependsOn?: string[] }) {
-    return function <T extends SystemClass>(target: T) {
-        const id = config?.id ?? target.name;
-        const dependsOn = config?.dependsOn ?? [];
-        systemRegistry.set(id, { cls: target, id, dependsOn });
+export function RegisterSystem(id: string, dependsOn: string[] = []): ClassDecorator {
+    return function (target) {
+        if (registered.has(target)) return;
+        registered.add(target);
+        systemRegistry.push({ id, dependsOn, cls: target as any });
     };
 }
 
-export function getRegisteredSystems(): RegisteredSystem[] {
-    return Array.from(systemRegistry.values());
+export function getRegisteredSystems(): SystemRegistryEntry[] {
+    return systemRegistry;
 }

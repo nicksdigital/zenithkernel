@@ -1,4 +1,5 @@
-import {ManifestPolicy, ModuleManifest} from "../types";
+// @ts-ignore
+import {ManifestPolicy, ModuleManifest} from "@types";
 
 export class DynamicManifestResolver {
     constructor(private policy: ManifestPolicy) {}
@@ -39,10 +40,24 @@ export class DynamicManifestResolver {
         const { trustedDomains, maxPermissions, requiredContext } = this.policy;
 
         const source = new URL(manifest.sourceUrl);
+        // @ts-ignore
         const domainValid = trustedDomains.some(domain => source.hostname.includes(domain));
+        // @ts-ignore
         const permsValid = manifest.permissions.every(p => maxPermissions.includes(p));
         const contextValid = requiredContext ? manifest.context === requiredContext : true;
 
         return domainValid && permsValid && contextValid;
     }
+
+    async fetchRemoteManifest(id: string, version: string, token?: string) {
+        const url = `https://registry.zenith.dev/${id}@${version}.json`;
+
+        const res = await fetch(url, {
+            headers: token ? { Authorization: `Bearer ${token}` } : undefined
+        });
+
+        if (!res.ok) throw new Error(`Failed to fetch manifest: ${res.status}`);
+        return res.json();
+    }
+
 }

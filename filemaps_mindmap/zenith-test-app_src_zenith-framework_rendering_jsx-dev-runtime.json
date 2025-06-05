@@ -1,0 +1,7 @@
+{
+  "file": "zenith-test-app/src/zenith-framework/rendering/jsx-dev-runtime.ts",
+  "dependencies": [
+    "zenith-test-app/src/zenith-framework/rendering/jsx-runtime.ts",
+    "zenith-test-app/src/zenith-framework/rendering/jsx-runtime.ts"
+  ]
+}

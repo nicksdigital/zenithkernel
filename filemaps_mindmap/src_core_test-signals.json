@@ -1,0 +1,6 @@
+{
+  "file": "src/core/test-signals.ts",
+  "dependencies": [
+    "src/core/signals.ts"
+  ]
+}

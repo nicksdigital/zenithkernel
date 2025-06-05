@@ -1,0 +1,6 @@
+{
+  "file": "src/core/reactive-state.ts",
+  "dependencies": [
+    "src/core/ECSManager.ts"
+  ]
+}

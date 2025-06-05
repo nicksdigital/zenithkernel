@@ -1,0 +1,6 @@
+{
+  "file": "src/protocol/test_qzkp.ts",
+  "dependencies": [
+    "src/protocol/qzkpClient.ts"
+  ]
+}

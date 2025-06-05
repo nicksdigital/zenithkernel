@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zenith Framework - Hydration Strategies Demo</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .strategy-section {
+      margin-bottom: 40px;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .strategy-title {
+      color: #333;
+      border-bottom: 2px solid #0066cc;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+    }
+
+    .strategy-description {
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .spacer {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Zenith Framework - Hydration Strategies Demo</h1>
+      <p>This page demonstrates different hydration strategies available in the Zenith Framework.</p>
+    </div>
+
+    <!-- Immediate Hydration -->
+    <section class="strategy-section">
+      <h2 class="strategy-title">Immediate Hydration</h2>
+      <p class="strategy-description">
+        This island will hydrate immediately when the page loads.
+      </p>
+      <div id="immediate-island" data-hydra-entry="ExampleIsland" data-hydra-strategy="immediate" data-zk-props='{"title": "Immediate Hydration Example", "message": "I hydrate as soon as possible!"}'></div>
+    </section>
+
+    <div class="spacer">↓ Scroll down to see more examples ↓</div>
+
+    <!-- Visible Hydration -->
+    <section class="strategy-section">
+      <h2 class="strategy-title">Visible Hydration</h2>
+      <p class="strategy-description">
+        This island will only hydrate when it becomes visible in the viewport.
+      </p>
+      <div id="visible-island" data-hydra-entry="ExampleIsland" data-hydra-strategy="visible" data-zk-props='{"title": "Visible Hydration Example", "message": "I only hydrate when you can see me!"}'></div>
+    </section>
+
+    <div class="spacer">↓ Keep scrolling! ↓</div>
+
+    <!-- Interaction Hydration -->
+    <section class="strategy-section">
+      <h2 class="strategy-title">Interaction Hydration</h2>
+      <p class="strategy-description">
+        This island will only hydrate when you interact with it (click, hover, or focus).
+      </p>
+      <div id="interaction-island" data-hydra-entry="ExampleIsland" data-hydra-strategy="interaction" data-zk-props='{"title": "Interaction Hydration Example", "message": "Try interacting with me!"}'></div>
+    </section>
+
+    <div class="spacer">↓ Almost there! ↓</div>
+
+    <!-- Idle Hydration -->
+    <section class="strategy-section">
+      <h2 class="strategy-title">Idle Hydration</h2>
+      <p class="strategy-description">
+        This island will hydrate when the browser is idle.
+      </p>
+      <div id="idle-island" data-hydra-entry="ExampleIsland" data-hydra-strategy="idle" data-zk-props='{"title": "Idle Hydration Example", "message": "I hydrate when the browser is not busy."}'></div>
+    </section>
+
+    <!-- Manual Hydration -->
+    <section class="strategy-section">
+      <h2 class="strategy-title">Manual Hydration</h2>
+      <p class="strategy-description">
+        This island will only hydrate when manually triggered.
+      </p>
+      <button onclick="window.hydrationController.triggerManualHydration('manual-island')" class="island-button">
+        Trigger Manual Hydration
+      </button>
+      <div id="manual-island" data-hydra-entry="ExampleIsland" data-hydra-strategy="manual" data-zk-props='{"title": "Manual Hydration Example", "message": "I only hydrate when you tell me to!"}'></div>
+    </section>
+  </div>
+
+  <script type="module">
+    import { autoHydrateIslands } from '../src/lib/hydra-runtime.ts';
+
+    // Start hydration when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      autoHydrateIslands();
+    });
+  </script>
+</body>
+</html>

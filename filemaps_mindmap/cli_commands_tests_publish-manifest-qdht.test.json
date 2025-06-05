@@ -1,0 +1,6 @@
+{
+  "file": "cli/commands/tests/publish-manifest-qdht.test.ts",
+  "dependencies": [
+    "cli/commands/publish-manifest-qdht.ts"
+  ]
+}

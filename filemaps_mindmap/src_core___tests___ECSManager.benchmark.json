@@ -1,0 +1,6 @@
+{
+  "file": "src/core/__tests__/ECSManager.benchmark.ts",
+  "dependencies": [
+    "src/core/ECSManager.ts"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "file": "src/core/EntityBackedSystem.ts",
+  "dependencies": [
+    "src/core/BaseSystem.ts",
+    "src/core/ECS.ts",
+    "src/core/ECSManager.ts"
+  ]
+}

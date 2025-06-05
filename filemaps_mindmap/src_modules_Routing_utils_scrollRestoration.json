@@ -1,0 +1,7 @@
+{
+  "file": "src/modules/Routing/utils/scrollRestoration.ts",
+  "dependencies": [
+    "src/modules/Rendering/utils/kernel-access.ts",
+    "src/modules/Routing/components/RouterComponent.ts"
+  ]
+}

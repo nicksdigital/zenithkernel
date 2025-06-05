@@ -1,0 +1,8 @@
+{
+  "file": "zenith-test-app/src/zenith-framework/rendering/island-loader.ts",
+  "dependencies": [
+    "src/modules/Rendering/utils/css-loader.ts",
+    "src/modules/Rendering/utils/jit-css-loader.ts",
+    "zenith-test-app/src/zenith-framework/rendering/types.ts"
+  ]
+}

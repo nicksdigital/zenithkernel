@@ -1,0 +1,8 @@
+{
+  "file": "src/modules/Rendering/zenith-html-transformer.ts",
+  "dependencies": [
+    "src/core/ECSManager.ts",
+    "src/lib/hydra-runtime.ts",
+    "src/modules/Rendering/template-parser.ts"
+  ]
+}

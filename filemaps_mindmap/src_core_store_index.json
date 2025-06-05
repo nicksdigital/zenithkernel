@@ -1,0 +1,9 @@
+{
+  "file": "src/core/store/index.ts",
+  "dependencies": [
+    "src/core/store/observableState.ts",
+    "src/core/store/storeHooks.ts",
+    "src/core/store/ZenithStore.ts",
+    "src/core/store/ZenithStore.ts"
+  ]
+}

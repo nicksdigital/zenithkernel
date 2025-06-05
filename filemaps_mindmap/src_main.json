@@ -1,0 +1,8 @@
+{
+  "file": "src/main.ts",
+  "dependencies": [
+    "src/bootstrap/bootstrapKernel.ts",
+    "src/bootstrap/launchLoop.ts",
+    "src/modules/Rendering/island-loader.ts"
+  ]
+}

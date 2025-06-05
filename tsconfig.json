@@ -1,0 +1,59 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "lib": [
+      "ES2020",
+      "dom"
+    ],
+    "experimentalDecorators": true,
+    "allowJs": false,
+    "checkJs": false,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "noEmitOnError": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": "./src",
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "@modules/Rendering",
+ 
+    "paths": {
+      "@core/*": ["core/*"],
+      "@types/*": ["types/*"],
+      "@utils/*": ["utils/*"],
+      "@modules/*": ["modules/*"],
+      "@bootstrap/*": ["bootstrap/*"],
+      "@decorators/*":["decorators/*"],
+      "@cli/*": ["cli/*"],
+      "@adapters/*": ["adapters/*"],
+      "@components/*": ["components/*"],
+      "@runtime/*": ["runtime/*"],
+      "@hooks/*": ["hooks/*"],
+      "@lib/*": ["lib/*"],
+      "@services/*": ["services/*"],
+      "@assets/*": ["assets/*"],
+    
+      "react/jsx-runtime": ["../../../src/modules/Rendering/jsx-runtime"],
+      "react/jsx-dev-runtime": ["../../../src/modules/Rendering/jsx-dev-runtime"],
+    }
+  },
+  "include": [
+    "*.ts","**/*.ts","**/*.tsx","src/types/vite-env.d.ts", "scripts/split-jsx-runtime.js"],
+  "exclude": [
+    "node_modules", "dist", "assembly", "admin-ui"
+  ]
+}

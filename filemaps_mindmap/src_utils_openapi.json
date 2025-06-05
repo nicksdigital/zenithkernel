@@ -1,0 +1,7 @@
+{
+  "file": "src/utils/openapi.ts",
+  "dependencies": [
+    "src/decorators/HttpRoute.ts",
+    "src/decorators/ValidateBody.ts"
+  ]
+}

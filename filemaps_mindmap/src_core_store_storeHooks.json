@@ -1,0 +1,7 @@
+{
+  "file": "src/core/store/storeHooks.ts",
+  "dependencies": [
+    "src/core/signals.ts",
+    "src/core/store/ZenithStore.ts"
+  ]
+}

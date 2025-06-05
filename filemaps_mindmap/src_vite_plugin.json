@@ -1,0 +1,6 @@
+{
+  "file": "src/vite/plugin.ts",
+  "dependencies": [
+    "src/bootstrap/ZenithBootstrap.ts"
+  ]
+}

@@ -1,8 +1,11 @@
-import { ZenithKernel } from "../core/ZenithKernel";
-import { computeBLAKE3Keyed } from "../utils/Blake3Hash";
-import { BLAKE3_CONTEXTS, MASTER_KEY } from "../utils/constants";
-import { DynamicManifestResolver, ModuleManifest } from "../core/DynamicManifestResolver";
-import { WasmModuleProxy } from "../core/WasmModuleProxy";
+import { ZenithKernel } from "@core/ZenithKernel";
+import { computeBLAKE3Keyed } from "@utils/Blake3Hash";
+import { BLAKE3_CONTEXTS, MASTER_KEY } from "@utils/constants";
+import { DynamicManifestResolver } from "@core/DynamicManifestResolver";
+import { WasmModuleProxy } from "@core/WasmModuleProxy";
+// @ts-ignore
+import {ModuleManifest} from "@types";
+
 
 export class DistributedModuleLoader {
     constructor(private kernel: ZenithKernel) {}

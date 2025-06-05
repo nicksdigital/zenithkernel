@@ -1,0 +1,6 @@
+{
+  "file": "examples/vue-style-bindings-demo.tsx",
+  "dependencies": [
+    "src/modules/Rendering/jsx-runtime.ts"
+  ]
+}

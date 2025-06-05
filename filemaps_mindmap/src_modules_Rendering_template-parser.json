@@ -1,0 +1,6 @@
+{
+  "file": "src/modules/Rendering/template-parser.ts",
+  "dependencies": [
+    "src/lib/hydra-runtime.ts"
+  ]
+}

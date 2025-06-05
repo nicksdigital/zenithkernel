@@ -1,0 +1,7 @@
+{
+  "file": "src/modules/RegistryServer/VerifySystem.ts",
+  "dependencies": [
+    "src/modules/RegistryServer/ChallengeSystem.ts",
+    "src/modules/RegistryServer/zkp.ts"
+  ]
+}

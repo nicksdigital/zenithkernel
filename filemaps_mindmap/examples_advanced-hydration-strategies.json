@@ -1,0 +1,8 @@
+{
+  "file": "examples/advanced-hydration-strategies.tsx",
+  "dependencies": [
+    "src/components/hydra/HydraLoader.tsx",
+    "src/modules/Rendering/jsx-runtime.ts",
+    "src/modules/Rendering/types.ts"
+  ]
+}

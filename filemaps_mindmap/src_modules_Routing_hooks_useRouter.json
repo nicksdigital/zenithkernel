@@ -1,0 +1,8 @@
+{
+  "file": "src/modules/Routing/hooks/useRouter.ts",
+  "dependencies": [
+    "src/core/reactive-state.ts",
+    "src/modules/Routing/index.ts",
+    "src/modules/Routing/types.ts"
+  ]
+}

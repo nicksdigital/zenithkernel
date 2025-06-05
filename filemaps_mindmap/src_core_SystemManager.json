@@ -1,0 +1,8 @@
+{
+  "file": "src/core/SystemManager.ts",
+  "dependencies": [
+    "src/decorators/RegisterSystem.ts",
+    "src/core/BaseSystem.ts",
+    "src/core/ECSManager.ts"
+  ]
+}

@@ -1,8 +1,13 @@
 import { ECSManager } from "./ECSManager";
-import { Entity, ComponentType } from "../types";
+import { Entity, ComponentType } from "./ECSManager";
 
 export abstract class BaseSystem {
-    constructor(protected ecs: ECSManager) {}
+    public ecs!: ECSManager;
+
+    abstract onLoad?():void;
+    abstract onUnload?():void;
+
+    constructor(ecs: ECSManager) {}
 
     /**
      * Called every tick, intended to be invoked by the scheduler.

@@ -1,0 +1,6 @@
+{
+  "file": "cli/commands/login-zk.ts",
+  "dependencies": [
+    "cli/utils/quantum-sign.ts"
+  ]
+}

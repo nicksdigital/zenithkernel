@@ -1,0 +1,7 @@
+{
+  "file": "src/protocol/examples/quantum_example.ts",
+  "dependencies": [
+    "src/protocol/quantumCircuit.ts",
+    "src/protocol/qzkpClient.ts"
+  ]
+}

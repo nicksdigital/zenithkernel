@@ -1,0 +1,7 @@
+{
+  "file": "src/modules/Rendering/jsx-dev-runtime.ts",
+  "dependencies": [
+    "src/modules/Rendering/jsx-runtime.ts",
+    "src/modules/Rendering/jsx-runtime.ts"
+  ]
+}

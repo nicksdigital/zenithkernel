@@ -1,0 +1,8 @@
+{
+  "file": "tests/modules/Rendering/IslandIntegration.test.tsx",
+  "dependencies": [
+    "src/modules/Rendering/island-loader.ts",
+    "src/modules/Rendering/islands/ECSCounterIsland.tsx",
+    "src/modules/Rendering/utils/css-loader.ts"
+  ]
+}

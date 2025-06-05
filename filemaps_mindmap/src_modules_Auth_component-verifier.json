@@ -1,0 +1,7 @@
+{
+  "file": "src/modules/Auth/component-verifier.ts",
+  "dependencies": [
+    "src/protocol/qzkpClient.ts",
+    "src/modules/Crypto/pq-crypto.ts"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "file": "src/modules/Routing/RoutingSystem.ts",
+  "dependencies": [
+    "src/core/BaseSystem.ts",
+    "src/core/ECSManager.ts",
+    "src/decorators/RegisterSystem.ts",
+    "src/modules/Routing/adapters/BrowserHistoryAdapter.ts",
+    "src/modules/Routing/adapters/HistoryAdapter.ts",
+    "src/modules/Routing/components/RouterComponent.ts",
+    "src/modules/Routing/types.ts"
+  ]
+}

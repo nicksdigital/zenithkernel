@@ -1,0 +1,8 @@
+{
+  "file": "tests/modules/Rendering/islands.test.tsx",
+  "dependencies": [
+    "src/modules/Rendering/islands/ECSCounterIsland.tsx",
+    "src/modules/Rendering/islands/HydraRegistryIsland.tsx",
+    "src/modules/Rendering/islands/HydraStatusIsland.tsx"
+  ]
+}

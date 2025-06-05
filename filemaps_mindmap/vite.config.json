@@ -1,0 +1,6 @@
+{
+  "file": "vite.config.ts",
+  "dependencies": [
+    "src/plugins/vite-plugin-hydra.ts"
+  ]
+}

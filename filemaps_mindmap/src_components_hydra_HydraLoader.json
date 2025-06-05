@@ -1,0 +1,7 @@
+{
+  "file": "src/components/hydra/HydraLoader.tsx",
+  "dependencies": [
+    "src/lib/hydra-runtime.ts",
+    "src/modules/Rendering/jsx-runtime.ts"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "file": "src/core/hydra/HydraContextManager.ts",
+  "dependencies": [
+    "src/lib/hydra-runtime.ts",
+    "src/core/SignalManager.ts",
+    "src/core/signals.ts"
+  ]
+}

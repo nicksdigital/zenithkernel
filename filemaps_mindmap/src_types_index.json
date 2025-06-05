@@ -1,0 +1,7 @@
+{
+  "file": "src/types/index.ts",
+  "dependencies": [
+    "src/types/ecs.ts",
+    "src/types/module.ts"
+  ]
+}

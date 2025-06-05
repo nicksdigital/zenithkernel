@@ -1,0 +1,7 @@
+{
+  "file": "tests/modules/Rendering/island-loader.test.tsx",
+  "dependencies": [
+    "src/modules/Rendering/island-loader.ts",
+    "src/modules/Rendering/types.ts"
+  ]
+}

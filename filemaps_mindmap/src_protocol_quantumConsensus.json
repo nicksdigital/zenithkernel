@@ -1,0 +1,6 @@
+{
+  "file": "src/protocol/quantumConsensus.ts",
+  "dependencies": [
+    "src/protocol/qzkpClient.ts"
+  ]
+}

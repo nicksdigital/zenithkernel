@@ -1,0 +1,42 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "Node",
+    "strict": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx", // Tells TS to use new JSX transform, Vite/esbuild will pick up factory/fragment
+    "jsxImportSource": "@zenith/rendering",// Or the actual path/module providing jsx/jsxs,
+    "paths": {
+      "@core/*": ["../src/core/*"],
+      "@types/*": ["../src/types/*"],
+      "@utils/*": ["../src/utils/*"],
+      "@modules/*": ["../src/modules/*"],
+      "@bootstrap/*": ["../src/bootstrap/*"],
+      "@decorators/*":["../src/decorators/*"],
+      "@cli/*": ["../cli/*"],
+      "@adapters/*": ["../src/adapters/*"],
+      "@hooks/*": ["../src/hooks/*"],
+      "@lib/*": ["../src/lib/*"],
+      "@services/*": ["../services/*"],
+      "@assets/*": ["./assets/*"],
+      "@zenith": ["./src/zenith-framework"],
+      "@utils": ["../src/utils"],
+
+      "react/jsx-runtime": ["./zenith-framework/rendering/jsx-runtime"],
+      "react/jsx-dev-runtime": ["./zenith-framework/rendering/jsx-dev-runtime"],
+    }
+
+},
+  "include": ["src"]
+}

@@ -1,0 +1,6 @@
+{
+  "file": "src/core/signals.ts",
+  "dependencies": [
+    "src/core/ECSManager.ts"
+  ]
+}

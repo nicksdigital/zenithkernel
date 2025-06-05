@@ -1,0 +1,14 @@
+{
+  "file": "src/core/ZenithKernel.ts",
+  "dependencies": [
+    "src/adapters/KernelRouter.ts",
+    "src/lib/hydra-runtime.ts",
+    "src/modules/Rendering/types.ts",
+    "src/types.ts",
+    "src/core/BaseSystem.ts",
+    "src/core/ECSManager.ts",
+    "src/core/Messenger.ts",
+    "src/core/Scheduler.ts",
+    "src/core/SystemManager.ts"
+  ]
+}

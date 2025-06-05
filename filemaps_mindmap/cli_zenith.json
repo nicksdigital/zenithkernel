@@ -1,0 +1,19 @@
+{
+  "file": "cli/zenith.ts",
+  "dependencies": [
+    "cli/commands/bundle/pack.ts",
+    "cli/commands/create-hydra.ts",
+    "cli/commands/create-module.ts",
+    "cli/commands/docs.ts",
+    "cli/commands/help.ts",
+    "cli/commands/hydrate.ts",
+    "cli/commands/init.ts",
+    "cli/commands/list-modules.ts",
+    "cli/commands/list-systems.ts",
+    "cli/commands/login.ts",
+    "cli/commands/login-zk.ts",
+    "cli/commands/publish-manifest-qdht.ts",
+    "cli/commands/publish-module.ts",
+    "cli/commands/sign-manifest.ts"
+  ]
+}

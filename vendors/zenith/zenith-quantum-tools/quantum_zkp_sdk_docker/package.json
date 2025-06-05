@@ -1,0 +1,16 @@
+{
+  "name": "quantum-zkp-sdk",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npx tsx src/cli.ts"
+  },
+  "dependencies": {
+    "commander": "^10.0.0",
+    "snarkjs": "^0.6.11"
+  },
+  "bin": {
+    "quantum-zkp": "./dist/cli.js"
+  }
+}

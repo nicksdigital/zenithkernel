@@ -1,0 +1,7 @@
+{
+  "file": "src/modules/Rendering/utils/kernel-access.ts",
+  "dependencies": [
+    "src/core/ECSManager.ts",
+    "src/core/ZenithKernel.ts"
+  ]
+}

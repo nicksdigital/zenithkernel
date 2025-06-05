@@ -1,0 +1,7 @@
+{
+  "file": "tests/codec/OSTpack.test.ts",
+  "dependencies": [
+    "runtime/codec/OSTCompression.ts",
+    "runtime/codec/OSTpack.ts"
+  ]
+}

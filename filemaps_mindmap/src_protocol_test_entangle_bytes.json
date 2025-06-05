@@ -1,0 +1,6 @@
+{
+  "file": "src/protocol/test_entangle_bytes.ts",
+  "dependencies": [
+    "src/protocol/qzkpClient.ts"
+  ]
+}

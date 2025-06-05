@@ -2,11 +2,19 @@ import { BaseSystem } from "./BaseSystem";
 import { getRegisteredSystems } from "../decorators/RegisterSystem";
 import { ECSManager } from "./ECSManager";
 
-export class SystemManager {
+export class SystemManager extends BaseSystem {
+    onLoad?(): void {
+        throw new Error("Method not implemented.");
+    }
+    onUnload?(): void {
+        throw new Error("Method not implemented.");
+    }
     private systems: Map<string, BaseSystem> = new Map();
     private loadOrder: string[] = [];
 
-    constructor(private ecs: ECSManager) {}
+    constructor(ecs: ECSManager) {
+        super(ecs);
+    }
 
     init() {
         const registry = getRegisteredSystems();
@@ -42,6 +50,7 @@ export class SystemManager {
 
     update() {
         for (const id of this.loadOrder) {
+            console.log("Updating", id);
             this.systems.get(id)!.update();
         }
     }

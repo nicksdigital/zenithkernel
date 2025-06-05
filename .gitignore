@@ -5,3 +5,18 @@ dist
 .env
 *.log
 bun.lockb
+
+# Build artifacts
+dist/
+.cache/
+*.tsbuildinfo
+*.errors
+
+# Temporary files
+*.tmp
+*.bak
+
+# Configuration symlinks
+/as-pect.config.js
+/jest.config.js
+/.bunfig.toml

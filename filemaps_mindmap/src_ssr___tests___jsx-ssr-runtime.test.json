@@ -1,0 +1,7 @@
+{
+  "file": "src/ssr/__tests__/jsx-ssr-runtime.test.tsx",
+  "dependencies": [
+    "src/ssr/jsx-ssr-runtime.ts",
+    "src/ssr/jsx-ssr-virtual-runtime.ts"
+  ]
+}

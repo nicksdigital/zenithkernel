@@ -1,0 +1,6 @@
+{
+  "file": "src/core/router/router.ts",
+  "dependencies": [
+    "src/core/signals.ts"
+  ]
+}

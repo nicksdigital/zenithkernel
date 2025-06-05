@@ -1,0 +1,9 @@
+{
+  "file": "src/bootstrap/bootstrapKernel.ts",
+  "dependencies": [
+    "src/adapters/KernelRouter.ts",
+    "src/bootstrap/LoadAllSystems.ts",
+    "src/core/ZenithKernel.ts",
+    "src/decorators/HttpRoute.ts"
+  ]
+}

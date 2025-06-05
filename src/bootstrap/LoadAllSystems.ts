@@ -1,12 +1,41 @@
-// Dynamically import all system files under modules/**
-// This ensures that @RegisterSystem decorators are invoked
+import { getRegisteredSystems } from "../decorators/RegisterSystem";
+import { ZenithKernel } from "../core/ZenithKernel";
+import { globby } from "globby";
+import path from "path";
+import { fileURLToPath, pathToFileURL } from "url";
 
-export async function loadAllSystems(): Promise<void> {
-    const modules = import.meta.glob("../modules/**/*.ts", { eager: true });
-    // Just importing is enough to trigger decorators
-    for (const path in modules) {
-        // Each module is already imported due to `eager: true`
-        // This triggers side effects like decorators
-        console.debug(`🧠 Loaded system module: ${path}`);
+const rootDir = path.dirname(fileURLToPath(import.meta.url));
+const modulesPath = path.resolve(rootDir, "../modules");
+
+export async function loadAllSystems(kernel?: ZenithKernel): Promise<void> {
+    const files = await globby(["**/*.ts"], {
+        cwd: modulesPath,
+        absolute: true,
+    });
+    console.log(files)
+
+    for (const file of files) {
+        /* @vite-ignore */
+        await import( /* @vite-ignore */ pathToFileURL(file).href);
+        console.log(`🧠 Imported: ${file}`);
     }
+
+    const systemTypes = getRegisteredSystems();
+    const seen = new Set<string>();
+
+    if (kernel) {
+        for (const entry of systemTypes) {
+            const { id, cls } = entry;
+            if (seen.has(id)) {
+                console.warn(`⚠️ Skipping duplicate system: ${id}`);
+                continue;
+            }
+
+            seen.add(id);
+            const instance = new cls(kernel.getECS());
+            kernel.registerSystem(instance);
+        }
+    }
+
+    console.log(`✅ Loaded ${seen.size} unique system(s)`);
 }

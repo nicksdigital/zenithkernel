@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dependency Graph</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    body { font-family: sans-serif; height: 100vh; width: 100vw; }
+    .link { stroke: #999; stroke-opacity: 0.6; }
+    .node circle { stroke: #fff; stroke-width: 1.5px; }
+    .node text { pointer-events: none; font-size: 14px; font-weight: bold; fill: #222; }
+    #error { color: red; margin: 1em 0; }
+    .tooltip {
+      position: absolute;
+      background: #fff;
+      border: 1px solid #888;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 13px;
+      pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 10;
+      display: none;
+      max-width: 400px;
+      word-break: break-all;
+    }
+    #controls {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      z-index: 20;
+      background: rgba(255,255,255,0.9);
+      border-radius: 8px;
+      padding: 8px 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    #controls button {
+      font-size: 14px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid #bbb;
+      background: #f7f7f7;
+      cursor: pointer;
+    }
+    #controls button:hover {
+      background: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="margin:10px 0 0 16px;">Dependency Graph</h2>
+  <div id="error"></div>
+  <div style="font-size:13px;color:#555;margin-bottom:1em;margin-left:16px;">
+    <b>Note:</b> You must open this file via a local web server (not <code>file://</code>) for JSON loading to work.<br>
+    Example: <code>npx serve .</code> or <code>python3 -m http.server</code> in this directory.
+  </div>
+  <div id="controls">
+    <button id="closeAllBtn">Close All</button>
+    <button id="zoomInBtn">Zoom In</button>
+    <button id="zoomOutBtn">Zoom Out</button>
+    <span style="font-size:12px;color:#888;">(Scroll or drag to pan/zoom)</span>
+  </div>
+  <svg id="graphsvg" style="width:100vw;height:calc(100vh - 60px);display:block;"></svg>
+  <div class="tooltip" id="tooltip"></div>
+  <script>
+    async function loadDependencyData() {
+      try {
+        const res = await fetch('../deps.json');
+        if (!res.ok) throw new Error(`HTTP ${res.status} for deps.json`);
+        return await res.json();
+      } catch (err) {
+        document.getElementById('error').textContent =
+          `Could not load deps.json: ${err.message}`;
+        throw err;
+      }
+    }
+
+    // Guess main export name from filename
+    function getMainExportName(file) {
+      if (!file) return '';
+      const match = file.match(/([^\/]+)\.([^.]+)$/);
+      return match ? match[1] : file;
+    }
+
+    // Build a map of all file info for quick lookup, skipping orphans
+    function buildFileInfoMap(data) {
+      const map = {};
+      (data.modules || []).forEach(entry => {
+        if (!entry.orphan) map[entry.source] = entry;
+      });
+      return map;
+    }
+
+    // Build visible graph from expanded nodes, skipping orphans
+    function buildVisibleGraph(rootId, fileInfoMap, expanded) {
+      const nodes = {};
+      const links = [];
+      // Always show the root node
+      function addNodeAndDeps(id) {
+        if (!fileInfoMap[id]) return; // skip orphans
+        if (!nodes[id]) nodes[id] = { id };
+        if (expanded[id]) {
+          const info = fileInfoMap[id];
+          if (info && info.dependencies) {
+            info.dependencies.forEach(dep => {
+              let depId = dep;
+              if (typeof dep === 'object') depId = dep.resolved || dep.module || depId;
+              if (depId && fileInfoMap[depId]) {
+                nodes[depId] = { id: depId };
+                links.push({ source: id, target: depId });
+                // Only add further if that dep is expanded
+                if (expanded[depId]) addNodeAndDeps(depId);
+              }
+            });
+          }
+        }
+      }
+      addNodeAndDeps(rootId);
+      return {
+        nodes: Object.values(nodes),
+        links
+      };
+    }
+
+    function getHighlightSet(nodeId, fileInfoMap, expanded) {
+      // Returns a Set of node ids: nodeId and its direct dependencies
+      const set = new Set();
+      if (!fileInfoMap[nodeId]) return set;
+      set.add(nodeId);
+      const info = fileInfoMap[nodeId];
+      if (expanded[nodeId] && info && info.dependencies) {
+        info.dependencies.forEach(dep => {
+          let depId = dep;
+          if (typeof dep === 'object') depId = dep.resolved || dep.module || depId;
+          if (depId && fileInfoMap[depId]) set.add(depId);
+        });
+      }
+      return set;
+    }
+
+    async function main() {
+      try {
+        const rawData = await loadDependencyData();
+        const fileInfoMap = buildFileInfoMap(rawData);
+
+        // Start with a root node (first non-orphan module in deps.json)
+        let rootId = null;
+        if (rawData.modules && rawData.modules.length > 0) {
+          for (const entry of rawData.modules) {
+            if (!entry.orphan) {
+              rootId = entry.source;
+              break;
+            }
+          }
+        }
+        if (!rootId) {
+          document.getElementById('error').textContent = 'No non-orphan modules found in deps.json';
+          return;
+        }
+
+        const svg = d3.select("#graphsvg"),
+          width = window.innerWidth,
+          height = window.innerHeight - 60;
+
+        // Track expanded/collapsed state
+        const expanded = {};
+        expanded[rootId] = true; // root expanded by default
+
+        // Track last expanded node for highlight
+        let lastExpandedNode = rootId;
+
+        // Tooltip div
+        const tooltip = document.getElementById('tooltip');
+
+        // D3 zoom/pan
+        const zoom = d3.zoom()
+          .scaleExtent([0.2, 3])
+          .on("zoom", (event) => {
+            g.attr("transform", event.transform);
+          });
+
+        svg.call(zoom);
+
+        // Main group for pan/zoom
+        const g = svg.append("g");
+
+        // Zoom controls
+        document.getElementById('zoomInBtn').onclick = () => {
+          svg.transition().call(zoom.scaleBy, 1.2);
+        };
+        document.getElementById('zoomOutBtn').onclick = () => {
+          svg.transition().call(zoom.scaleBy, 0.8);
+        };
+
+        // Close all button
+        document.getElementById('closeAllBtn').onclick = () => {
+          Object.keys(expanded).forEach(k => expanded[k] = false);
+          expanded[rootId] = true;
+          lastExpandedNode = rootId;
+          render();
+        };
+
+        function render() {
+          const graph = buildVisibleGraph(rootId, fileInfoMap, expanded);
+
+          g.selectAll("*").remove();
+
+          const simulation = d3.forceSimulation(graph.nodes)
+            .force("link", d3.forceLink(graph.links).id(d => d.id).distance(120))
+            .force("charge", d3.forceManyBody().strength(-400))
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+          // Highlight set for coloring
+          const highlightSet = getHighlightSet(lastExpandedNode, fileInfoMap, expanded);
+
+          const link = g.append("g")
+            .attr("stroke", "#999")
+            .attr("stroke-opacity", 0.6)
+            .selectAll("line")
+            .data(graph.links)
+            .join("line")
+            .attr("stroke-width", 2)
+            .attr("stroke", d =>
+              highlightSet.has(d.source.id) && highlightSet.has(d.target.id)
+                ? "#ff9800"
+                : "#999"
+            );
+
+          const node = g.append("g")
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 1.5)
+            .selectAll("g")
+            .data(graph.nodes, d => d.id)
+            .join("g")
+            .attr("class", "node")
+            .call(d3.drag()
+              .on("start", dragstarted)
+              .on("drag", dragged)
+              .on("end", dragended));
+
+          node.append("circle")
+            .attr("r", 28)
+            .attr("fill", d =>
+              highlightSet.has(d.id)
+                ? "#ff9800"
+                : (expanded[d.id] ? "#ffb347" : "#69b3a2"))
+            .attr("stroke", "#333")
+            .attr("stroke-width", 2);
+
+          // Centered label inside the circle
+          node.append("text")
+            .attr("class", "node-label")
+            .attr("text-anchor", "middle")
+            .attr("y", 5)
+            .text(d => getMainExportName(d.id))
+            .style("font-size", "14px")
+            .style("fill", d => highlightSet.has(d.id) ? "#fff" : "#222");
+
+          // Node click: expand/collapse and highlight
+          node.on("click", function(event, d) {
+            event.stopPropagation();
+            expanded[d.id] = !expanded[d.id];
+            lastExpandedNode = d.id;
+            tooltip.style.display = 'none';
+            render();
+          });
+
+          // Node mouseover: show tooltip
+          node.on("mouseover", function(event, d) {
+            const info = fileInfoMap[d.id];
+            if (!info) return;
+            const html = `
+              <b>File:</b> ${info.source}<br>
+              <b>Main Export:</b> ${getMainExportName(info.source)}<br>
+              <b>Orphan:</b> ${info.orphan ? "Yes" : "No"}<br>
+              <b>Valid:</b> ${info.valid ? "Yes" : "No"}<br>
+              <b>Dependencies:</b>
+              <ul style="margin:0 0 0 1em;padding:0;">
+                ${(info.dependencies || []).map(dep => {
+                  let depId = dep;
+                  if (typeof dep === 'object') depId = dep.resolved || dep.module || depId;
+                  return `<li>${depId}</li>`;
+                }).join('')}
+              </ul>
+              <pre style="margin:0.5em 0 0 0;font-size:11px;background:#f7f7f7;padding:4px 6px;border-radius:4px;">${JSON.stringify(info, null, 2)}</pre>
+            `;
+            tooltip.innerHTML = html;
+            tooltip.style.display = 'block';
+            const [x, y] = d3.pointer(event, svg.node());
+            tooltip.style.left = (x + 40) + "px";
+            tooltip.style.top = (y + 40) + "px";
+          });
+
+          node.on("mouseout", function() {
+            tooltip.style.display = 'none';
+          });
+
+          // Hide tooltip on background click
+          svg.on("click", function() {
+            tooltip.style.display = 'none';
+          });
+
+          simulation.on("tick", () => {
+            link
+              .attr("x1", d => d.source.x)
+              .attr("y1", d => d.source.y)
+              .attr("x2", d => d.target.x)
+              .attr("y2", d => d.target.y);
+
+            node
+              .attr("transform", d => `translate(${d.x},${d.y})`);
+          });
+
+          function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+          }
+
+          function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+          }
+
+          function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+          }
+        }
+
+        // Responsive resize
+        window.addEventListener('resize', () => {
+          svg.attr('width', window.innerWidth);
+          svg.attr('height', window.innerHeight - 60);
+        });
+
+        render();
+      } catch (e) {
+        // Error already shown in #error div
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>

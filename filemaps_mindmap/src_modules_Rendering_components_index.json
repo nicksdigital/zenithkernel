@@ -1,0 +1,9 @@
+{
+  "file": "src/modules/Rendering/components/index.ts",
+  "dependencies": [
+    "src/modules/Rendering/components/CounterComponent.ts",
+    "src/modules/Rendering/components/CounterComponent.ts",
+    "src/modules/Rendering/components/HydraComponents.ts",
+    "src/modules/Rendering/components/HydraComponents.ts"
+  ]
+}

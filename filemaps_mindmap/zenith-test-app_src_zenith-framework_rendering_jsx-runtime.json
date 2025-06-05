@@ -1,0 +1,6 @@
+{
+  "file": "zenith-test-app/src/zenith-framework/rendering/jsx-runtime.ts",
+  "dependencies": [
+    "src/core/reactive-state.ts"
+  ]
+}

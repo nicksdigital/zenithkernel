@@ -1,7 +1,12 @@
 import { Message } from "../types";
+import {MessagingSystem} from "@core/MessagingSystem";
+import {ECSManager} from "@core/ECSManager";
 
 export class Messenger {
     private queues = new Map<string, Message[]>();
+
+
+
 
     register(id: string) {
         this.queues.set(id, []);

@@ -1,0 +1,6 @@
+{
+  "file": "runtime/codec/OSTPackReader.ts",
+  "dependencies": [
+    "runtime/codec/OSTCompression.ts"
+  ]
+}

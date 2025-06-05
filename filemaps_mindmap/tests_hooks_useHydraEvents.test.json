@@ -1,0 +1,7 @@
+{
+  "file": "tests/hooks/useHydraEvents.test.tsx",
+  "dependencies": [
+    "src/core/ECSManager.ts",
+    "src/hooks/useHydraEvents.ts"
+  ]
+}

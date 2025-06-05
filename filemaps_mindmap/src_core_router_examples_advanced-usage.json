@@ -1,0 +1,7 @@
+{
+  "file": "src/core/router/examples/advanced-usage.tsx",
+  "dependencies": [
+    "src/core/ZenithKernel.ts",
+    "src/core/router/index.ts"
+  ]
+}

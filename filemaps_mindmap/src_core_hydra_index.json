@@ -1,0 +1,12 @@
+{
+  "file": "src/core/hydra/index.ts",
+  "dependencies": [
+    "src/core/signals.ts",
+    "src/core/signals.ts",
+    "src/core/hydra/EnhancedHydraRuntime.ts",
+    "src/core/hydra/HydraContextManager.ts",
+    "src/core/hydra/HydraContextManager.ts",
+    "src/core/hydra/SignalDOMBinder.ts",
+    "src/core/hydra/SignalDOMBinder.ts"
+  ]
+}

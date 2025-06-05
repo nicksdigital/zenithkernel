@@ -1,0 +1,10 @@
+{
+  "file": "src/modules/Routing/middleware/MiddlewareSystem.ts",
+  "dependencies": [
+    "src/core/BaseSystem.ts",
+    "src/core/ECSManager.ts",
+    "src/decorators/RegisterSystem.ts",
+    "src/modules/Routing/RoutingSystem.ts",
+    "src/modules/Routing/types.ts"
+  ]
+}

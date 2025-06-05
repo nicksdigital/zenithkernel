@@ -1,0 +1,8 @@
+{
+  "file": "src/modules/Rendering/jsx-runtime.ts",
+  "dependencies": [
+    "src/core/reactive-state.ts",
+    "src/core/SignalManager.ts",
+    "src/core/signals.ts"
+  ]
+}

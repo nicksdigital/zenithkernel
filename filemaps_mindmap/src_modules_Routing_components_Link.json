@@ -1,0 +1,7 @@
+{
+  "file": "src/modules/Routing/components/Link.ts",
+  "dependencies": [
+    "src/modules/Rendering/index.ts",
+    "src/modules/Routing/index.ts"
+  ]
+}

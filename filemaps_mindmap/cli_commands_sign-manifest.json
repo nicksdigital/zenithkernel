@@ -1,0 +1,6 @@
+{
+  "file": "cli/commands/sign-manifest.ts",
+  "dependencies": [
+    "cli/utils/quantum-sign.ts"
+  ]
+}

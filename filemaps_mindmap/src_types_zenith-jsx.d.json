@@ -1,0 +1,7 @@
+{
+  "file": "src/types/zenith-jsx.d.ts",
+  "dependencies": [
+    "src/core/ECSManager.ts",
+    "src/lib/hydra-runtime.ts"
+  ]
+}

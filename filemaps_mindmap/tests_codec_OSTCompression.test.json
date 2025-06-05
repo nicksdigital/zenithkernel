@@ -1,0 +1,6 @@
+{
+  "file": "tests/codec/OSTCompression.test.ts",
+  "dependencies": [
+    "runtime/codec/OSTCompression.ts"
+  ]
+}

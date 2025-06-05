@@ -1,0 +1,6 @@
+{
+  "file": "tests/reactive-state.test.ts",
+  "dependencies": [
+    "src/core/reactive-state.ts"
+  ]
+}

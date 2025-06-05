@@ -1,0 +1,32 @@
+{
+  "name": "quantum-zkp-sdk",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npx tsx src/cli.ts",
+    "start-api": "ts-node src/server.ts"
+  },
+  "dependencies": {
+    "@types/circomlibjs": "^0.1.6",
+    "@types/cors": "^2.8.18",
+    "@types/express": "^5.0.2",
+    "bignumber.js": "^9.1.2",
+    "circomlib": "^2.0.5",
+    "circomlibjs": "^0.1.7",
+    "commander": "^10.0.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mathjs": "^11.8.0",
+    "node-fetch": "^2.6.7",
+    "snarkjs": "^0.6.11"
+  },
+  "devDependencies": {
+    "@types/node": "^18.18.5",
+    "@types/node-fetch": "^2.6.4",
+    "ts-node": "^10.9.2"
+  },
+  "bin": {
+    "quantum-zkp": "./dist/cli.js"
+  }
+}

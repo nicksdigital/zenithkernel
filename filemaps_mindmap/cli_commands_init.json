@@ -1,0 +1,7 @@
+{
+  "file": "cli/commands/init.ts",
+  "dependencies": [
+    "cli/utils/onCancel.ts",
+    "cli/utils/scaffoldUtils.ts"
+  ]
+}

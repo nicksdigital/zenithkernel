@@ -1,9 +1,0 @@
-{
-  "id": "physics",
-  "version": "1.0.0",
-  "entry": "dist/module.wasm",
-  "blake3": "hex-encoded-hash",
-  "context": "ZenithKernel module verification",
-  "dependencies": [],
-  "permissions": ["read", "write", "scheduler"]
-}

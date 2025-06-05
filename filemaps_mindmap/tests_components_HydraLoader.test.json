@@ -1,0 +1,7 @@
+{
+  "file": "tests/components/HydraLoader.test.tsx",
+  "dependencies": [
+    "src/components/hydra/HydraLoader.tsx",
+    "src/lib/hydra-runtime.ts"
+  ]
+}

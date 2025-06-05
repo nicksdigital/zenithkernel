@@ -1,0 +1,9 @@
+{
+  "file": "src/core/router/__tests__/router.test.ts",
+  "dependencies": [
+    "src/core/ZenithKernel.ts",
+    "src/core/router/guards.ts",
+    "src/core/router/integration.ts",
+    "src/core/router/router.ts"
+  ]
+}

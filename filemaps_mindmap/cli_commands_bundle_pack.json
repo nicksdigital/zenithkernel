@@ -1,0 +1,6 @@
+{
+  "file": "cli/commands/bundle/pack.ts",
+  "dependencies": [
+    "runtime/codec/OSTCompression.ts"
+  ]
+}

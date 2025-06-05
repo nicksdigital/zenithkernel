@@ -1,0 +1,6 @@
+{
+  "file": "src/protocol/examples/quantum_consensus_example.ts",
+  "dependencies": [
+    "src/protocol/quantumConsensusClient.ts"
+  ]
+}

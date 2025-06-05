@@ -1,0 +1,7 @@
+{
+  "file": "src/modules/Rendering/register-all-islands.ts",
+  "dependencies": [
+    "src/modules/Rendering/island-loader.ts",
+    "src/modules/Rendering/types.ts"
+  ]
+}

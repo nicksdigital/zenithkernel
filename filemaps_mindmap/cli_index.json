@@ -1,0 +1,9 @@
+{
+  "file": "cli/index.ts",
+  "dependencies": [
+    "cli/commands/bundle/pack.ts",
+    "cli/commands/create-module.ts",
+    "cli/commands/init.ts",
+    "cli/commands/login.ts"
+  ]
+}
