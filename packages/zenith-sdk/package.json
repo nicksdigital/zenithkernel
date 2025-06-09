@@ -1,0 +1,60 @@
+{
+  "name": "@zenithcore/sdk",
+  "version": "0.1.0",
+  "description": "Developer-friendly SDK for ZenithKernel applications",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./components": {
+      "import": "./dist/components/index.js",
+      "types": "./dist/components/index.d.ts"
+    },
+    "./core": {
+      "import": "./dist/core/index.js",
+      "types": "./dist/core/index.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target node",
+    "dev": "bun build ./src/index.ts --outdir ./dist --target node --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test": "bun test"
+  },
+  "keywords": [
+    "zenith",
+    "sdk",
+    "components",
+    "islands",
+    "hydration",
+    "bun"
+  ],
+  "author": "ZenithKernel Team",
+  "license": "MIT",
+  "peerDependencies": {
+    "@zenithcore/core": "^0.1.0",
+    "zenith-kernel": ">=1.0.0"
+  },
+  "dependencies": {
+    "@zenithcore/core": "^0.1.0"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "typescript": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "@types/bun": "latest"
+  },
+  "private": true
+}

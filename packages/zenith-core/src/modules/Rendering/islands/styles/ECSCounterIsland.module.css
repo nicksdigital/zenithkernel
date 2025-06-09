@@ -1,0 +1,222 @@
+/* ECS Counter Island CSS Module */
+
+.wrapper {
+  padding: 20px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+  min-width: 280px;
+}
+
+.wrapper:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: #d1d9e0;
+}
+
+.wrapper.hydratedEffect {
+  border-color: #28a745;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fff9 100%);
+}
+
+.counterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.counterTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.connectionStatus {
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.connectionStatus.connecting {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.connectionStatus.connected {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.connectionStatus.disconnected {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.counterDisplay {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+.counterValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #007bff;
+  text-shadow: 0 1px 2px rgba(0, 123, 255, 0.1);
+}
+
+.counterControls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease-in-out;
+  min-width: 60px;
+}
+
+.button:hover:not(:disabled) {
+  background: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 123, 255, 0.2);
+}
+
+.button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.incrementBtn {
+  background: #28a745;
+}
+
+.incrementBtn:hover:not(:disabled) {
+  background: #1e7e34;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.decrementBtn {
+  background: #dc3545;
+}
+
+.decrementBtn:hover:not(:disabled) {
+  background: #bd2130;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.resetBtn {
+  background: #6c757d;
+}
+
+.resetBtn:hover:not(:disabled) {
+  background: #545b62;
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+}
+
+.counterInfo {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #e9ecef;
+}
+
+.counterInfo small {
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+/* Loading state styles */
+.wrapper.loading {
+  opacity: 0.7;
+  background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%, transparent 75%, #f8f9fa 75%, #f8f9fa),
+              linear-gradient(45deg, #f8f9fa 25%, transparent 25%, transparent 75%, #f8f9fa 75%, #f8f9fa);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  animation: shimmer 1s linear infinite;
+}
+
+.wrapper.loading .button {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0 0, 10px 10px; }
+  100% { background-position: 20px 20px, 30px 30px; }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .wrapper {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+  }
+
+  .counterTitle {
+    color: #f7fafc;
+  }
+
+  .counterDisplay {
+    background: #1a202c;
+    border-color: #4a5568;
+  }
+
+  .counterValue {
+    color: #63b3ed;
+  }
+
+  .counterInfo small {
+    color: #a0aec0;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .wrapper {
+    padding: 15px;
+    min-width: 240px;
+  }
+
+  .counterControls {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .counterValue {
+    font-size: 1.5rem;
+  }
+}

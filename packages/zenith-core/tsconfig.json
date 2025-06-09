@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "declaration": true,
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "types": ["bun-types"],
+    "baseUrl": ".",
+    "paths": {
+      "@core/*": ["./src/core/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@components/*": ["./src/modules/Components/*"],
+      "@decorators/*": ["./src/decorators/*"],
+      "@components/hydra/*": ["./src/modules/Rendering/hydra/*"],
+      "@components/registryMeta": ["./src/modules/RegistryServer/RegistryMeta"],
+      "@components/SystemMeta": ["./src/modules/SystemMeta"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/modules/Rendering/islands/ReactiveCounterIsland.tsx"
+  ]
+}

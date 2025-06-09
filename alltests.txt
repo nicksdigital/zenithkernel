@@ -1,0 +1,1686 @@
+undefined
+{
+  name: 'HydraStatusIsland',
+  dependencies: [],
+  trustLevel: 'local',
+  execType: 'local'
+}
+{
+  name: 'HydraRegistryIsland',
+  dependencies: [],
+  trustLevel: 'local',
+  execType: 'local'
+}
+Raw metadata match: {
+  name: 'ExampleIsland',
+  version: '1.0.0',
+  trustLevel: 'local' as const,
+  hydrationStrategies: ['immediate', 'visible', 'interaction', 'idle', 'manual'] as const
+}
+{
+  name: 'ExampleIsland',
+  version: '1.0.0',
+  trustLevel: 'local' as const,
+  hydrationStrategies: ['immediate', 'visible', 'interaction', 'idle', 'manual'] as const
+}
+{
+  name: 'ECSCounterIsland',
+  dependencies: [],
+  trustLevel: 'local',
+  execType: 'local',
+  ecsComponents: ['Counter', 'Position']
+}
+🏝️ Discovered 5 islands
+📝 Generated island registry with 5 islands
+
+ DEV  v3.1.4 /Users/nick/IdeaProjects/zenithkernel
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should mount successfully with default props
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m0[39m,
+  step: [33m1[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should display custom label and initial value
+ECS Counter Island mounted: {
+  label: [32m'Custom Counter'[39m,
+  initialValue: [33m10[39m,
+  step: [33m1[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should handle increment button clicks
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m5[39m,
+  step: [33m2[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should handle decrement button clicks
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m10[39m,
+  step: [33m3[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should handle reset button clicks
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m15[39m,
+  step: [33m1[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should simulate ECS connection status
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m0[39m,
+  step: [33m1[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should display entity ID information
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m0[39m,
+  step: [33m1[39m,
+  entityId: [32m'custom-entity-123'[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should call unmount without errors
+ECS Counter Island unmounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should mount successfully with default props
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should display custom title
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should handle connection info visibility
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should handle reconnect button
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should handle clear logs button
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should simulate connection and events
+Hydra Status Island mounted with events: test-event
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should mount successfully with default props
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should display custom title
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle details visibility
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle actions visibility
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should display mock instances
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle instance selection
+Hydra Registry Island mounted
+
+ ❯ src/core/router/__tests__/router.test.ts (34 tests | 16 failed) 78ms
+   ✓ ZenithRouter Core > Route Registration > should register routes correctly 6ms
+   ✓ ZenithRouter Core > Route Registration > should create route builders for registered routes 1ms
+   ✓ ZenithRouter Core > Navigation > should navigate to a simple route 2ms
+   ✓ ZenithRouter Core > Navigation > should navigate to a parameterized route 4ms
+   ✓ ZenithRouter Core > Navigation > should handle navigation with query parameters 2ms
+   × ZenithRouter Core > Navigation > should throw error for unregistered route 23ms
+     → promise resolved "undefined" instead of rejecting
+   ✓ ZenithRouter Core > Type-Safe Route Builder > should build paths with parameters correctly 2ms
+   ✓ ZenithRouter Core > Type-Safe Route Builder > should extract parameters from paths 1ms
+   ✓ ZenithRouter Core > Type-Safe Route Builder > should return null for non-matching paths 1ms
+   × ZenithRouter Core > Type-Safe Route Builder > should handle URL encoding/decoding 4ms
+     → expected '/search/hello world' to be '/search/hello%20world' // Object.is equality
+   ✓ ZenithRouter Core > Route Guards > should create ZK guard that passes with valid proof 2ms
+   ✓ ZenithRouter Core > Route Guards > should create ZK guard that fails without proof 1ms
+   ✓ ZenithRouter Core > Route Guards > should create role-based guard 1ms
+   ✓ ZenithRouter Core > Route Guards > should create time-based guard 1ms
+   ✓ ZenithRouter Core > Route Guards > should create rate limit guard 1ms
+   ✓ ZenithRouter Core > Route Guards > should create composite guard with AND logic 1ms
+   ✓ ZenithRouter Core > Route Guards > should create composite guard with OR logic 1ms
+   ✓ ZenithRouter Core > Data Loading and Caching > should load route data 1ms
+   × ZenithRouter Core > Data Loading and Caching > should cache loaded data 1ms
+     → router.createLoader is not a function
+   ✓ ZenithRouter Core > Data Loading and Caching > should prefetch routes 1ms
+   × ZenithRouter Integration > Hydra Routes > should register Hydra routes with ZK requirements 2ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > Hydra Routes > should create secure navigator with ZK verification 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > ECS Integration > should register ECS routes with component data 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > WASM Routes > should register WASM routes with security guards 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > Quantum Consensus Routes > should register quantum consensus routes 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > Secure Navigation > should navigate securely with ZK proof 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > Secure Navigation > should fail navigation with invalid ZK proof 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > State Management > should track Hydra route status 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > State Management > should get ZK verification status 1ms
+     → this.kernel.getECS is not a function
+   × Factory Functions > should create ZenithRouter with kernel integration 1ms
+     → this.kernel.getECS is not a function
+   × Performance and Edge Cases > should handle rapid navigation calls 2ms
+     → expected '0' to be '9' // Object.is equality
+   ✓ Performance and Edge Cases > should handle navigation with special characters 1ms
+   × Performance and Edge Cases > should cleanup expired cache entries 1ms
+     → router.createLoader is not a function
+   × Performance and Edge Cases > should handle malformed URLs gracefully 3ms
+     → promise resolved "undefined" instead of rejecting
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle refresh button
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle create instance button
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle cleanup button
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should call unmount without errors
+Hydra Registry Island unmounted
+
+ ❯ tests/modules/Rendering/islands.test.tsx (28 tests | 20 failed) 310ms
+   × ZenithKernel Example Islands > ECSCounterIsland > should mount successfully with default props 43ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > ECSCounterIsland > should display custom label and initial value 6ms
+     → expected undefined to be 'Custom Counter' // Object.is equality
+   × ZenithKernel Example Islands > ECSCounterIsland > should handle increment button clicks 3ms
+     → expected undefined to be '5' // Object.is equality
+   × ZenithKernel Example Islands > ECSCounterIsland > should handle decrement button clicks 3ms
+     → expected undefined to be '10' // Object.is equality
+   × ZenithKernel Example Islands > ECSCounterIsland > should handle reset button clicks 3ms
+     → Cannot read properties of null (reading 'click')
+   × ZenithKernel Example Islands > ECSCounterIsland > should simulate ECS connection status 2ms
+     → expected undefined to be 'Connecting...' // Object.is equality
+   × ZenithKernel Example Islands > ECSCounterIsland > should display entity ID information 3ms
+     → the given combination of arguments (undefined and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string
+   × ZenithKernel Example Islands > ECSCounterIsland > should generate correct view structure 2ms
+     → expected '' to contain 'ecs-counter-island'
+   ✓ ZenithKernel Example Islands > ECSCounterIsland > should call unmount without errors 1ms
+   × ZenithKernel Example Islands > HydraStatusIsland > should mount successfully with default props 4ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraStatusIsland > should display custom title 4ms
+     → expected undefined to be 'Custom Status Monitor' // Object.is equality
+   ✓ ZenithKernel Example Islands > HydraStatusIsland > should handle connection info visibility 2ms
+   × ZenithKernel Example Islands > HydraStatusIsland > should handle reconnect button 2ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraStatusIsland > should handle clear logs button 2ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraStatusIsland > should simulate connection and events 2ms
+     → expected undefined to be 'Connecting' // Object.is equality
+   × ZenithKernel Example Islands > HydraStatusIsland > should generate correct view structure 1ms
+     → expected '' to contain 'hydra-status-island'
+   × ZenithKernel Example Islands > HydraRegistryIsland > should mount successfully with default props 2ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraRegistryIsland > should display custom title 2ms
+     → expected undefined to be 'Custom Registry View' // Object.is equality
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should handle details visibility 1ms
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should handle actions visibility 1ms
+   × ZenithKernel Example Islands > HydraRegistryIsland > should display mock instances 106ms
+     → expected 0 to be greater than 0
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should handle instance selection 103ms
+   × ZenithKernel Example Islands > HydraRegistryIsland > should handle refresh button 2ms
+     → expected null to be truthy
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should handle create instance button 2ms
+   × ZenithKernel Example Islands > HydraRegistryIsland > should handle cleanup button 2ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraRegistryIsland > should generate correct view structure 2ms
+     → expected '' to contain 'hydra-registry-island'
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should call unmount without errors 1ms
+   ✓ ZenithKernel Example Islands > Island Metadata > should export correct metadata for all islands 1ms
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Island Registration > should register and retrieve islands
+🏝️ Registered island: TestIsland
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Island Registration > should unregister islands
+🏝️ Registered island: TestIsland
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should hydrate a registered local island
+🏝️ Registered island: TestIsland
+🌊 Hydrating local island "TestIsland" into element "test-element" { peerId: [32m'test-peer'[39m, message: [32m'Hello Test'[39m }
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should hydrate a registered local island
+✅ Successfully hydrated local island "TestIsland"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification
+🏝️ Registered island: SecureIsland
+🌊 Hydrating local island "SecureIsland" into element "test-zk-element" { peerId: [32m'test-peer'[39m, zkProof: [32m'zk:valid-proof-data'[39m }
+
+ ✓ tests/reactive-state.test.ts (17 tests) 19ms
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification
+✅ ZK proof verified for island "SecureIsland"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification
+✅ Successfully hydrated local island "SecureIsland"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification
+🌊 Hydrating local island "SecureIsland" into element "test-zk-element" { peerId: [32m'test-peer'[39m, zkProof: [32m'invalid-proof'[39m }
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle missing islands gracefully
+🌊 Hydrating local island "NonExistentIsland" into element "missing-element" { peerId: [32m'test-peer'[39m }
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Remote Hydration > should handle manifest resolution and verification
+🌐 Hydrating remote component "RemoteComponent" into element "remote-element" {
+  peerId: [32m'test-peer'[39m,
+  manifestUrl: [32m'https://example.com/manifest.json'[39m
+}
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Remote Hydration > should enforce ZK requirements for remote components
+🌐 Hydrating remote component "SecureComponent" into element "secure-remote-element" {
+  peerId: [32m'test-peer'[39m,
+  manifestUrl: [32m'https://example.com/secure-manifest.json'[39m
+}
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Island Discovery and Auto-Hydration > should handle different hydration strategies
+🏝️ Registered island: StrategyTestIsland
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Cleanup > should properly cleanup hydrated components
+🏝️ Registered island: CleanupTestIsland
+🌊 Hydrating local island "CleanupTestIsland" into element "cleanup-test" { peerId: [32m'test-peer'[39m }
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Cleanup > should properly cleanup hydrated components
+✅ Successfully hydrated local island "CleanupTestIsland"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Cleanup > should properly cleanup hydrated components
+🧽 Cleaned up Hydra component in element "cleanup-test"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Error Handling > should handle island mount errors gracefully
+🏝️ Registered island: ErrorIsland
+🌊 Hydrating local island "ErrorIsland" into element "error-test" { peerId: [32m'test-peer'[39m }
+
+ ❯ tests/lib/hydra-runtime.test.ts (12 tests | 1 failed) 161ms
+   ✓ Enhanced Hydra Runtime > Island Registration > should register and retrieve islands 4ms
+   ✓ Enhanced Hydra Runtime > Island Registration > should unregister islands 1ms
+   ✓ Enhanced Hydra Runtime > Local Hydration > should hydrate a registered local island 6ms
+   ✓ Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification 112ms
+   ✓ Enhanced Hydra Runtime > Local Hydration > should handle missing islands gracefully 6ms
+   ✓ Enhanced Hydra Runtime > Remote Hydration > should handle manifest resolution and verification 4ms
+   ✓ Enhanced Hydra Runtime > Remote Hydration > should enforce ZK requirements for remote components 3ms
+   ✓ Enhanced Hydra Runtime > Island Discovery and Auto-Hydration > should discover islands in the DOM 8ms
+   × Enhanced Hydra Runtime > Island Discovery and Auto-Hydration > should handle different hydration strategies 5ms
+     → expected "spy" to be called with arguments: [ <div …(4)></div>, Any<Object>, …(1) ][90m
+
+Number of calls: [1m0[22m
+[39m
+   ✓ Enhanced Hydra Runtime > Cleanup > should properly cleanup hydrated components 3ms
+   ✓ Enhanced Hydra Runtime > Error Handling > should handle island mount errors gracefully 6ms
+   ✓ Enhanced Hydra Runtime > Error Handling > should handle missing DOM elements 1ms
+ ✓ src/core/__tests__/ECSManager.test.ts (14 tests) 8ms
+ ❯ src/core/__tests__/enhanced-signals.test.ts (25 tests | 1 failed) 159ms
+   ✓ Enhanced Signals System > Basic Signal Functionality > creates and updates signals 2ms
+   ✓ Enhanced Signals System > Basic Signal Functionality > tracks signal metadata 0ms
+   ✓ Enhanced Signals System > Basic Signal Functionality > prevents access to disposed signals 0ms
+   ✓ Enhanced Signals System > Basic Signal Functionality > uses custom equality function 0ms
+   ✓ Enhanced Signals System > Computed Signals > automatically updates computed values 0ms
+   ✓ Enhanced Signals System > Computed Signals > throws error when trying to set computed value 1ms
+   ✓ Enhanced Signals System > Computed Signals > disposes computed signals properly 0ms
+   ✓ Enhanced Signals System > Effects > runs effects when dependencies change 0ms
+   ✓ Enhanced Signals System > Effects > handles effect cleanup 0ms
+   × Enhanced Signals System > Effects > prevents infinite loops in effects 6ms
+     → expected 1 to be 5 // Object.is equality
+   ✓ Enhanced Signals System > Async Signals > handles async loading 21ms
+   ✓ Enhanced Signals System > Async Signals > handles async errors with retry 50ms
+   ✓ Enhanced Signals System > Async Signals > handles timeout 60ms
+   ✓ Enhanced Signals System > Batching and Scheduling > batches multiple updates 1ms
+   ✓ Enhanced Signals System > Batching and Scheduling > supports nested batching 0ms
+   ✓ Enhanced Signals System > Utility Functions > untrack prevents dependency tracking 1ms
+   ✓ Enhanced Signals System > Utility Functions > resolve unwraps signals 0ms
+   ✓ Enhanced Signals System > Utility Functions > isSignal identifies signals 0ms
+   ✓ Enhanced Signals System > Utility Functions > derived creates derived signals 0ms
+   ✓ Enhanced Signals System > Utility Functions > combine merges multiple signals 1ms
+   ✓ Enhanced Signals System > Utility Functions > fromPromise creates async signal from promise 11ms
+   ✓ Enhanced Signals System > Signal Utility Methods > map transforms signal values 0ms
+   ✓ Enhanced Signals System > Signal Utility Methods > filter conditionally passes values 0ms
+   ✓ Enhanced Signals System > Error Handling > handles errors in effects gracefully 1ms
+   ✓ Enhanced Signals System > Error Handling > handles errors in signal updates 0ms
+ ❯ tests/modules/Rendering/jsx-runtime.test.tsx (18 tests | 13 failed) 46ms
+   × ZenithKernel JSX Runtime > jsx function > should create basic HTML elements 10ms
+     → expected '' to be 'test' // Object.is equality
+   × ZenithKernel JSX Runtime > jsx function > should handle text content as children 2ms
+     → expected '' to be 'Hello, World!' // Object.is equality
+   × ZenithKernel JSX Runtime > jsx function > should handle multiple children 8ms
+     → expected  to have a length of 2 but got +0
+   ✓ ZenithKernel JSX Runtime > jsx function > should handle event listeners 4ms
+   × ZenithKernel JSX Runtime > jsx function > should handle style objects 3ms
+     → expected '' to be 'red' // Object.is equality
+   ✓ ZenithKernel JSX Runtime > jsx function > should handle boolean attributes 2ms
+   × ZenithKernel JSX Runtime > jsx function > should handle ref callbacks 2ms
+     → expected "spy" to be called with arguments: [ <div …(1)></div> ][90m
+
+Number of calls: [1m0[22m
+[39m
+   × ZenithKernel JSX Runtime > jsx function > should handle functional components 2ms
+     → expected '' to be 'test-component' // Object.is equality
+   × ZenithKernel JSX Runtime > jsx function > should ignore null and undefined children 1ms
+     → expected '' to be 'HelloWorld' // Object.is equality
+   × ZenithKernel JSX Runtime > jsx function > should handle nested elements 1ms
+     → expected '' to be 'container' // Object.is equality
+   ✓ ZenithKernel JSX Runtime > jsxs function > should work as alias for jsx 1ms
+   ✓ ZenithKernel JSX Runtime > Fragment > should create document fragment 0ms
+   ✓ ZenithKernel JSX Runtime > Fragment > should handle children in fragment 1ms
+   × ZenithKernel JSX Runtime > Fragment > should work with jsx function 1ms
+     → expected  to have a length of 2 but got +0
+   × ZenithKernel JSX Runtime > createElement > should work like jsx with spread children 0ms
+     → (0 , createElement) is not a function
+   × ZenithKernel JSX Runtime > h function (legacy) > should work like createElement 0ms
+     → (0 , h) is not a function
+   × ZenithKernel JSX Runtime > Complex scenarios > should handle complex nested structure with events 5ms
+     → expected null to be truthy
+   × ZenithKernel JSX Runtime > Complex scenarios > should handle island-like component structure 1ms
+     → expected '' to be 'island-component' // Object.is equality
+ ❯ src/core/__tests__/SignalManager.test.ts (19 tests | 1 failed) 38ms
+   ✓ SignalManager > Signal Creation & Management > creates and manages signals 2ms
+   ✓ SignalManager > Signal Creation & Management > prevents duplicate signal IDs 1ms
+   ✓ SignalManager > Signal Creation & Management > creates computed signals 1ms
+   ✓ SignalManager > Signal Creation & Management > creates async signals 22ms
+   ✓ SignalManager > Signal Creation & Management > removes signals properly 0ms
+   ✓ SignalManager > DOM Binding > binds signal to text content 1ms
+   ✓ SignalManager > DOM Binding > binds signal to attributes 1ms
+   ✓ SignalManager > DOM Binding > binds signal to class list 1ms
+   ✓ SignalManager > DOM Binding > removes DOM bindings 0ms
+   ✓ SignalManager > Hydra Context Management > creates and manages Hydra contexts 0ms
+   ✓ SignalManager > Hydra Context Management > adds signals to Hydra context 0ms
+   ✓ SignalManager > Hydra Context Management > cleans up Hydra contexts 0ms
+   ✓ SignalManager > ECS Integration > creates entity-bound signals 1ms
+   ✓ SignalManager > ECS Integration > cleans up signals when entity is destroyed 1ms
+   ✓ SignalManager > Performance & Statistics > tracks performance statistics 0ms
+   ✓ SignalManager > Performance & Statistics > provides debug information 0ms
+   ✓ SignalManager > Global Instance Management > provides global singleton access 0ms
+   ✓ SignalManager > Global Instance Management > resets global instance 1ms
+   × SignalManager > Cleanup & Disposal > disposes all resources 5ms
+     → expected undefined to be 1 // Object.is equality
+ ❯ tests/components/HydraMetaTags.test.tsx (6 tests | 6 failed) 40ms
+   × Hydra Meta Tags > should create meta tags with proper attributes 20ms
+     → expected null to be truthy
+   × Hydra Meta Tags > should create safe script tags with security attributes 7ms
+     → expected null to be truthy
+   × Hydra Meta Tags > should handle inline scripts 2ms
+     → expected null to be truthy
+   × Hydra Meta Tags > should create CSS tags with proper attributes 3ms
+     → expected null to be 'sha384-xyz789' // Object.is equality
+   × Hydra Meta Tags > should handle inline styles 4ms
+     → expected '' to contain '.test-class'
+   × Hydra Meta Tags > should combine all tags in a Hydra island 3ms
+     → expected null to be truthy
+ ✓ tests/hooks/useHydraRegistry.test.tsx (7 tests) 39ms
+ ❯ tests/modules/Rendering/hydration-controller.test.ts (8 tests | 8 failed) 9ms
+   × HydrationController > Immediate Hydration > should hydrate immediately when strategy is immediate 4ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Visible Hydration > should hydrate when element becomes visible 1ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Interaction Hydration > should hydrate on user interaction 1ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Idle Hydration > should hydrate during idle time 0ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Manual Hydration > should only hydrate when manually triggered 0ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Priority Handling > should process items in priority order 0ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Error Handling > should handle hydration errors gracefully 0ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Cleanup > should clean up resources when destroyed 0ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+stdout | tests/integration/HydraIntegration.test.tsx > Hydra Integration Tests > should render and hydrate a complete Hydra component
+🌊 Hydrating local island "TestHydraComponent.tsx" into element "hydra-integration-test" {
+  peerId: [32m'peer123'[39m,
+  message: [32m'Hello from integrated test!'[39m,
+  zkProof: [32m'proof_abc123'[39m
+}
+
+stdout | tests/integration/HydraIntegration.test.tsx
+🌊 Hydrating local island "NonExistentComponent.tsx" into element "hydra-error-test" { peerId: [32m'peer123'[39m }
+
+ ❯ tests/integration/HydraIntegration.test.tsx (4 tests | 4 failed) 229ms
+   × Hydra Integration Tests > should render and hydrate a complete Hydra component 109ms
+     → expected null to be truthy
+   × Hydra Integration Tests > should integrate HydraLoader with HydraTrustBar 3ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × Hydra Integration Tests > should handle multiple Hydra components simultaneously 114ms
+     → expected  to have a length of 2 but got +0
+   × Hydra Integration Tests > should handle hydration errors gracefully 2ms
+     → expected '' to contain 'Loading Hydra...'
+ ❯ tests/components/HydraLoader.test.tsx (7 tests | 1 failed) 108ms
+   ✓ HydraLoader Component > should render placeholder div with correct ID 6ms
+   ✓ HydraLoader Component > should call hydrateLocalHydra for local execution 13ms
+   ✓ HydraLoader Component > should call hydrateRemoteHydra for remote execution 11ms
+   × HydraLoader Component > should show loading state initially 5ms
+     → expected '' to contain 'Loading Hydra'
+   ✓ HydraLoader Component > should show error state on hydration failure 31ms
+   ✓ HydraLoader Component > should handle edge execution type 12ms
+   ✓ HydraLoader Component > should re-hydrate when props change 29ms
+ ✓ tests/protocol/qzkpClient.test.ts (8 tests) 7ms
+ ✓ tests/hooks/useHydraEvents.test.tsx (6 tests) 23ms
+ ❯ tests/components/HydraTrustBar.test.tsx (8 tests | 8 failed) 12ms
+   × HydraTrustBar Component > should render trust bar with basic hydra info 6ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should show verified status when zkProof is provided 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should show unverified status when no zkProof is provided 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should show local trust level for local execution 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should display component entry information 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should handle click events and call onDetailsClick 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should show different styles for different execution types 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should display trust score when provided 0ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+ ❯ tests/components/HydraTemplate.test.tsx (4 tests | 4 failed) 19ms
+   × Hydra Template Syntax > should create a Hydra island with template syntax 12ms
+     → expected null to be truthy
+   × Hydra Template Syntax > should handle nested Hydra islands 3ms
+     → expected null to be truthy
+   × Hydra Template Syntax > should throw error for invalid Hydra type 2ms
+     → expected [Function] to throw an error
+   × Hydra Template Syntax > should handle remote execution with context 1ms
+     → expected null to be truthy
+ ❯ old/archipelagoui/tests/crypto/openssl-pq.test.ts (7 tests | 7 failed) 11ms
+   × OpenSSL PQ Native Module > Native module file exists 3ms
+     → (0 , existsSync) is not a function
+   × OpenSSL PQ Native Module > Native module can be loaded 4ms
+     → expected [Function] to not throw an error but 'Error: dlopen(/Users/nick/IdeaProject…' was thrown
+   × OpenSSL PQ Native Module > Native module exports expected functions 1ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+   × OpenSSL PQ Native Module > Can create a DTLS context 0ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+   × OpenSSL PQ Native Module > Can get OpenSSL version 0ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+   × OpenSSL PQ Native Module > Can generate Kyber key pair 0ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+   × OpenSSL PQ Native Module > Can perform Kyber encapsulation and decapsulation 1ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+ ✓ tests/hooks/useECSState.test.tsx (5 tests) 19ms
+ ✓ tests/modules/Rendering/IslandIntegration.test.tsx (1 test) 12ms
+stdout | tests/modules/Rendering/islands/ExampleIsland.test.ts > ExampleIsland > should mount with default props
+🌊 Hydrating ExampleIsland at 557.871382ms
+
+stdout | tests/modules/Rendering/islands/ExampleIsland.test.ts > ExampleIsland > should mount with custom props
+🌊 Hydrating ExampleIsland at 581.290578ms
+
+stdout | tests/modules/Rendering/islands/ExampleIsland.test.ts > ExampleIsland > should handle button clicks
+🌊 Hydrating ExampleIsland at 584.801784ms
+
+stdout | tests/modules/Rendering/islands/ExampleIsland.test.ts > ExampleIsland > should include peer ID from context
+🌊 Hydrating ExampleIsland at 588.784221ms
+
+stdout | tests/modules/Rendering/islands/ExampleIsland.test.ts > ExampleIsland > should return cleanup function
+🌊 Hydrating ExampleIsland at 591.632343ms
+
+ ✓ tests/modules/Rendering/islands/ExampleIsland.test.ts (6 tests) 41ms
+ ✓ src/cli/commands/tests/publish-manifest-qdht.test.ts (1 test) 4ms
+ ✓ src/ssr/__tests__/jsx-ssr-runtime.test.tsx (5 tests) 2ms
+ ❯ tests/modules/Rendering/island-loader.test.tsx (24 tests | 4 failed) 10039ms
+   ✓ ZenithKernel Island Loader > Island Registration > should register islands 7ms
+   ✓ ZenithKernel Island Loader > Island Registration > should unregister islands 2ms
+   ✓ ZenithKernel Island Loader > Island Registration > should return undefined for non-existent islands 2ms
+   ✓ ZenithKernel Island Loader > Island Discovery > should discover islands in DOM 15ms
+   ✓ ZenithKernel Island Loader > Island Discovery > should parse island configuration correctly 9ms
+   ✓ ZenithKernel Island Loader > Island Discovery > should handle malformed JSON in props gracefully 13ms
+   ✓ ZenithKernel Island Loader > Island Hydration > should hydrate registered islands 8ms
+   × ZenithKernel Island Loader > Island Hydration > should handle hydration errors gracefully 7ms
+     → Mount failed
+   ✓ ZenithKernel Island Loader > Island Hydration > should not hydrate already hydrated islands 2ms
+   × ZenithKernel Island Loader > Island Hydration > should handle non-existent islands 8ms
+     → Island "NonExistentIsland" not found
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should handle immediate strategy 5ms
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should setup intersection observer for visible strategy 1ms
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should setup interaction listeners for interaction strategy 14ms
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should handle idle strategy 1ms
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should do nothing for manual strategy 3ms
+   ✓ ZenithKernel Island Loader > Event System > should emit discovery events 3ms
+   ✓ ZenithKernel Island Loader > Event System > should emit hydration events 2ms
+   × ZenithKernel Island Loader > Event System > should emit error events 2ms
+     → Island "NonExistentIsland" not found
+   ✓ ZenithKernel Island Loader > Cleanup > should cleanup all resources 2ms
+   ✓ Global Functions > initializeIslands > should initialize on DOM ready 1ms
+   ✓ Global Functions > initializeIslands > should initialize immediately if DOM is ready 2ms
+   × Global Functions > hydrateIsland helper > should hydrate island by selector 9919ms
+     → Failed to load CSS for island TestIsland: /styles/TestIsland.module.css
+   ✓ Global Functions > hydrateIsland helper > should throw for non-existent elements 2ms
+   ✓ Global Functions > hydrateIsland helper > should throw for invalid islands 2ms
+
+ Test Files  27 failed | 10 passed (37)
+      Tests  94 failed | 180 passed (274)
+     Errors  4 errors
+   Start at  22:56:41
+   Duration  11.21s (transform 746ms, setup 2.63s, collect 1.39s, tests 11.43s, environment 12.52s, prepare 2.32s)
+
+ FAIL  Tests failed. Watching for file changes...
+       press h to show help, press q to quit
+c[3J RERUN  rerun all tests 
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Island Registration > should register and retrieve islands
+🏝️ Registered island: TestIsland
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Island Registration > should unregister islands
+🏝️ Registered island: TestIsland
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should hydrate a registered local island
+🏝️ Registered island: TestIsland
+🌊 Hydrating local island "TestIsland" into element "test-element" { peerId: [32m'test-peer'[39m, message: [32m'Hello Test'[39m }
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should hydrate a registered local island
+✅ Successfully hydrated local island "TestIsland"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification
+🏝️ Registered island: SecureIsland
+🌊 Hydrating local island "SecureIsland" into element "test-zk-element" { peerId: [32m'test-peer'[39m, zkProof: [32m'zk:valid-proof-data'[39m }
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should mount successfully with default props
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m0[39m,
+  step: [33m1[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/integration/HydraIntegration.test.tsx > Hydra Integration Tests > should render and hydrate a complete Hydra component
+🌊 Hydrating local island "TestHydraComponent.tsx" into element "hydra-integration-test" {
+  peerId: [32m'peer123'[39m,
+  message: [32m'Hello from integrated test!'[39m,
+  zkProof: [32m'proof_abc123'[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should display custom label and initial value
+ECS Counter Island mounted: {
+  label: [32m'Custom Counter'[39m,
+  initialValue: [33m10[39m,
+  step: [33m1[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should handle increment button clicks
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m5[39m,
+  step: [33m2[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should handle decrement button clicks
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m10[39m,
+  step: [33m3[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should handle reset button clicks
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m15[39m,
+  step: [33m1[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should simulate ECS connection status
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m0[39m,
+  step: [33m1[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should display entity ID information
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m0[39m,
+  step: [33m1[39m,
+  entityId: [32m'custom-entity-123'[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should call unmount without errors
+ECS Counter Island unmounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should mount successfully with default props
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should display custom title
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should handle connection info visibility
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should handle reconnect button
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should handle clear logs button
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should simulate connection and events
+Hydra Status Island mounted with events: test-event
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should mount successfully with default props
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should display custom title
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle details visibility
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle actions visibility
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should display mock instances
+Hydra Registry Island mounted
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification
+✅ ZK proof verified for island "SecureIsland"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification
+✅ Successfully hydrated local island "SecureIsland"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification
+🌊 Hydrating local island "SecureIsland" into element "test-zk-element" { peerId: [32m'test-peer'[39m, zkProof: [32m'invalid-proof'[39m }
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle missing islands gracefully
+🌊 Hydrating local island "NonExistentIsland" into element "missing-element" { peerId: [32m'test-peer'[39m }
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Remote Hydration > should handle manifest resolution and verification
+🌐 Hydrating remote component "RemoteComponent" into element "remote-element" {
+  peerId: [32m'test-peer'[39m,
+  manifestUrl: [32m'https://example.com/manifest.json'[39m
+}
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Remote Hydration > should enforce ZK requirements for remote components
+🌐 Hydrating remote component "SecureComponent" into element "secure-remote-element" {
+  peerId: [32m'test-peer'[39m,
+  manifestUrl: [32m'https://example.com/secure-manifest.json'[39m
+}
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Island Discovery and Auto-Hydration > should handle different hydration strategies
+🏝️ Registered island: StrategyTestIsland
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Cleanup > should properly cleanup hydrated components
+🏝️ Registered island: CleanupTestIsland
+🌊 Hydrating local island "CleanupTestIsland" into element "cleanup-test" { peerId: [32m'test-peer'[39m }
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Cleanup > should properly cleanup hydrated components
+✅ Successfully hydrated local island "CleanupTestIsland"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Cleanup > should properly cleanup hydrated components
+🧽 Cleaned up Hydra component in element "cleanup-test"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Error Handling > should handle island mount errors gracefully
+🏝️ Registered island: ErrorIsland
+🌊 Hydrating local island "ErrorIsland" into element "error-test" { peerId: [32m'test-peer'[39m }
+
+ ❯ tests/lib/hydra-runtime.test.ts (12 tests | 1 failed) 152ms
+   ✓ Enhanced Hydra Runtime > Island Registration > should register and retrieve islands 4ms
+   ✓ Enhanced Hydra Runtime > Island Registration > should unregister islands 1ms
+   ✓ Enhanced Hydra Runtime > Local Hydration > should hydrate a registered local island 6ms
+   ✓ Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification 113ms
+   ✓ Enhanced Hydra Runtime > Local Hydration > should handle missing islands gracefully 5ms
+   ✓ Enhanced Hydra Runtime > Remote Hydration > should handle manifest resolution and verification 4ms
+   ✓ Enhanced Hydra Runtime > Remote Hydration > should enforce ZK requirements for remote components 3ms
+   ✓ Enhanced Hydra Runtime > Island Discovery and Auto-Hydration > should discover islands in the DOM 6ms
+   × Enhanced Hydra Runtime > Island Discovery and Auto-Hydration > should handle different hydration strategies 4ms
+     → expected "spy" to be called with arguments: [ <div …(4)></div>, Any<Object>, …(1) ][90m
+
+Number of calls: [1m0[22m
+[39m
+   ✓ Enhanced Hydra Runtime > Cleanup > should properly cleanup hydrated components 2ms
+   ✓ Enhanced Hydra Runtime > Error Handling > should handle island mount errors gracefully 2ms
+   ✓ Enhanced Hydra Runtime > Error Handling > should handle missing DOM elements 1ms
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle instance selection
+Hydra Registry Island mounted
+
+stdout | tests/integration/HydraIntegration.test.tsx
+🌊 Hydrating local island "NonExistentComponent.tsx" into element "hydra-error-test" { peerId: [32m'peer123'[39m }
+
+ ❯ tests/integration/HydraIntegration.test.tsx (4 tests | 4 failed) 222ms
+   × Hydra Integration Tests > should render and hydrate a complete Hydra component 108ms
+     → expected null to be truthy
+   × Hydra Integration Tests > should integrate HydraLoader with HydraTrustBar 2ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × Hydra Integration Tests > should handle multiple Hydra components simultaneously 109ms
+     → expected  to have a length of 2 but got +0
+   × Hydra Integration Tests > should handle hydration errors gracefully 1ms
+     → expected '' to contain 'Loading Hydra...'
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle refresh button
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle create instance button
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle cleanup button
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should call unmount without errors
+Hydra Registry Island unmounted
+
+ ❯ tests/modules/Rendering/islands.test.tsx (28 tests | 20 failed) 275ms
+   × ZenithKernel Example Islands > ECSCounterIsland > should mount successfully with default props 16ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > ECSCounterIsland > should display custom label and initial value 4ms
+     → expected undefined to be 'Custom Counter' // Object.is equality
+   × ZenithKernel Example Islands > ECSCounterIsland > should handle increment button clicks 2ms
+     → expected undefined to be '5' // Object.is equality
+   × ZenithKernel Example Islands > ECSCounterIsland > should handle decrement button clicks 2ms
+     → expected undefined to be '10' // Object.is equality
+   × ZenithKernel Example Islands > ECSCounterIsland > should handle reset button clicks 2ms
+     → Cannot read properties of null (reading 'click')
+   × ZenithKernel Example Islands > ECSCounterIsland > should simulate ECS connection status 1ms
+     → expected undefined to be 'Connecting...' // Object.is equality
+   × ZenithKernel Example Islands > ECSCounterIsland > should display entity ID information 2ms
+     → the given combination of arguments (undefined and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string
+   × ZenithKernel Example Islands > ECSCounterIsland > should generate correct view structure 1ms
+     → expected '' to contain 'ecs-counter-island'
+   ✓ ZenithKernel Example Islands > ECSCounterIsland > should call unmount without errors 1ms
+   × ZenithKernel Example Islands > HydraStatusIsland > should mount successfully with default props 2ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraStatusIsland > should display custom title 2ms
+     → expected undefined to be 'Custom Status Monitor' // Object.is equality
+   ✓ ZenithKernel Example Islands > HydraStatusIsland > should handle connection info visibility 1ms
+   × ZenithKernel Example Islands > HydraStatusIsland > should handle reconnect button 2ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraStatusIsland > should handle clear logs button 2ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraStatusIsland > should simulate connection and events 1ms
+     → expected undefined to be 'Connecting' // Object.is equality
+   × ZenithKernel Example Islands > HydraStatusIsland > should generate correct view structure 1ms
+     → expected '' to contain 'hydra-status-island'
+   × ZenithKernel Example Islands > HydraRegistryIsland > should mount successfully with default props 2ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraRegistryIsland > should display custom title 2ms
+     → expected undefined to be 'Custom Registry View' // Object.is equality
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should handle details visibility 1ms
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should handle actions visibility 4ms
+   × ZenithKernel Example Islands > HydraRegistryIsland > should display mock instances 103ms
+     → expected 0 to be greater than 0
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should handle instance selection 106ms
+   × ZenithKernel Example Islands > HydraRegistryIsland > should handle refresh button 3ms
+     → expected null to be truthy
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should handle create instance button 2ms
+   × ZenithKernel Example Islands > HydraRegistryIsland > should handle cleanup button 5ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraRegistryIsland > should generate correct view structure 2ms
+     → expected '' to contain 'hydra-registry-island'
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should call unmount without errors 1ms
+   ✓ ZenithKernel Example Islands > Island Metadata > should export correct metadata for all islands 1ms
+ ❯ src/core/__tests__/enhanced-signals.test.ts (25 tests | 1 failed) 166ms
+   ✓ Enhanced Signals System > Basic Signal Functionality > creates and updates signals 2ms
+   ✓ Enhanced Signals System > Basic Signal Functionality > tracks signal metadata 1ms
+   ✓ Enhanced Signals System > Basic Signal Functionality > prevents access to disposed signals 1ms
+   ✓ Enhanced Signals System > Basic Signal Functionality > uses custom equality function 0ms
+   ✓ Enhanced Signals System > Computed Signals > automatically updates computed values 0ms
+   ✓ Enhanced Signals System > Computed Signals > throws error when trying to set computed value 1ms
+   ✓ Enhanced Signals System > Computed Signals > disposes computed signals properly 0ms
+   ✓ Enhanced Signals System > Effects > runs effects when dependencies change 0ms
+   ✓ Enhanced Signals System > Effects > handles effect cleanup 0ms
+   × Enhanced Signals System > Effects > prevents infinite loops in effects 7ms
+     → expected 1 to be 5 // Object.is equality
+   ✓ Enhanced Signals System > Async Signals > handles async loading 23ms
+   ✓ Enhanced Signals System > Async Signals > handles async errors with retry 51ms
+   ✓ Enhanced Signals System > Async Signals > handles timeout 62ms
+   ✓ Enhanced Signals System > Batching and Scheduling > batches multiple updates 0ms
+   ✓ Enhanced Signals System > Batching and Scheduling > supports nested batching 0ms
+   ✓ Enhanced Signals System > Utility Functions > untrack prevents dependency tracking 0ms
+   ✓ Enhanced Signals System > Utility Functions > resolve unwraps signals 0ms
+   ✓ Enhanced Signals System > Utility Functions > isSignal identifies signals 0ms
+   ✓ Enhanced Signals System > Utility Functions > derived creates derived signals 0ms
+   ✓ Enhanced Signals System > Utility Functions > combine merges multiple signals 1ms
+   ✓ Enhanced Signals System > Utility Functions > fromPromise creates async signal from promise 11ms
+   ✓ Enhanced Signals System > Signal Utility Methods > map transforms signal values 0ms
+   ✓ Enhanced Signals System > Signal Utility Methods > filter conditionally passes values 0ms
+   ✓ Enhanced Signals System > Error Handling > handles errors in effects gracefully 1ms
+   ✓ Enhanced Signals System > Error Handling > handles errors in signal updates 0ms
+ ❯ tests/components/HydraLoader.test.tsx (7 tests | 1 failed) 122ms
+   ✓ HydraLoader Component > should render placeholder div with correct ID 8ms
+   ✓ HydraLoader Component > should call hydrateLocalHydra for local execution 12ms
+   ✓ HydraLoader Component > should call hydrateRemoteHydra for remote execution 13ms
+   × HydraLoader Component > should show loading state initially 6ms
+     → expected '' to contain 'Loading Hydra'
+   ✓ HydraLoader Component > should show error state on hydration failure 45ms
+   ✓ HydraLoader Component > should handle edge execution type 12ms
+   ✓ HydraLoader Component > should re-hydrate when props change 24ms
+ ❯ src/core/router/__tests__/router.test.ts (34 tests | 16 failed) 86ms
+   ✓ ZenithRouter Core > Route Registration > should register routes correctly 6ms
+   ✓ ZenithRouter Core > Route Registration > should create route builders for registered routes 1ms
+   ✓ ZenithRouter Core > Navigation > should navigate to a simple route 2ms
+   ✓ ZenithRouter Core > Navigation > should navigate to a parameterized route 5ms
+   ✓ ZenithRouter Core > Navigation > should handle navigation with query parameters 3ms
+   × ZenithRouter Core > Navigation > should throw error for unregistered route 23ms
+     → promise resolved "undefined" instead of rejecting
+   ✓ ZenithRouter Core > Type-Safe Route Builder > should build paths with parameters correctly 1ms
+   ✓ ZenithRouter Core > Type-Safe Route Builder > should extract parameters from paths 1ms
+   ✓ ZenithRouter Core > Type-Safe Route Builder > should return null for non-matching paths 1ms
+   × ZenithRouter Core > Type-Safe Route Builder > should handle URL encoding/decoding 3ms
+     → expected '/search/hello world' to be '/search/hello%20world' // Object.is equality
+   ✓ ZenithRouter Core > Route Guards > should create ZK guard that passes with valid proof 2ms
+   ✓ ZenithRouter Core > Route Guards > should create ZK guard that fails without proof 1ms
+   ✓ ZenithRouter Core > Route Guards > should create role-based guard 1ms
+   ✓ ZenithRouter Core > Route Guards > should create time-based guard 1ms
+   ✓ ZenithRouter Core > Route Guards > should create rate limit guard 1ms
+   ✓ ZenithRouter Core > Route Guards > should create composite guard with AND logic 1ms
+   ✓ ZenithRouter Core > Route Guards > should create composite guard with OR logic 2ms
+   ✓ ZenithRouter Core > Data Loading and Caching > should load route data 3ms
+   × ZenithRouter Core > Data Loading and Caching > should cache loaded data 1ms
+     → router.createLoader is not a function
+   ✓ ZenithRouter Core > Data Loading and Caching > should prefetch routes 2ms
+   × ZenithRouter Integration > Hydra Routes > should register Hydra routes with ZK requirements 3ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > Hydra Routes > should create secure navigator with ZK verification 2ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > ECS Integration > should register ECS routes with component data 3ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > WASM Routes > should register WASM routes with security guards 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > Quantum Consensus Routes > should register quantum consensus routes 2ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > Secure Navigation > should navigate securely with ZK proof 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > Secure Navigation > should fail navigation with invalid ZK proof 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > State Management > should track Hydra route status 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > State Management > should get ZK verification status 1ms
+     → this.kernel.getECS is not a function
+   × Factory Functions > should create ZenithRouter with kernel integration 1ms
+     → this.kernel.getECS is not a function
+   × Performance and Edge Cases > should handle rapid navigation calls 2ms
+     → expected '0' to be '9' // Object.is equality
+   ✓ Performance and Edge Cases > should handle navigation with special characters 2ms
+   × Performance and Edge Cases > should cleanup expired cache entries 1ms
+     → router.createLoader is not a function
+   × Performance and Edge Cases > should handle malformed URLs gracefully 1ms
+     → promise resolved "undefined" instead of rejecting
+ ❯ tests/modules/Rendering/jsx-runtime.test.tsx (18 tests | 13 failed) 35ms
+   × ZenithKernel JSX Runtime > jsx function > should create basic HTML elements 9ms
+     → expected '' to be 'test' // Object.is equality
+   × ZenithKernel JSX Runtime > jsx function > should handle text content as children 1ms
+     → expected '' to be 'Hello, World!' // Object.is equality
+   × ZenithKernel JSX Runtime > jsx function > should handle multiple children 4ms
+     → expected  to have a length of 2 but got +0
+   ✓ ZenithKernel JSX Runtime > jsx function > should handle event listeners 2ms
+   × ZenithKernel JSX Runtime > jsx function > should handle style objects 2ms
+     → expected '' to be 'red' // Object.is equality
+   ✓ ZenithKernel JSX Runtime > jsx function > should handle boolean attributes 1ms
+   × ZenithKernel JSX Runtime > jsx function > should handle ref callbacks 1ms
+     → expected "spy" to be called with arguments: [ <div …(1)></div> ][90m
+
+Number of calls: [1m0[22m
+[39m
+   × ZenithKernel JSX Runtime > jsx function > should handle functional components 1ms
+     → expected '' to be 'test-component' // Object.is equality
+   × ZenithKernel JSX Runtime > jsx function > should ignore null and undefined children 1ms
+     → expected '' to be 'HelloWorld' // Object.is equality
+   × ZenithKernel JSX Runtime > jsx function > should handle nested elements 1ms
+     → expected '' to be 'container' // Object.is equality
+   ✓ ZenithKernel JSX Runtime > jsxs function > should work as alias for jsx 1ms
+   ✓ ZenithKernel JSX Runtime > Fragment > should create document fragment 0ms
+   ✓ ZenithKernel JSX Runtime > Fragment > should handle children in fragment 1ms
+   × ZenithKernel JSX Runtime > Fragment > should work with jsx function 1ms
+     → expected  to have a length of 2 but got +0
+   × ZenithKernel JSX Runtime > createElement > should work like jsx with spread children 1ms
+     → (0 , createElement) is not a function
+   × ZenithKernel JSX Runtime > h function (legacy) > should work like createElement 0ms
+     → (0 , h) is not a function
+   × ZenithKernel JSX Runtime > Complex scenarios > should handle complex nested structure with events 5ms
+     → expected null to be truthy
+   × ZenithKernel JSX Runtime > Complex scenarios > should handle island-like component structure 1ms
+     → expected '' to be 'island-component' // Object.is equality
+ ❯ tests/components/HydraMetaTags.test.tsx (6 tests | 6 failed) 33ms
+   × Hydra Meta Tags > should create meta tags with proper attributes 19ms
+     → expected null to be truthy
+   × Hydra Meta Tags > should create safe script tags with security attributes 4ms
+     → expected null to be truthy
+   × Hydra Meta Tags > should handle inline scripts 1ms
+     → expected null to be truthy
+   × Hydra Meta Tags > should create CSS tags with proper attributes 3ms
+     → expected null to be 'sha384-xyz789' // Object.is equality
+   × Hydra Meta Tags > should handle inline styles 3ms
+     → expected '' to contain '.test-class'
+   × Hydra Meta Tags > should combine all tags in a Hydra island 2ms
+     → expected null to be truthy
+ ❯ src/core/__tests__/SignalManager.test.ts (19 tests | 1 failed) 48ms
+   ✓ SignalManager > Signal Creation & Management > creates and manages signals 2ms
+   ✓ SignalManager > Signal Creation & Management > prevents duplicate signal IDs 1ms
+   ✓ SignalManager > Signal Creation & Management > creates computed signals 1ms
+   ✓ SignalManager > Signal Creation & Management > creates async signals 21ms
+   ✓ SignalManager > Signal Creation & Management > removes signals properly 0ms
+   ✓ SignalManager > DOM Binding > binds signal to text content 1ms
+   ✓ SignalManager > DOM Binding > binds signal to attributes 1ms
+   ✓ SignalManager > DOM Binding > binds signal to class list 1ms
+   ✓ SignalManager > DOM Binding > removes DOM bindings 1ms
+   ✓ SignalManager > Hydra Context Management > creates and manages Hydra contexts 0ms
+   ✓ SignalManager > Hydra Context Management > adds signals to Hydra context 0ms
+   ✓ SignalManager > Hydra Context Management > cleans up Hydra contexts 0ms
+   ✓ SignalManager > ECS Integration > creates entity-bound signals 1ms
+   ✓ SignalManager > ECS Integration > cleans up signals when entity is destroyed 1ms
+   ✓ SignalManager > Performance & Statistics > tracks performance statistics 0ms
+   ✓ SignalManager > Performance & Statistics > provides debug information 1ms
+   ✓ SignalManager > Global Instance Management > provides global singleton access 0ms
+   ✓ SignalManager > Global Instance Management > resets global instance 3ms
+   × SignalManager > Cleanup & Disposal > disposes all resources 12ms
+     → expected undefined to be 1 // Object.is equality
+ ❯ tests/components/HydraTemplate.test.tsx (4 tests | 4 failed) 18ms
+   × Hydra Template Syntax > should create a Hydra island with template syntax 11ms
+     → expected null to be truthy
+   × Hydra Template Syntax > should handle nested Hydra islands 3ms
+     → expected null to be truthy
+   × Hydra Template Syntax > should throw error for invalid Hydra type 2ms
+     → expected [Function] to throw an error
+   × Hydra Template Syntax > should handle remote execution with context 1ms
+     → expected null to be truthy
+ ❯ tests/components/HydraTrustBar.test.tsx (8 tests | 8 failed) 13ms
+   × HydraTrustBar Component > should render trust bar with basic hydra info 8ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should show verified status when zkProof is provided 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should show unverified status when no zkProof is provided 0ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should show local trust level for local execution 0ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should display component entry information 0ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should handle click events and call onDetailsClick 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should show different styles for different execution types 0ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should display trust score when provided 0ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+ ❯ old/archipelagoui/tests/crypto/openssl-pq.test.ts (7 tests | 7 failed) 10ms
+   × OpenSSL PQ Native Module > Native module file exists 3ms
+     → (0 , existsSync) is not a function
+   × OpenSSL PQ Native Module > Native module can be loaded 3ms
+     → expected [Function] to not throw an error but 'Error: dlopen(/Users/nick/IdeaProject…' was thrown
+   × OpenSSL PQ Native Module > Native module exports expected functions 1ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+   × OpenSSL PQ Native Module > Can create a DTLS context 1ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+   × OpenSSL PQ Native Module > Can get OpenSSL version 0ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+   × OpenSSL PQ Native Module > Can generate Kyber key pair 0ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+   × OpenSSL PQ Native Module > Can perform Kyber encapsulation and decapsulation 0ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+ ❯ tests/modules/Rendering/hydration-controller.test.ts (8 tests | 8 failed) 8ms
+   × HydrationController > Immediate Hydration > should hydrate immediately when strategy is immediate 4ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Visible Hydration > should hydrate when element becomes visible 1ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Interaction Hydration > should hydrate on user interaction 0ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Idle Hydration > should hydrate during idle time 0ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Manual Hydration > should only hydrate when manually triggered 0ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Priority Handling > should process items in priority order 0ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Error Handling > should handle hydration errors gracefully 0ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Cleanup > should clean up resources when destroyed 0ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+ ❯ tests/modules/Rendering/island-loader.test.tsx (24 tests | 4 failed) 10016ms
+   ✓ ZenithKernel Island Loader > Island Registration > should register islands 3ms
+   ✓ ZenithKernel Island Loader > Island Registration > should unregister islands 1ms
+   ✓ ZenithKernel Island Loader > Island Registration > should return undefined for non-existent islands 1ms
+   ✓ ZenithKernel Island Loader > Island Discovery > should discover islands in DOM 7ms
+   ✓ ZenithKernel Island Loader > Island Discovery > should parse island configuration correctly 4ms
+   ✓ ZenithKernel Island Loader > Island Discovery > should handle malformed JSON in props gracefully 8ms
+   ✓ ZenithKernel Island Loader > Island Hydration > should hydrate registered islands 2ms
+   × ZenithKernel Island Loader > Island Hydration > should handle hydration errors gracefully 3ms
+     → Mount failed
+   ✓ ZenithKernel Island Loader > Island Hydration > should not hydrate already hydrated islands 1ms
+   × ZenithKernel Island Loader > Island Hydration > should handle non-existent islands 3ms
+     → Island "NonExistentIsland" not found
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should handle immediate strategy 2ms
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should setup intersection observer for visible strategy 1ms
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should setup interaction listeners for interaction strategy 3ms
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should handle idle strategy 1ms
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should do nothing for manual strategy 2ms
+   ✓ ZenithKernel Island Loader > Event System > should emit discovery events 3ms
+   ✓ ZenithKernel Island Loader > Event System > should emit hydration events 1ms
+   × ZenithKernel Island Loader > Event System > should emit error events 2ms
+     → Island "NonExistentIsland" not found
+   ✓ ZenithKernel Island Loader > Cleanup > should cleanup all resources 1ms
+   ✓ Global Functions > initializeIslands > should initialize on DOM ready 1ms
+   ✓ Global Functions > initializeIslands > should initialize immediately if DOM is ready 2ms
+   × Global Functions > hydrateIsland helper > should hydrate island by selector 9963ms
+     → Failed to load CSS for island TestIsland: /styles/TestIsland.module.css
+   · Global Functions > hydrateIsland helper > should throw for non-existent elements
+   · Global Functions > hydrateIsland helper > should throw for invalid islands
+
+ Test Files  18 failed (37)
+      Tests  94 failed | 108 passed (204)
+     Errors  3 errors
+   Start at  22:56:59
+   Duration  12.70s
+
+ FAIL  Tests failed. Watching for file changes...
+       press h to show help, press q to quit
+c[3J RERUN  rerun all tests 
+
+ ↓ src/core/__tests__/enhanced-signals.test.ts (25 tests)
+ ↓ tests/integration/HydraIntegration.test.tsx (4 tests)
+ ↓ tests/modules/Rendering/islands.test.tsx (28 tests)
+ ↓ tests/modules/Rendering/island-loader.test.tsx (24 tests)
+
+ Test Files  4 skipped (37)
+      Tests   (81)
+   Start at  22:57:20
+   Duration  548ms
+
+ CANCELLED  Test run cancelled. Watching for file changes...
+       press h to show help, press q to quit
+c[3J RERUN  rerun all tests 
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Island Registration > should register and retrieve islands
+🏝️ Registered island: TestIsland
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Island Registration > should unregister islands
+🏝️ Registered island: TestIsland
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should hydrate a registered local island
+🏝️ Registered island: TestIsland
+🌊 Hydrating local island "TestIsland" into element "test-element" { peerId: [32m'test-peer'[39m, message: [32m'Hello Test'[39m }
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should hydrate a registered local island
+✅ Successfully hydrated local island "TestIsland"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification
+🏝️ Registered island: SecureIsland
+🌊 Hydrating local island "SecureIsland" into element "test-zk-element" { peerId: [32m'test-peer'[39m, zkProof: [32m'zk:valid-proof-data'[39m }
+
+ ❯ src/core/__tests__/SignalManager.test.ts (19 tests | 1 failed) 39ms
+   ✓ SignalManager > Signal Creation & Management > creates and manages signals 2ms
+   ✓ SignalManager > Signal Creation & Management > prevents duplicate signal IDs 1ms
+   ✓ SignalManager > Signal Creation & Management > creates computed signals 1ms
+   ✓ SignalManager > Signal Creation & Management > creates async signals 21ms
+   ✓ SignalManager > Signal Creation & Management > removes signals properly 1ms
+   ✓ SignalManager > DOM Binding > binds signal to text content 2ms
+   ✓ SignalManager > DOM Binding > binds signal to attributes 1ms
+   ✓ SignalManager > DOM Binding > binds signal to class list 1ms
+   ✓ SignalManager > DOM Binding > removes DOM bindings 0ms
+   ✓ SignalManager > Hydra Context Management > creates and manages Hydra contexts 0ms
+   ✓ SignalManager > Hydra Context Management > adds signals to Hydra context 0ms
+   ✓ SignalManager > Hydra Context Management > cleans up Hydra contexts 0ms
+   ✓ SignalManager > ECS Integration > creates entity-bound signals 1ms
+   ✓ SignalManager > ECS Integration > cleans up signals when entity is destroyed 1ms
+   ✓ SignalManager > Performance & Statistics > tracks performance statistics 0ms
+   ✓ SignalManager > Performance & Statistics > provides debug information 0ms
+   ✓ SignalManager > Global Instance Management > provides global singleton access 0ms
+   ✓ SignalManager > Global Instance Management > resets global instance 1ms
+   × SignalManager > Cleanup & Disposal > disposes all resources 5ms
+     → expected undefined to be 1 // Object.is equality
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification
+✅ ZK proof verified for island "SecureIsland"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification
+✅ Successfully hydrated local island "SecureIsland"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification
+🌊 Hydrating local island "SecureIsland" into element "test-zk-element" { peerId: [32m'test-peer'[39m, zkProof: [32m'invalid-proof'[39m }
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Local Hydration > should handle missing islands gracefully
+🌊 Hydrating local island "NonExistentIsland" into element "missing-element" { peerId: [32m'test-peer'[39m }
+
+ ❯ tests/components/HydraLoader.test.tsx (7 tests | 1 failed) 120ms
+   ✓ HydraLoader Component > should render placeholder div with correct ID 6ms
+   ✓ HydraLoader Component > should call hydrateLocalHydra for local execution 15ms
+   ✓ HydraLoader Component > should call hydrateRemoteHydra for remote execution 11ms
+   × HydraLoader Component > should show loading state initially 5ms
+     → expected '' to contain 'Loading Hydra'
+   ✓ HydraLoader Component > should show error state on hydration failure 41ms
+   ✓ HydraLoader Component > should handle edge execution type 13ms
+   ✓ HydraLoader Component > should re-hydrate when props change 26ms
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Remote Hydration > should handle manifest resolution and verification
+🌐 Hydrating remote component "RemoteComponent" into element "remote-element" {
+  peerId: [32m'test-peer'[39m,
+  manifestUrl: [32m'https://example.com/manifest.json'[39m
+}
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Remote Hydration > should enforce ZK requirements for remote components
+🌐 Hydrating remote component "SecureComponent" into element "secure-remote-element" {
+  peerId: [32m'test-peer'[39m,
+  manifestUrl: [32m'https://example.com/secure-manifest.json'[39m
+}
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Island Discovery and Auto-Hydration > should handle different hydration strategies
+🏝️ Registered island: StrategyTestIsland
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Cleanup > should properly cleanup hydrated components
+🏝️ Registered island: CleanupTestIsland
+🌊 Hydrating local island "CleanupTestIsland" into element "cleanup-test" { peerId: [32m'test-peer'[39m }
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Cleanup > should properly cleanup hydrated components
+✅ Successfully hydrated local island "CleanupTestIsland"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Cleanup > should properly cleanup hydrated components
+🧽 Cleaned up Hydra component in element "cleanup-test"
+
+stdout | tests/lib/hydra-runtime.test.ts > Enhanced Hydra Runtime > Error Handling > should handle island mount errors gracefully
+🏝️ Registered island: ErrorIsland
+🌊 Hydrating local island "ErrorIsland" into element "error-test" { peerId: [32m'test-peer'[39m }
+
+ ❯ tests/lib/hydra-runtime.test.ts (12 tests | 1 failed) 186ms
+   ✓ Enhanced Hydra Runtime > Island Registration > should register and retrieve islands 4ms
+   ✓ Enhanced Hydra Runtime > Island Registration > should unregister islands 1ms
+   ✓ Enhanced Hydra Runtime > Local Hydration > should hydrate a registered local island 6ms
+   ✓ Enhanced Hydra Runtime > Local Hydration > should handle ZK proof verification 117ms
+   ✓ Enhanced Hydra Runtime > Local Hydration > should handle missing islands gracefully 9ms
+   ✓ Enhanced Hydra Runtime > Remote Hydration > should handle manifest resolution and verification 6ms
+   ✓ Enhanced Hydra Runtime > Remote Hydration > should enforce ZK requirements for remote components 4ms
+   ✓ Enhanced Hydra Runtime > Island Discovery and Auto-Hydration > should discover islands in the DOM 21ms
+   × Enhanced Hydra Runtime > Island Discovery and Auto-Hydration > should handle different hydration strategies 8ms
+     → expected "spy" to be called with arguments: [ <div …(4)></div>, Any<Object>, …(1) ][90m
+
+Number of calls: [1m0[22m
+[39m
+   ✓ Enhanced Hydra Runtime > Cleanup > should properly cleanup hydrated components 3ms
+   ✓ Enhanced Hydra Runtime > Error Handling > should handle island mount errors gracefully 5ms
+   ✓ Enhanced Hydra Runtime > Error Handling > should handle missing DOM elements 1ms
+ ❯ src/core/router/__tests__/router.test.ts (34 tests | 16 failed) 99ms
+   ✓ ZenithRouter Core > Route Registration > should register routes correctly 7ms
+   ✓ ZenithRouter Core > Route Registration > should create route builders for registered routes 2ms
+   ✓ ZenithRouter Core > Navigation > should navigate to a simple route 5ms
+   ✓ ZenithRouter Core > Navigation > should navigate to a parameterized route 5ms
+   ✓ ZenithRouter Core > Navigation > should handle navigation with query parameters 3ms
+   × ZenithRouter Core > Navigation > should throw error for unregistered route 16ms
+     → promise resolved "undefined" instead of rejecting
+   ✓ ZenithRouter Core > Type-Safe Route Builder > should build paths with parameters correctly 1ms
+   ✓ ZenithRouter Core > Type-Safe Route Builder > should extract parameters from paths 1ms
+   ✓ ZenithRouter Core > Type-Safe Route Builder > should return null for non-matching paths 1ms
+   × ZenithRouter Core > Type-Safe Route Builder > should handle URL encoding/decoding 4ms
+     → expected '/search/hello world' to be '/search/hello%20world' // Object.is equality
+   ✓ ZenithRouter Core > Route Guards > should create ZK guard that passes with valid proof 4ms
+   ✓ ZenithRouter Core > Route Guards > should create ZK guard that fails without proof 1ms
+   ✓ ZenithRouter Core > Route Guards > should create role-based guard 2ms
+   ✓ ZenithRouter Core > Route Guards > should create time-based guard 1ms
+   ✓ ZenithRouter Core > Route Guards > should create rate limit guard 1ms
+   ✓ ZenithRouter Core > Route Guards > should create composite guard with AND logic 2ms
+   ✓ ZenithRouter Core > Route Guards > should create composite guard with OR logic 3ms
+   ✓ ZenithRouter Core > Data Loading and Caching > should load route data 4ms
+   × ZenithRouter Core > Data Loading and Caching > should cache loaded data 4ms
+     → router.createLoader is not a function
+   ✓ ZenithRouter Core > Data Loading and Caching > should prefetch routes 2ms
+   × ZenithRouter Integration > Hydra Routes > should register Hydra routes with ZK requirements 6ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > Hydra Routes > should create secure navigator with ZK verification 2ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > ECS Integration > should register ECS routes with component data 2ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > WASM Routes > should register WASM routes with security guards 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > Quantum Consensus Routes > should register quantum consensus routes 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > Secure Navigation > should navigate securely with ZK proof 2ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > Secure Navigation > should fail navigation with invalid ZK proof 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > State Management > should track Hydra route status 1ms
+     → this.kernel.getECS is not a function
+   × ZenithRouter Integration > State Management > should get ZK verification status 1ms
+     → this.kernel.getECS is not a function
+   × Factory Functions > should create ZenithRouter with kernel integration 2ms
+     → this.kernel.getECS is not a function
+   × Performance and Edge Cases > should handle rapid navigation calls 3ms
+     → expected '0' to be '9' // Object.is equality
+   ✓ Performance and Edge Cases > should handle navigation with special characters 2ms
+   × Performance and Edge Cases > should cleanup expired cache entries 1ms
+     → router.createLoader is not a function
+   × Performance and Edge Cases > should handle malformed URLs gracefully 4ms
+     → promise resolved "undefined" instead of rejecting
+ ❯ tests/modules/Rendering/jsx-runtime.test.tsx (18 tests | 13 failed) 51ms
+   × ZenithKernel JSX Runtime > jsx function > should create basic HTML elements 12ms
+     → expected '' to be 'test' // Object.is equality
+   × ZenithKernel JSX Runtime > jsx function > should handle text content as children 2ms
+     → expected '' to be 'Hello, World!' // Object.is equality
+   × ZenithKernel JSX Runtime > jsx function > should handle multiple children 7ms
+     → expected  to have a length of 2 but got +0
+   ✓ ZenithKernel JSX Runtime > jsx function > should handle event listeners 3ms
+   × ZenithKernel JSX Runtime > jsx function > should handle style objects 2ms
+     → expected '' to be 'red' // Object.is equality
+   ✓ ZenithKernel JSX Runtime > jsx function > should handle boolean attributes 2ms
+   × ZenithKernel JSX Runtime > jsx function > should handle ref callbacks 2ms
+     → expected "spy" to be called with arguments: [ <div …(1)></div> ][90m
+
+Number of calls: [1m0[22m
+[39m
+   × ZenithKernel JSX Runtime > jsx function > should handle functional components 2ms
+     → expected '' to be 'test-component' // Object.is equality
+   × ZenithKernel JSX Runtime > jsx function > should ignore null and undefined children 1ms
+     → expected '' to be 'HelloWorld' // Object.is equality
+   × ZenithKernel JSX Runtime > jsx function > should handle nested elements 2ms
+     → expected '' to be 'container' // Object.is equality
+   ✓ ZenithKernel JSX Runtime > jsxs function > should work as alias for jsx 1ms
+   ✓ ZenithKernel JSX Runtime > Fragment > should create document fragment 1ms
+   ✓ ZenithKernel JSX Runtime > Fragment > should handle children in fragment 1ms
+   × ZenithKernel JSX Runtime > Fragment > should work with jsx function 2ms
+     → expected  to have a length of 2 but got +0
+   × ZenithKernel JSX Runtime > createElement > should work like jsx with spread children 1ms
+     → (0 , createElement) is not a function
+   × ZenithKernel JSX Runtime > h function (legacy) > should work like createElement 1ms
+     → (0 , h) is not a function
+   × ZenithKernel JSX Runtime > Complex scenarios > should handle complex nested structure with events 8ms
+     → expected null to be truthy
+   × ZenithKernel JSX Runtime > Complex scenarios > should handle island-like component structure 3ms
+     → expected '' to be 'island-component' // Object.is equality
+ ❯ tests/components/HydraMetaTags.test.tsx (6 tests | 6 failed) 39ms
+   × Hydra Meta Tags > should create meta tags with proper attributes 22ms
+     → expected null to be truthy
+   × Hydra Meta Tags > should create safe script tags with security attributes 5ms
+     → expected null to be truthy
+   × Hydra Meta Tags > should handle inline scripts 2ms
+     → expected null to be truthy
+   × Hydra Meta Tags > should create CSS tags with proper attributes 3ms
+     → expected null to be 'sha384-xyz789' // Object.is equality
+   × Hydra Meta Tags > should handle inline styles 3ms
+     → expected '' to contain '.test-class'
+   × Hydra Meta Tags > should combine all tags in a Hydra island 2ms
+     → expected null to be truthy
+ ❯ tests/components/HydraTrustBar.test.tsx (8 tests | 8 failed) 16ms
+   × HydraTrustBar Component > should render trust bar with basic hydra info 9ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should show verified status when zkProof is provided 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should show unverified status when no zkProof is provided 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should show local trust level for local execution 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should display component entry information 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should handle click events and call onDetailsClick 2ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should show different styles for different execution types 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × HydraTrustBar Component > should display trust score when provided 1ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+ ❯ tests/components/HydraTemplate.test.tsx (4 tests | 4 failed) 32ms
+   × Hydra Template Syntax > should create a Hydra island with template syntax 18ms
+     → expected null to be truthy
+   × Hydra Template Syntax > should handle nested Hydra islands 6ms
+     → expected null to be truthy
+   × Hydra Template Syntax > should throw error for invalid Hydra type 4ms
+     → expected [Function] to throw an error
+   × Hydra Template Syntax > should handle remote execution with context 2ms
+     → expected null to be truthy
+ ❯ old/archipelagoui/tests/crypto/openssl-pq.test.ts (7 tests | 7 failed) 20ms
+   × OpenSSL PQ Native Module > Native module file exists 6ms
+     → (0 , existsSync) is not a function
+   × OpenSSL PQ Native Module > Native module can be loaded 6ms
+     → expected [Function] to not throw an error but 'Error: dlopen(/Users/nick/IdeaProject…' was thrown
+   × OpenSSL PQ Native Module > Native module exports expected functions 2ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+   × OpenSSL PQ Native Module > Can create a DTLS context 1ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+   × OpenSSL PQ Native Module > Can get OpenSSL version 1ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+   × OpenSSL PQ Native Module > Can generate Kyber key pair 1ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+   × OpenSSL PQ Native Module > Can perform Kyber encapsulation and decapsulation 1ms
+     → dlopen(/Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node, 0x0001): Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib
+  Referenced from: <57D1F4F0-80FF-3B10-8F2C-940C69D5B59F> /Users/nick/IdeaProjects/zenithkernel/old/archipelagoui/hydra_compression/src/uDTLS-PQ/build/Release/openssl_pq.node
+  Reason: tried: '/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/usr/local/opt/libomp/lib/libomp.dylib' (no such file), '/usr/local/opt/libomp/lib/libomp.dylib' (no such file)
+ ❯ tests/modules/Rendering/hydration-controller.test.ts (8 tests | 8 failed) 10ms
+   × HydrationController > Immediate Hydration > should hydrate immediately when strategy is immediate 5ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Visible Hydration > should hydrate when element becomes visible 1ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Interaction Hydration > should hydrate on user interaction 0ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Idle Hydration > should hydrate during idle time 1ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Manual Hydration > should only hydrate when manually triggered 1ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Priority Handling > should process items in priority order 1ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Error Handling > should handle hydration errors gracefully 1ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+   × HydrationController > Cleanup > should clean up resources when destroyed 1ms
+     → jest is not defined
+     → Failed to execute 'removeChild' on 'Node': parameter 1 is not of type 'Node'.
+stdout | tests/modules/Rendering/islands/ExampleIsland.test.ts > ExampleIsland > should mount with default props
+🌊 Hydrating ExampleIsland at 630.721211ms
+
+stdout | tests/modules/Rendering/islands/ExampleIsland.test.ts > ExampleIsland > should mount with custom props
+🌊 Hydrating ExampleIsland at 658.086503ms
+
+stdout | tests/modules/Rendering/islands/ExampleIsland.test.ts > ExampleIsland > should handle button clicks
+🌊 Hydrating ExampleIsland at 663.652334ms
+
+stdout | tests/modules/Rendering/islands/ExampleIsland.test.ts > ExampleIsland > should include peer ID from context
+🌊 Hydrating ExampleIsland at 669.598055ms
+
+stdout | tests/modules/Rendering/islands/ExampleIsland.test.ts > ExampleIsland > should return cleanup function
+🌊 Hydrating ExampleIsland at 674.201443ms
+
+ ✓ tests/modules/Rendering/islands/ExampleIsland.test.ts (6 tests) 51ms
+ ✓ tests/hooks/useHydraRegistry.test.tsx (7 tests) 33ms
+ ✓ tests/hooks/useECSState.test.tsx (5 tests) 24ms
+ ✓ tests/hooks/useHydraEvents.test.tsx (6 tests) 28ms
+ ✓ tests/reactive-state.test.ts (17 tests) 11ms
+ ✓ tests/modules/Rendering/IslandIntegration.test.tsx (1 test) 12ms
+ ✓ src/core/__tests__/ECSManager.test.ts (14 tests) 11ms
+ ✓ tests/protocol/qzkpClient.test.ts (8 tests) 8ms
+ ✓ src/cli/commands/tests/publish-manifest-qdht.test.ts (1 test) 5ms
+ ✓ src/ssr/__tests__/jsx-ssr-runtime.test.tsx (5 tests) 3ms
+stdout | tests/integration/HydraIntegration.test.tsx > Hydra Integration Tests > should render and hydrate a complete Hydra component
+🌊 Hydrating local island "TestHydraComponent.tsx" into element "hydra-integration-test" {
+  peerId: [32m'peer123'[39m,
+  message: [32m'Hello from integrated test!'[39m,
+  zkProof: [32m'proof_abc123'[39m
+}
+
+stdout | tests/integration/HydraIntegration.test.tsx
+🌊 Hydrating local island "NonExistentComponent.tsx" into element "hydra-error-test" { peerId: [32m'peer123'[39m }
+
+ ❯ tests/integration/HydraIntegration.test.tsx (4 tests | 4 failed) 231ms
+   × Hydra Integration Tests > should render and hydrate a complete Hydra component 117ms
+     → expected null to be truthy
+   × Hydra Integration Tests > should integrate HydraLoader with HydraTrustBar 2ms
+     → Cannot destructure property 'hydraId' of 'props' as it is undefined.
+   × Hydra Integration Tests > should handle multiple Hydra components simultaneously 110ms
+     → expected  to have a length of 2 but got +0
+   × Hydra Integration Tests > should handle hydration errors gracefully 1ms
+     → expected '' to contain 'Loading Hydra...'
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should mount successfully with default props
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m0[39m,
+  step: [33m1[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should display custom label and initial value
+ECS Counter Island mounted: {
+  label: [32m'Custom Counter'[39m,
+  initialValue: [33m10[39m,
+  step: [33m1[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should handle increment button clicks
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m5[39m,
+  step: [33m2[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should handle decrement button clicks
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m10[39m,
+  step: [33m3[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should handle reset button clicks
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m15[39m,
+  step: [33m1[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should simulate ECS connection status
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m0[39m,
+  step: [33m1[39m,
+  entityId: [90mundefined[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should display entity ID information
+ECS Counter Island mounted: {
+  label: [32m'ECS Counter'[39m,
+  initialValue: [33m0[39m,
+  step: [33m1[39m,
+  entityId: [32m'custom-entity-123'[39m,
+  context: [90mundefined[39m
+}
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > ECSCounterIsland > should call unmount without errors
+ECS Counter Island unmounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should mount successfully with default props
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should display custom title
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should handle connection info visibility
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should handle reconnect button
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should handle clear logs button
+Hydra Status Island mounted with events: status, connection, error
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraStatusIsland > should simulate connection and events
+Hydra Status Island mounted with events: test-event
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should mount successfully with default props
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should display custom title
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle details visibility
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle actions visibility
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should display mock instances
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle instance selection
+Hydra Registry Island mounted
+
+ ❯ src/core/__tests__/enhanced-signals.test.ts (25 tests | 1 failed) 162ms
+   ✓ Enhanced Signals System > Basic Signal Functionality > creates and updates signals 2ms
+   ✓ Enhanced Signals System > Basic Signal Functionality > tracks signal metadata 0ms
+   ✓ Enhanced Signals System > Basic Signal Functionality > prevents access to disposed signals 0ms
+   ✓ Enhanced Signals System > Basic Signal Functionality > uses custom equality function 0ms
+   ✓ Enhanced Signals System > Computed Signals > automatically updates computed values 0ms
+   ✓ Enhanced Signals System > Computed Signals > throws error when trying to set computed value 1ms
+   ✓ Enhanced Signals System > Computed Signals > disposes computed signals properly 0ms
+   ✓ Enhanced Signals System > Effects > runs effects when dependencies change 0ms
+   ✓ Enhanced Signals System > Effects > handles effect cleanup 0ms
+   × Enhanced Signals System > Effects > prevents infinite loops in effects 7ms
+     → expected 1 to be 5 // Object.is equality
+   ✓ Enhanced Signals System > Async Signals > handles async loading 22ms
+   ✓ Enhanced Signals System > Async Signals > handles async errors with retry 51ms
+   ✓ Enhanced Signals System > Async Signals > handles timeout 61ms
+   ✓ Enhanced Signals System > Batching and Scheduling > batches multiple updates 0ms
+   ✓ Enhanced Signals System > Batching and Scheduling > supports nested batching 0ms
+   ✓ Enhanced Signals System > Utility Functions > untrack prevents dependency tracking 0ms
+   ✓ Enhanced Signals System > Utility Functions > resolve unwraps signals 0ms
+   ✓ Enhanced Signals System > Utility Functions > isSignal identifies signals 0ms
+   ✓ Enhanced Signals System > Utility Functions > derived creates derived signals 0ms
+   ✓ Enhanced Signals System > Utility Functions > combine merges multiple signals 0ms
+   ✓ Enhanced Signals System > Utility Functions > fromPromise creates async signal from promise 12ms
+   ✓ Enhanced Signals System > Signal Utility Methods > map transforms signal values 0ms
+   ✓ Enhanced Signals System > Signal Utility Methods > filter conditionally passes values 0ms
+   ✓ Enhanced Signals System > Error Handling > handles errors in effects gracefully 1ms
+   ✓ Enhanced Signals System > Error Handling > handles errors in signal updates 0ms
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle refresh button
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle create instance button
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should handle cleanup button
+Hydra Registry Island mounted
+
+stdout | tests/modules/Rendering/islands.test.tsx > ZenithKernel Example Islands > HydraRegistryIsland > should call unmount without errors
+Hydra Registry Island unmounted
+
+ ❯ tests/modules/Rendering/islands.test.tsx (28 tests | 20 failed) 268ms
+   × ZenithKernel Example Islands > ECSCounterIsland > should mount successfully with default props 19ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > ECSCounterIsland > should display custom label and initial value 5ms
+     → expected undefined to be 'Custom Counter' // Object.is equality
+   × ZenithKernel Example Islands > ECSCounterIsland > should handle increment button clicks 3ms
+     → expected undefined to be '5' // Object.is equality
+   × ZenithKernel Example Islands > ECSCounterIsland > should handle decrement button clicks 2ms
+     → expected undefined to be '10' // Object.is equality
+   × ZenithKernel Example Islands > ECSCounterIsland > should handle reset button clicks 2ms
+     → Cannot read properties of null (reading 'click')
+   × ZenithKernel Example Islands > ECSCounterIsland > should simulate ECS connection status 2ms
+     → expected undefined to be 'Connecting...' // Object.is equality
+   × ZenithKernel Example Islands > ECSCounterIsland > should display entity ID information 3ms
+     → the given combination of arguments (undefined and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string
+   × ZenithKernel Example Islands > ECSCounterIsland > should generate correct view structure 2ms
+     → expected '' to contain 'ecs-counter-island'
+   ✓ ZenithKernel Example Islands > ECSCounterIsland > should call unmount without errors 1ms
+   × ZenithKernel Example Islands > HydraStatusIsland > should mount successfully with default props 3ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraStatusIsland > should display custom title 2ms
+     → expected undefined to be 'Custom Status Monitor' // Object.is equality
+   ✓ ZenithKernel Example Islands > HydraStatusIsland > should handle connection info visibility 1ms
+   × ZenithKernel Example Islands > HydraStatusIsland > should handle reconnect button 1ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraStatusIsland > should handle clear logs button 1ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraStatusIsland > should simulate connection and events 2ms
+     → expected undefined to be 'Connecting' // Object.is equality
+   × ZenithKernel Example Islands > HydraStatusIsland > should generate correct view structure 1ms
+     → expected '' to contain 'hydra-status-island'
+   × ZenithKernel Example Islands > HydraRegistryIsland > should mount successfully with default props 2ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraRegistryIsland > should display custom title 1ms
+     → expected undefined to be 'Custom Registry View' // Object.is equality
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should handle details visibility 1ms
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should handle actions visibility 1ms
+   × ZenithKernel Example Islands > HydraRegistryIsland > should display mock instances 104ms
+     → expected 0 to be greater than 0
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should handle instance selection 103ms
+   × ZenithKernel Example Islands > HydraRegistryIsland > should handle refresh button 2ms
+     → expected null to be truthy
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should handle create instance button 1ms
+   × ZenithKernel Example Islands > HydraRegistryIsland > should handle cleanup button 1ms
+     → expected null to be truthy
+   × ZenithKernel Example Islands > HydraRegistryIsland > should generate correct view structure 1ms
+     → expected '' to contain 'hydra-registry-island'
+   ✓ ZenithKernel Example Islands > HydraRegistryIsland > should call unmount without errors 0ms
+   ✓ ZenithKernel Example Islands > Island Metadata > should export correct metadata for all islands 0ms
+ ❯ tests/modules/Rendering/island-loader.test.tsx (24 tests | 4 failed) 10027ms
+   ✓ ZenithKernel Island Loader > Island Registration > should register islands 4ms
+   ✓ ZenithKernel Island Loader > Island Registration > should unregister islands 2ms
+   ✓ ZenithKernel Island Loader > Island Registration > should return undefined for non-existent islands 1ms
+   ✓ ZenithKernel Island Loader > Island Discovery > should discover islands in DOM 10ms
+   ✓ ZenithKernel Island Loader > Island Discovery > should parse island configuration correctly 6ms
+   ✓ ZenithKernel Island Loader > Island Discovery > should handle malformed JSON in props gracefully 10ms
+   ✓ ZenithKernel Island Loader > Island Hydration > should hydrate registered islands 2ms
+   × ZenithKernel Island Loader > Island Hydration > should handle hydration errors gracefully 2ms
+     → Mount failed
+   ✓ ZenithKernel Island Loader > Island Hydration > should not hydrate already hydrated islands 1ms
+   × ZenithKernel Island Loader > Island Hydration > should handle non-existent islands 4ms
+     → Island "NonExistentIsland" not found
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should handle immediate strategy 3ms
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should setup intersection observer for visible strategy 1ms
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should setup interaction listeners for interaction strategy 4ms
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should handle idle strategy 2ms
+   ✓ ZenithKernel Island Loader > Hydration Strategies > should do nothing for manual strategy 2ms
+   ✓ ZenithKernel Island Loader > Event System > should emit discovery events 3ms
+   ✓ ZenithKernel Island Loader > Event System > should emit hydration events 2ms
+   × ZenithKernel Island Loader > Event System > should emit error events 3ms
+     → Island "NonExistentIsland" not found
+   ✓ ZenithKernel Island Loader > Cleanup > should cleanup all resources 1ms
+   ✓ Global Functions > initializeIslands > should initialize on DOM ready 1ms
+   ✓ Global Functions > initializeIslands > should initialize immediately if DOM is ready 2ms
+   × Global Functions > hydrateIsland helper > should hydrate island by selector 9956ms
+     → Failed to load CSS for island TestIsland: /styles/TestIsland.module.css
+   ✓ Global Functions > hydrateIsland helper > should throw for non-existent elements 2ms
+   ✓ Global Functions > hydrateIsland helper > should throw for invalid islands 2ms
+
+ Test Files  27 failed | 10 passed (37)
+      Tests  94 failed | 180 passed (274)
+     Errors  3 errors
+   Start at  22:57:43
+   Duration  15.09s
+
+ FAIL  Tests failed. Watching for file changes...
+       press h to show help, press q to quit

@@ -1,0 +1,211 @@
+<!--
+  CounterIsland.zk - ZenithKernel Single-File Component
+  
+  This is a standard ZenithKernel SFC with three main sections:
+  1. <template> - The declarative UI structure
+  2. <script> - The component logic and exports
+  3. <style> - Component-scoped styles
+-->
+
+<template>
+  <Hydra type="island" id="counter-island" execType="local" context="{{ context }}">
+    <meta
+      title="{{ title }}"
+      description="Interactive counter component with ECS integration"
+    />
+    
+    <div class="counter-island">
+      <div class="island-header">
+        <h3>{{ title }}</h3>
+        <span class="hydration-info">
+          Strategy: {{ context?.strategy || 'immediate' }} | 
+          Trust: {{ context?.trustLevel || 'local' }}
+        </span>
+      </div>
+      
+      <div class="island-content">
+        <div class="count-display">{{ count }}</div>
+        <div class="controls">
+          <button class="decrement-btn" @click="decrement" zk-entity="{{ entityId }}">-</button>
+          <button class="increment-btn" @click="increment" zk-entity="{{ entityId }}">+</button>
+          <button class="reset-btn" @click="reset" zk-entity="{{ entityId }}">Reset</button>
+        </div>
+        
+        <div v-if="entityId" class="entity-info">
+          Entity ID: {{ entityId }}
+        </div>
+      </div>
+      
+      <div class="island-footer">
+        <span class="hydration-time">Hydrated in {{ hydrationTime }}ms</span>
+      </div>
+    </div>
+  </Hydra>
+</template>
+
+<script>
+  import { reactive, computed } from '../../../src/core/signals';
+  import type { IslandComponent } from '../../../src/modules/Rendering/types';
+  import { 
+    createCounterController, 
+    setKernelReference,
+    ComponentContext 
+  } from '../sdk/ComponentSDK';
+
+  // Component logic
+  export default {
+    // Metadata for island registration
+    metadata: {
+      name: 'CounterIsland',
+      version: '1.0.0',
+      trustLevel: 'local',
+      hydrationStrategies: ['immediate', 'visible', 'interaction', 'idle'],
+      ecsComponents: ['Counter']
+    },
+    
+    // Component setup and reactivity using the SDK
+    setup(props, context) {
+      // Use the kernel reference from context if available
+      if (context?.kernel) {
+        setKernelReference(context.kernel);
+      }
+      
+      // Create a componentContext object from the hydra context
+      const componentContext: ComponentContext = {
+        strategy: context?.strategy,
+        trustLevel: context?.trustLevel,
+        entityId: props.entityId
+      };
+      
+      // Create controller with SDK
+      const controller = createCounterController(props, componentContext);
+      
+      // Get reactive state from controller
+      const state = controller.getState();
+      
+      // Start hydration timer
+      const startTime = performance.now();
+      console.log(`🌊 Hydrating CounterIsland at ${startTime}ms`);
+      
+      // Computed properties
+      const formattedTime = computed(() => `${state.hydrationTime}ms`);
+      
+      // Set hydration time when mounted
+      onMounted(() => {
+        state.hydrationTime = Math.round(performance.now() - startTime);
+      });
+      
+      // Mount the controller
+      controller.mount();
+      
+      // Return public API and state for the template
+      return {
+        state,
+        formattedTime,
+        increment: () => controller.increment(),
+        decrement: () => controller.decrement(),
+        reset: () => controller.reset(),
+        context: componentContext
+      };
+    },
+    
+    // Component definition with declarative rendering
+    mount: async function(element, props, context) {
+      // Get the reactive data and methods
+      const { state, formattedTime, increment, decrement, reset } = this.setup(props, context);
+      
+      // The template is automatically rendered based on the reactive state
+      // No direct DOM manipulation needed
+      
+      // Clean-up function
+      return () => {
+        console.log('CounterIsland: Unmounted and cleaned up');
+      };
+    }
+  };
+  
+  // Lifecycle hooks
+  export const onBeforeMount = (props) => {
+    console.log('CounterIsland: Before mount hook', props);
+  };
+  
+  // Lifecycle hooks
+  export const onMounted = (callback) => {
+    // In a real implementation, this would register the callback
+    // to be executed when the component is mounted
+    setTimeout(callback, 0);
+  };
+</script>
+
+<style>
+  /* Component-scoped styles */
+  .counter-island {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-family: system-ui, sans-serif;
+  }
+  
+  .island-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .hydration-info {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .count-display {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .controls button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .increment-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .decrement-btn {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .reset-btn {
+    background-color: #2196F3;
+    color: white;
+  }
+  
+  .entity-info {
+    margin-top: 15px;
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+  }
+  
+  .island-footer {
+    margin-top: 15px;
+    font-size: 12px;
+    color: #666;
+    text-align: right;
+  }
+</style>

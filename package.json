@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "description": "Hyper-performant modular TypeScript microkernel framework with WASM support",
   "type": "module",
-  "exports": "./src/main.ts",
-  "main": "./src/main.ts",
-  "types": "./src/main.ts",
+  "exports": "./packages/zenith-core/dist/index.js",
+  "main": "./packages/zenith-core/dist/index.js",
+  "types": "./packages/zenith-core/dist/index.d.ts",
+  "workspaces": [
+    "packages/*",
+    "test-app"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/hydradevorg/zenithcore"
@@ -25,8 +29,10 @@
   "scripts": {
     "build:ts": "tsc",
     "build:asc": "asc assembly/index.ts -b dist/module.wasm -t dist/module.wat --sourceMap",
-    "build:node": "bun build . --target node > build.errors",
-    "build": "bun run build:node && bun run build:asc",
+    "build:core": "cd packages/zenith-core && bun run build",
+    "build:sdk": "cd packages/zenith-sdk && bun run build",
+    "build:runtime": "cd packages/zenith-runtime && bun run build",
+    "build": "bun run build:core && bun run build:sdk && bun run build:runtime && bun run build:asc",
     "dev": "bun run src/main.ts",
     "clean": "rm -rf dist .cache",
     "create:module": "bun ./cli/zenith.ts create module",
@@ -67,6 +73,7 @@
     "assemblyscript": "^0.27.36",
     "dependency-cruiser": "^16.10.2",
     "globby": "13.1.0",
+    "intersection-observer": "^0.12.2",
     "jsdom": "^26.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
