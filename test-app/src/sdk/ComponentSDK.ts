@@ -27,7 +27,7 @@ export abstract class ComponentController<T = any> {
   protected context: ComponentContext;
   
   constructor(initialState: T, context: ComponentContext = {}) {
-    this.state = signal(initialState) as T;
+    this.state = initialState;
     this.context = context;
   }
   
@@ -54,46 +54,24 @@ export class CounterController extends ComponentController<{
   private isConnected: boolean = false;
   
   constructor(initialState: any, context: ComponentContext = {}) {
-    super({
+    const state = {
       count: initialState.initialCount || 0,
-      title: initialState.title || 'Counter Island',
+      title: initialState.title || 'Counter Island', 
       entityId: initialState.entityId || null,
       hydrationTime: 0
-    }, context);
+    };
+    super(state, context);
     
-    this.componentAccessor = new CounterComponentAccessor(this.state.entityId);
+    this.componentAccessor = new CounterComponentAccessor(state.entityId);
   }
   
   async increment(): Promise<void> {
-    try {
-      this.state.count++;
-      await this.componentAccessor.updateValue(this.state.count);
-      this.notifyChange('increment', this.state.count);
-    } catch (error) {
-      // Rollback on error
-      this.state.count--;
-      throw error;
-    }
-  }
-  
-  async decrement(): Promise<void> {
-    try {
-      this.state.count--;
-      await this.componentAccessor.updateValue(this.state.count);
-      this.notifyChange('decrement', this.state.count);
-    } catch (error) {
-      // Rollback on error
-      this.state.count++;
-      throw error;
-    }
-  }
-  
-  async reset(): Promise<void> {
     const oldValue = this.state.count;
     try {
-      this.state.count = 0;
-      await this.componentAccessor.updateValue(0);
-      this.notifyChange('reset', 0);
+      const newValue = oldValue + 1;
+      await this.componentAccessor.updateValue(newValue);
+      this.state.count = newValue;
+      this.notifyChange('increment', newValue);
     } catch (error) {
       // Rollback on error
       this.state.count = oldValue;
@@ -101,11 +79,38 @@ export class CounterController extends ComponentController<{
     }
   }
   
+  async decrement(): Promise<void> {
+    const oldValue = this.state.count;
+    try {
+      const newValue = oldValue - 1;
+      await this.componentAccessor.updateValue(newValue);
+      this.state.count = newValue;
+      this.notifyChange('decrement', newValue);
+    } catch (error) {
+      // Rollback on error
+      this.state.count = oldValue;
+      throw new Error('ECS Error');
+    }
+  }
+  
+  async reset(): Promise<void> {
+    const oldValue = this.state.count;
+    try {
+      await this.componentAccessor.updateValue(0);
+      this.state.count = 0;
+      this.notifyChange('reset', 0);
+    } catch (error) {
+      // Rollback on error
+      this.state.count = oldValue;
+      throw new Error('ECS Error');
+    }
+  }
+  
   mount(): void {
-    console.log(`🔌 Mounting CounterController for entity ${this.state.entityId}`);
-    
-    // Start tracking counter component changes
     if (this.state.entityId) {
+      console.log(`🔌 Mounting CounterController for entity ${this.state.entityId}`);
+      
+      // Start tracking counter component changes
       this.entityTracker = this.componentAccessor.trackChanges((newValue) => {
         if (newValue !== this.state.count) {
           console.log(`📡 External update detected: ${this.state.count} -> ${newValue}`);
@@ -118,16 +123,19 @@ export class CounterController extends ComponentController<{
       console.log(`🌐 ECS connection status: ${this.isConnected ? 'connected' : 'disconnected'}`);
     } else {
       console.log('⚠️ No entity ID provided - operating in local mode');
+      this.isConnected = false;
     }
   }
   
   unmount(): void {
-    console.log(`🔌 Unmounting CounterController for entity ${this.state.entityId}`);
-    
-    // Clean up any trackers
-    if (this.entityTracker) {
-      this.entityTracker();
-      this.entityTracker = undefined;
+    if (this.state.entityId) {
+      console.log(`🔌 Unmounting CounterController for entity ${this.state.entityId}`);
+      
+      // Clean up any trackers
+      if (this.entityTracker) {
+        this.entityTracker();
+        this.entityTracker = undefined;
+      }
     }
     
     this.isConnected = false;
@@ -202,19 +210,16 @@ class CounterComponentAccessor {
       const entities = ecsManager.getAllEntities();
       if (!entities.includes(numericEntityId)) {
         console.log(`🆕 Creating new entity ${numericEntityId}`);
-        // In a real implementation, you might want to add components here
-      }
-      
-      // Get or create the Counter component
-      let component = ecsManager.getComponent(numericEntityId, 'Counter');
-      if (!component) {
-        console.log(`🆕 Adding Counter component to entity ${numericEntityId}`);
         ecsManager.addComponent(numericEntityId, 'Counter', { value });
-        component = { value };
       } else {
         // Update existing component
-        component.value = value;
-        console.log(`📝 Updated entity ${numericEntityId} counter value to ${value}`);
+        const component = ecsManager.getComponent(numericEntityId, 'Counter');
+        if (component) {
+          component.value = value;
+          console.log(`📝 Updated entity ${numericEntityId} counter value to ${value}`);
+        } else {
+          ecsManager.addComponent(numericEntityId, 'Counter', { value });
+        }
       }
       
       this.lastKnownValue = value;
@@ -235,7 +240,7 @@ class CounterComponentAccessor {
     
     let lastValue = this.getCurrentValue();
     
-    // Set up polling for changes (in a real implementation, you might use reactive observers)
+    // Set up polling for changes
     this.pollingInterval = setInterval(() => {
       const newValue = this.getCurrentValue();
       if (newValue !== null && newValue !== lastValue) {
@@ -277,7 +282,11 @@ class CounterComponentAccessor {
       }
       
       const component = ecsManager.getComponent(numericEntityId, 'Counter');
-      return component ? component.value : this.lastKnownValue;
+      if (component) {
+        this.lastKnownValue = component.value;
+        return component.value;
+      }
+      return this.lastKnownValue;
     } catch (error) {
       console.warn('⚠️ Failed to get current value:', error);
       return this.lastKnownValue;

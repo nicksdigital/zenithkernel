@@ -143,7 +143,27 @@ export class ZenithHtmlTransformer {
       if (!this.options.fallbackToPlaceholder) {
         throw error;
       }
-      return this.renderErrorPlaceholder(template, error);
+
+      // Create error placeholder with debug info
+      const componentName = template.componentName || 'div';
+      const errorMsg = error instanceof Error ? error.message : 'Rendering error';
+      const attrs = { ...template.attributes };
+      
+      // Add error classes and data
+      attrs['class'] = ['render-error-placeholder', attrs['class']].filter(Boolean).join(' ');
+      attrs['data-error'] = this.escapeHtml(errorMsg);
+      
+      const attrString = this.buildAttributeString(attrs);
+      
+      return `<${componentName}${attrString}>
+        <div class="render-error-placeholder">
+          <div class="error-message">
+            ⚠️ Rendering Error
+            <small>${this.escapeHtml(errorMsg)}</small>
+            ${this.options.debugMode ? `<pre class="error-details">${this.escapeHtml(error?.stack || '')}</pre>` : ''}
+          </div>
+        </div>
+      </${componentName}>`;
     }
   }
 
@@ -190,7 +210,8 @@ export class ZenithHtmlTransformer {
     } catch (error) {
       const result = { 
         isValid: false, 
-        error: error instanceof Error ? error.message : 'ZK verification failed' 
+        error: error instanceof Error ? error.message : 'ZK verification failed',
+        details: error instanceof Error ? error.stack : undefined
       };
       this.zkVerificationCache.set(cacheKey, result);
       return result;
@@ -214,6 +235,9 @@ export class ZenithHtmlTransformer {
           // Add entity ID to context
           this.context.entityId = entityId;
 
+          // Add formatted entity ID string for display
+          this.context.entityIdStr = `Entity: ${entityId}`;
+
           // Bind specific components if specified
           if (ecsBindings.ecsComponents) {
             for (const componentType of ecsBindings.ecsComponents) {
@@ -226,6 +250,11 @@ export class ZenithHtmlTransformer {
                   // Add component data to context with safe key name
                   const safeKey = this.toSafeVariableName(componentType);
                   this.context[safeKey] = componentData;
+
+                  // Add formatted display values
+                  if (componentData.value !== undefined) {
+                    this.context[`${safeKey}Display`] = `Value: ${componentData.value}`;
+                  }
                 }
               } catch (error) {
                 if (this.options.debugMode) {
@@ -350,9 +379,25 @@ export class ZenithHtmlTransformer {
       // Handle expressions in template
       const expressions = template.expressions || [];
       const interpolatedExpressions = await Promise.all(
-        expressions.map(expr => this.evalInContext(expr).then(value => 
-          value != null ? String(value) : ''
-        ))
+        expressions.map(async expr => {
+          try {
+            const value = await this.evalInContext(expr);
+            if (value != null) {
+              // Format the value based on type
+              if (typeof value === 'object') {
+                return this.escapeHtml(JSON.stringify(value));
+              }
+              return this.escapeHtml(String(value));
+            }
+            return '';
+          } catch (error) {
+            if (this.options.debugMode) {
+              console.warn(`Failed to evaluate expression ${expr}:`, error);
+              return `[Error: ${this.escapeHtml(expr)}]`;
+            }
+            return '';
+          }
+        })
       );
 
       // Combine all content
@@ -366,6 +411,7 @@ export class ZenithHtmlTransformer {
     } catch (error) {
       if (this.options.debugMode) {
         console.warn('Failed to build inner HTML:', error);
+        return `[Error: Failed to build content]`;
       }
       return '';
     }
@@ -432,6 +478,8 @@ export class ZenithHtmlTransformer {
    * Interpolate template expressions in content
    */
   private async interpolate(content: string): Promise<string> {
+    if (!content) return '';
+    
     // Process all {{ expression }} patterns
     const expressions = content.match(/\{\{\s*([^}]+?)\s*\}\}/g) || [];
     
@@ -443,10 +491,11 @@ export class ZenithHtmlTransformer {
         const stringValue = value != null ? String(value) : '';
         result = result.replace(match, this.escapeHtml(stringValue));
       } catch (error) {
-        result = result.replace(match, '');
         if (this.options.debugMode) {
           console.warn(`Interpolation failed for ${expr}:`, error);
         }
+        // Keep the original expression in debug mode, empty string otherwise
+        result = result.replace(match, this.options.debugMode ? `[Error: ${expr}]` : '');
       }
     }
     
@@ -458,29 +507,34 @@ export class ZenithHtmlTransformer {
    */
   private async evalInContext(expr: string): Promise<any> {
     try {
+      // Handle async expressions
+      if (expr.startsWith('await ')) {
+        expr = expr.substring(6); // Remove 'await ' prefix
+      }
+
       // Create a safe evaluation function
       const contextKeys = Object.keys(this.context);
       const contextValues = Object.values(this.context);
       
-      // Handle async expressions
+      // Create function with async support
       const func = new Function(...contextKeys, `
         try {
-          return (${expr});
+          const result = (${expr});
+          if (result instanceof Promise) {
+            return result;
+          }
+          return Promise.resolve(result);
         } catch (error) {
-          throw new Error('Expression evaluation failed: ' + error.message);
+          return Promise.reject(new Error('Expression evaluation failed: ' + error.message));
         }
       `);
       
-      const result = func(...contextValues);
-      
-      // Handle promises
-      if (result instanceof Promise) {
-        return await result;
-      }
-      
+      // Execute and await result
+      const result = await func(...contextValues);
       return result;
+      
     } catch (error) {
-      throw new Error(`Failed to evaluate expression \"${expr}\": ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Failed to evaluate expression "${expr}": ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -588,9 +642,11 @@ export class ZenithHtmlTransformer {
     const attrString = this.buildAttributeString(attrs);
     
     return `<${componentName}${attrString}>
-      <div class=\"zk-verification-message\">
-        🔒 Verification Required
-        ${this.options.debugMode ? `<small>${this.escapeHtml(errorMsg)}</small>` : ''}
+      <div class="zk-verification-placeholder">
+        <div class="zk-verification-message">
+          🔒 Verification Required
+          ${this.options.debugMode ? `<small>${this.escapeHtml(errorMsg)}</small>` : ''}
+        </div>
       </div>
     </${componentName}>`;
   }
@@ -610,9 +666,11 @@ export class ZenithHtmlTransformer {
     const attrString = this.buildAttributeString(attrs);
     
     return `<${componentName}${attrString}>
-      <div class=\"error-message\">
-        ⚠️ Rendering Error
-        ${this.options.debugMode ? `<small>${this.escapeHtml(errorMsg)}</small>` : ''}
+      <div class="render-error-placeholder">
+        <div class="error-message">
+          ⚠️ Rendering Error
+          ${this.options.debugMode ? `<small>${this.escapeHtml(errorMsg)}</small>` : ''}
+        </div>
       </div>
     </${componentName}>`;
   }

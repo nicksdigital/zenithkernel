@@ -276,8 +276,9 @@ export class ZenithTemplateParser {
    * Parse ZK-specific directives
    */
   private parseZKDirectives(attributes: Record<string, string>): ZKDirectives {
-    const zkDirectives: ZKDirectives = {};
-    const errors: string[] = [];
+    const zkDirectives: ZKDirectives = {
+      errors: []
+    };
 
     for (const [key, value] of Object.entries(attributes)) {
       try {
@@ -303,15 +304,11 @@ export class ZenithTemplateParser {
           zkDirectives.zkStrategy = value as ZKDirectives['zkStrategy'];
         }
       } catch (error) {
-        errors.push(error instanceof Error ? error.message : 'Unknown error');
+        zkDirectives.errors!.push(error instanceof Error ? error.message : 'Unknown error');
         if (this.options.strict) {
           throw error;
         }
       }
-    }
-
-    if (errors.length > 0) {
-      zkDirectives.errors = errors;
     }
 
     return zkDirectives;
@@ -359,8 +356,9 @@ export class ZenithTemplateParser {
    * Parse hydration configuration directives
    */
   private parseHydrationConfig(attributes: Record<string, string>): HydrationConfig {
-    const hydrationConfig: HydrationConfig = {};
-    const errors: string[] = [];
+    const hydrationConfig: HydrationConfig & { errors?: string[] } = {
+      errors: []
+    };
 
     for (const [key, value] of Object.entries(attributes)) {
       try {
@@ -389,10 +387,10 @@ export class ZenithTemplateParser {
           }
         }
       } catch (error) {
+        hydrationConfig.errors!.push(error instanceof Error ? error.message : 'Unknown error');
         if (this.options.strict) {
           throw error;
         }
-        errors.push(`Hydration directive error: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
     }
 
@@ -569,6 +567,29 @@ export class ZenithTemplateParser {
     
     try {
       const result = this.parse(template);
+      
+      // Ensure errors array exists
+      if (!result.errors) {
+        result.errors = [];
+      }
+      
+      // Collect errors from all directive parsers
+      if (result.zkDirectives?.errors) {
+        result.errors.push(...result.zkDirectives.errors);
+      }
+      
+      if ((result.hydrationConfig as any)?.errors) {
+        result.errors.push(...(result.hydrationConfig as any).errors);
+      }
+      
+      // Clean up internal error arrays
+      if (result.zkDirectives) {
+        delete result.zkDirectives.errors;
+      }
+      if (result.hydrationConfig) {
+        delete (result.hydrationConfig as any).errors;
+      }
+      
       return result;
     } finally {
       this.options.strict = originalStrict;
