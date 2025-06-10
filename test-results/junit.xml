@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="31" failures="31" errors="0" time="0.122744351">
+    <testsuite name="tests/plugins/vite-plugin-hydra.test.ts" timestamp="2025-06-10T01:04:01.923Z" hostname="afe762cef6a5" tests="31" failures="31" errors="0" skipped="0" time="0.122744351">
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Plugin Configuration &gt; should create plugin with default options" time="0.016872828">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Plugin Configuration &gt; should create plugin with custom options" time="0.003854945">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Plugin Configuration &gt; should merge options with defaults" time="0.003794051">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Island Discovery &gt; should discover TypeScript islands" time="0.003750456">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Island Discovery &gt; should discover .zk Single File Components" time="0.003080507">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Island Discovery &gt; should handle discovery errors gracefully" time="0.002742849">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; .zk File Parsing &gt; should parse .zk file structure correctly" time="0.003668513">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; .zk File Parsing &gt; should handle malformed .zk files" time="0.002990543">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; .zk File Parsing &gt; should extract metadata from .zk script section" time="0.002926126">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; .zk File Transformation &gt; should transform .zk files to JavaScript" time="0.002967841">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; .zk File Transformation &gt; should handle style extraction for .zk files" time="0.002871045">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; .zk File Transformation &gt; should return null for non-.zk files" time="0.00257744">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; .zk File Transformation &gt; should handle transformation errors" time="0.005016465">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Registry Generation &gt; should generate island registry" time="0.002575572">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Registry Generation &gt; should include metadata in registry" time="0.002476585">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Registry Generation &gt; should handle registry generation errors" time="0.002578051">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Development Server Integration &gt; should add API middleware for islands" time="0.002526019">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Development Server Integration &gt; should handle API requests for islands list" time="0.003558315">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Development Server Integration &gt; should handle API requests for individual islands" time="0.004234423">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Hot Module Replacement &gt; should handle .zk file changes" time="0.004571372">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Hot Module Replacement &gt; should handle TypeScript island changes" time="0.003240783">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Hot Module Replacement &gt; should ignore non-island file changes" time="0.002619336">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Hot Module Replacement &gt; should not process HMR when disabled" time="0.002681124">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Build Integration &gt; should emit registry file in bundle" time="0.002790974">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Build Integration &gt; should not emit registry when disabled" time="0.002718297">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Error Handling and Edge Cases &gt; should handle manifest creation errors" time="0.002897121">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Error Handling and Edge Cases &gt; should handle invalid metadata in files" time="0.003579879">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Error Handling and Edge Cases &gt; should handle missing template sections in .zk files" time="0.004790943">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Error Handling and Edge Cases &gt; should validate plugin options" time="0.007044219">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Performance Considerations &gt; should cache manifests to avoid repeated parsing" time="0.004527949">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+        <testcase classname="tests/plugins/vite-plugin-hydra.test.ts" name="Vite Plugin Hydra Islands &gt; Performance Considerations &gt; should only process relevant files during HMR" time="0.00443813">
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+            <failure message="Cannot redefine property: location" type="TypeError">
+TypeError: Cannot redefine property: location
+ ❯ tests/setup.ts:306:10
+            </failure>
+        </testcase>
+    </testsuite>
+</testsuites>

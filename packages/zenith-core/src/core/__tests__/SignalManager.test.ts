@@ -21,7 +21,9 @@ describe('SignalManager', () => {
   });
 
   afterEach(() => {
-    manager.dispose();
+    if (manager) {
+      manager.dispose();
+    }
   });
 
   describe('Signal Creation & Management', () => {
@@ -70,53 +72,73 @@ describe('SignalManager', () => {
   });
 
   describe('DOM Binding', () => {
-    test('binds signal to text content', () => {
+    test('binds signal to text content and handles disposal', async () => {
       const element = document.createElement('div');
       const count = manager.createSignal('count', 0);
       
       manager.bindTextContent('test-binding', element, count);
       
-      // Should update on next frame
-      requestAnimationFrame(() => {
-        expect(element.textContent).toBe('0');
-        
-        count.value = 5;
-        requestAnimationFrame(() => {
-          expect(element.textContent).toBe('5');
-        });
-      });
+      // First update - should set text to "0"
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      expect(element.textContent).toBe('0');
+      
+      // Update value before disposal
+      count.value = 5;
+      
+      // Next frame should show updated value
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      expect(element.textContent).toBe('5');
+      
+      // Dispose the signal - cleanup should happen synchronously
+      count.dispose();
+      expect(element.textContent).toBe('');
+      expect(manager.getStats().domBindingCount).toBe(0);
     });
 
-    test('binds signal to attributes', () => {
+    test('binds signal to attributes and handles disposal', async () => {
       const element = document.createElement('div');
       const title = manager.createSignal('title', 'Hello');
       
       manager.bindAttribute('title-binding', element, 'title', title);
       
-      requestAnimationFrame(() => {
-        expect(element.getAttribute('title')).toBe('Hello');
-        
-        title.value = 'World';
-        requestAnimationFrame(() => {
-          expect(element.getAttribute('title')).toBe('World');
-        });
-      });
+      // First update - should set title attribute
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      expect(element.getAttribute('title')).toBe('Hello');
+      
+      // Update value before disposal
+      title.value = 'World';
+      
+      // Next frame should show updated attribute
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      expect(element.getAttribute('title')).toBe('World');
+      
+      // Dispose the signal - cleanup should happen synchronously
+      title.dispose();
+      expect(element.hasAttribute('title')).toBe(false);
+      expect(manager.getStats().domBindingCount).toBe(0);
     });
 
-    test('binds signal to class list', () => {
+    test('binds signal to class list and handles disposal', async () => {
       const element = document.createElement('div');
       const classes:any = manager.createSignal('classes', { active: true, disabled: false });
 
       manager.bindClassList('class-binding', element, classes);
       
-      requestAnimationFrame(() => {
-        expect(element.className).toBe('active');
-        
-        classes.value = { active: false, disabled: true };
-        requestAnimationFrame(() => {
-          expect(element.className).toBe('disabled');
-        });
-      });
+      // First update - should add 'active' class
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      expect(element.className).toBe('active');
+      
+      // Update classes before disposal
+      classes.value = { active: false, disabled: true };
+      
+      // Next frame should show updated classes
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      expect(element.className).toBe('disabled');
+      
+      // Dispose the signal - cleanup should happen synchronously
+      classes.dispose();
+      expect(element.className).toBe('');
+      expect(manager.getStats().domBindingCount).toBe(0);
     });
 
     test('removes DOM bindings', () => {

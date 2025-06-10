@@ -2,12 +2,12 @@
  * ComponentSDK
  * 
  * Provides a clean abstraction layer between island components 
- * and Zenith application core systems.
+ * and ZenithKernel core systems using the new package structure.
  */
 
-import { ZenithKernel } from '../../../src/core/ZenithKernel';
-import { ECSManager as AppManager } from '../../../src/core/ECSManager';
-import { signal, effect, batch } from '../../../src/core/signals';
+import { ZenithKernel } from '../../../packages/zenith-core/src/core/ZenithKernel';
+import { ECSManager } from '../../../packages/zenith-core/src/core/ECSManager';
+import { signal, effect, batch } from '../../../packages/zenith-core/src/core/signals';
 
 /**
  * Interface for component context to avoid direct system dependencies
@@ -35,13 +35,13 @@ export abstract class ComponentController<T = any> {
     return this.state;
   }
   
-  protected abstract mount(): void;
+  abstract mount(): void;
   
-  protected abstract unmount(): void;
+  abstract unmount(): void;
 }
 
 /**
- * Standard counter component controller
+ * Enhanced counter component controller with async operations
  */
 export class CounterController extends ComponentController<{
   count: number;
@@ -51,6 +51,7 @@ export class CounterController extends ComponentController<{
 }> {
   private entityTracker?: () => void;
   private componentAccessor: CounterComponentAccessor;
+  private isConnected: boolean = false;
   
   constructor(initialState: any, context: ComponentContext = {}) {
     super({
@@ -63,66 +64,163 @@ export class CounterController extends ComponentController<{
     this.componentAccessor = new CounterComponentAccessor(this.state.entityId);
   }
   
-  increment(): void {
-    this.state.count++;
-    this.componentAccessor.updateValue(this.state.count);
+  async increment(): Promise<void> {
+    try {
+      this.state.count++;
+      await this.componentAccessor.updateValue(this.state.count);
+      this.notifyChange('increment', this.state.count);
+    } catch (error) {
+      // Rollback on error
+      this.state.count--;
+      throw error;
+    }
   }
   
-  decrement(): void {
-    this.state.count--;
-    this.componentAccessor.updateValue(this.state.count);
+  async decrement(): Promise<void> {
+    try {
+      this.state.count--;
+      await this.componentAccessor.updateValue(this.state.count);
+      this.notifyChange('decrement', this.state.count);
+    } catch (error) {
+      // Rollback on error
+      this.state.count++;
+      throw error;
+    }
   }
   
-  reset(): void {
-    this.state.count = 0;
-    this.componentAccessor.updateValue(0);
+  async reset(): Promise<void> {
+    const oldValue = this.state.count;
+    try {
+      this.state.count = 0;
+      await this.componentAccessor.updateValue(0);
+      this.notifyChange('reset', 0);
+    } catch (error) {
+      // Rollback on error
+      this.state.count = oldValue;
+      throw error;
+    }
   }
   
   mount(): void {
+    console.log(`🔌 Mounting CounterController for entity ${this.state.entityId}`);
+    
     // Start tracking counter component changes
     if (this.state.entityId) {
       this.entityTracker = this.componentAccessor.trackChanges((newValue) => {
         if (newValue !== this.state.count) {
+          console.log(`📡 External update detected: ${this.state.count} -> ${newValue}`);
           this.state.count = newValue;
         }
       });
+      
+      // Check initial connection
+      this.isConnected = this.componentAccessor.isConnected();
+      console.log(`🌐 ECS connection status: ${this.isConnected ? 'connected' : 'disconnected'}`);
+    } else {
+      console.log('⚠️ No entity ID provided - operating in local mode');
     }
   }
   
   unmount(): void {
+    console.log(`🔌 Unmounting CounterController for entity ${this.state.entityId}`);
+    
     // Clean up any trackers
     if (this.entityTracker) {
       this.entityTracker();
+      this.entityTracker = undefined;
+    }
+    
+    this.isConnected = false;
+  }
+  
+  /**
+   * Get current connection status
+   */
+  getConnectionStatus(): boolean {
+    return this.isConnected;
+  }
+  
+  /**
+   * Notify about state changes
+   */
+  private notifyChange(action: string, value: number): void {
+    console.log(`🔄 CounterController: ${action} -> ${value}`);
+    
+    // Emit custom events for external listeners
+    if (typeof window !== 'undefined' && window.dispatchEvent) {
+      window.dispatchEvent(new CustomEvent('counter:change', {
+        detail: {
+          entityId: this.state.entityId,
+          action,
+          value,
+          timestamp: Date.now()
+        }
+      }));
     }
   }
 }
 
 /**
  * Component accessor for Counter components
- * Abstracts away direct App manager access
+ * Abstracts away direct ECS manager access with error handling
  */
 class CounterComponentAccessor {
   private entityId: string | null;
   private pollingInterval: any = null;
+  private lastKnownValue: number | null = null;
   
   constructor(entityId: string | null) {
     this.entityId = entityId;
   }
   
   /**
-   * Update the counter component value in the App
+   * Update the counter component value in the ECS
    */
-  updateValue(value: number): void {
-    if (!this.entityId) return;
+  async updateValue(value: number): Promise<void> {
+    if (!this.entityId) {
+      console.log('💾 Local mode: storing value', value);
+      this.lastKnownValue = value;
+      return;
+    }
     
-    // Use the App manager accessor instead of direct access
-    const app = getAppManager();
-    if (!app) return;
+    // Use the ECS manager accessor with error handling
+    const ecsManager = getECSManager();
+    if (!ecsManager) {
+      console.warn('⚠️ ECS Manager not available');
+      this.lastKnownValue = value;
+      return;
+    }
     
-    const component = app.getComponent(this.entityId, 'Counter');
-    if (component) {
-      component.value = value;
-      console.log(`CounterComponentAccessor: Updated entity ${this.entityId} counter value to ${value}`);
+    try {
+      // Get the entity ID as number
+      const numericEntityId = parseInt(this.entityId, 10);
+      if (isNaN(numericEntityId)) {
+        throw new Error(`Invalid entity ID: ${this.entityId}`);
+      }
+      
+      // Check if entity exists, create if needed
+      const entities = ecsManager.getAllEntities();
+      if (!entities.includes(numericEntityId)) {
+        console.log(`🆕 Creating new entity ${numericEntityId}`);
+        // In a real implementation, you might want to add components here
+      }
+      
+      // Get or create the Counter component
+      let component = ecsManager.getComponent(numericEntityId, 'Counter');
+      if (!component) {
+        console.log(`🆕 Adding Counter component to entity ${numericEntityId}`);
+        ecsManager.addComponent(numericEntityId, 'Counter', { value });
+        component = { value };
+      } else {
+        // Update existing component
+        component.value = value;
+        console.log(`📝 Updated entity ${numericEntityId} counter value to ${value}`);
+      }
+      
+      this.lastKnownValue = value;
+    } catch (error) {
+      console.error('❌ Failed to update ECS component:', error);
+      throw error;
     }
   }
   
@@ -130,24 +228,31 @@ class CounterComponentAccessor {
    * Track changes to the counter component
    */
   trackChanges(callback: (value: number) => void): () => void {
-    if (!this.entityId) return () => {};
+    if (!this.entityId) {
+      console.log('💾 Local mode: no external tracking needed');
+      return () => {};
+    }
     
     let lastValue = this.getCurrentValue();
     
-    // Set up tracking
+    // Set up polling for changes (in a real implementation, you might use reactive observers)
     this.pollingInterval = setInterval(() => {
       const newValue = this.getCurrentValue();
       if (newValue !== null && newValue !== lastValue) {
+        console.log(`📡 Detected external change: ${lastValue} -> ${newValue}`);
         callback(newValue);
         lastValue = newValue;
       }
     }, 100);
+    
+    console.log(`👀 Started tracking changes for entity ${this.entityId}`);
     
     // Return cleanup function
     return () => {
       if (this.pollingInterval) {
         clearInterval(this.pollingInterval);
         this.pollingInterval = null;
+        console.log(`🛑 Stopped tracking changes for entity ${this.entityId}`);
       }
     };
   }
@@ -156,52 +261,158 @@ class CounterComponentAccessor {
    * Get current counter component value
    */
   getCurrentValue(): number | null {
-    if (!this.entityId) return null;
+    if (!this.entityId) {
+      return this.lastKnownValue || 0;
+    }
     
-    const app = getAppManager();
-    if (!app) return null;
+    const ecsManager = getECSManager();
+    if (!ecsManager) {
+      return this.lastKnownValue;
+    }
     
-    const component = app.getComponent(this.entityId, 'Counter');
-    return component ? component.value : null;
+    try {
+      const numericEntityId = parseInt(this.entityId, 10);
+      if (isNaN(numericEntityId)) {
+        return this.lastKnownValue;
+      }
+      
+      const component = ecsManager.getComponent(numericEntityId, 'Counter');
+      return component ? component.value : this.lastKnownValue;
+    } catch (error) {
+      console.warn('⚠️ Failed to get current value:', error);
+      return this.lastKnownValue;
+    }
+  }
+  
+  /**
+   * Check if the accessor is connected to ECS
+   */
+  isConnected(): boolean {
+    if (!this.entityId) return false;
+    
+    const ecsManager = getECSManager();
+    if (!ecsManager) return false;
+    
+    try {
+      const numericEntityId = parseInt(this.entityId, 10);
+      if (isNaN(numericEntityId)) return false;
+      
+      const entities = ecsManager.getAllEntities();
+      return entities.includes(numericEntityId);
+    } catch {
+      return false;
+    }
   }
 }
 
-// Zenith and App accessor functions
+// ZenithKernel and ECS accessor functions
 // These encapsulate access to global objects and handle errors gracefully
 
 let globalZenith: ZenithKernel | null = null;
-let globalApp: AppManager | null = null;
+let globalECSManager: ECSManager | null = null;
 
 /**
- * Set global zenith reference
+ * Set global ZenithKernel reference
  */
-export function setZenithReference(zenith: ZenithKernel): void {
-  globalZenith = zenith;
-  globalApp = zenith.getECS();
+export function setZenithReference(zenith: ZenithKernel | null | undefined): void {
+  console.log('🔧 Setting ZenithKernel reference');
+  
+  if (!zenith) {
+    console.warn('⚠️ Received null/undefined ZenithKernel reference');
+    globalZenith = null;
+    globalECSManager = null;
+    return;
+  }
+
+  try {
+    globalZenith = zenith;
+    globalECSManager = zenith.getECS?.() || null;
+    
+    if (globalECSManager) {
+      console.log('✅ ECS Manager reference acquired');
+    } else {
+      console.warn('⚠️ Failed to get ECS Manager from ZenithKernel');
+    }
+  } catch (error) {
+    console.error('❌ Error setting ZenithKernel reference:', error);
+    globalZenith = null;
+    globalECSManager = null;
+  }
 }
 
 /**
- * Get zenith instance with error handling
+ * Get ZenithKernel instance with error handling
  */
 export function getZenith(): ZenithKernel | null {
+  if (!globalZenith) {
+    console.warn('⚠️ ZenithKernel reference not available');
+  }
   return globalZenith;
 }
 
 /**
- * Get App manager with error handling
+ * Get ECS manager with error handling
  */
-export function getAppManager(): AppManager | null {
-  return globalApp;
+export function getECSManager(): ECSManager | null {
+  if (!globalECSManager) {
+    console.warn('⚠️ ECS Manager reference not available');
+    
+    // Try to get it from ZenithKernel if available
+    if (globalZenith) {
+      try {
+        globalECSManager = globalZenith.getECS();
+        if (globalECSManager) {
+          console.log('✅ ECS Manager reference recovered from ZenithKernel');
+        }
+      } catch (error) {
+        console.error('❌ Failed to recover ECS Manager:', error);
+      }
+    }
+  }
+  return globalECSManager;
 }
 
 /**
- * Create a component controller factory
+ * Check if the SDK is properly initialized
+ */
+export function isSDKInitialized(): boolean {
+  return !!(globalZenith && globalECSManager);
+}
+
+/**
+ * Initialize the SDK with optional validation
+ */
+export function initializeSDK(zenith: ZenithKernel): boolean {
+  try {
+    setZenithReference(zenith);
+    const isValid = isSDKInitialized();
+    
+    if (isValid) {
+      console.log('✅ ComponentSDK initialized successfully');
+    } else {
+      console.error('❌ ComponentSDK initialization failed');
+    }
+    
+    return isValid;
+  } catch (error) {
+    console.error('❌ SDK initialization error:', error);
+    return false;
+  }
+}
+
+/**
+ * Create a component controller factory with error handling
  */
 export function createControllerFactory<T extends ComponentController>(
   ControllerClass: new (initialState: any, context: ComponentContext) => T
 ) {
   return (initialState: any, context: ComponentContext = {}): T => {
-    return new ControllerClass(initialState, context);
+    try {
+      return new ControllerClass(initialState, context);
+    } catch (error) {
+      console.error('❌ Failed to create controller:', error);
+      throw error;
+    }
   };
 }
 
@@ -209,3 +420,52 @@ export function createControllerFactory<T extends ComponentController>(
  * Factory function for creating counter controllers
  */
 export const createCounterController = createControllerFactory(CounterController);
+
+/**
+ * Utility function to create a test entity with Counter component
+ */
+export function createTestEntity(initialValue: number = 0): string | null {
+  const ecsManager = getECSManager();
+  if (!ecsManager) {
+    console.warn('⚠️ Cannot create test entity: ECS Manager not available');
+    return null;
+  }
+  
+  try {
+    // Generate a unique entity ID
+    const entityId = Math.floor(Math.random() * 1000000);
+    
+    // Add the Counter component
+    ecsManager.addComponent(entityId, 'Counter', { value: initialValue });
+    
+    console.log(`🆕 Created test entity ${entityId} with initial value ${initialValue}`);
+    return entityId.toString();
+  } catch (error) {
+    console.error('❌ Failed to create test entity:', error);
+    return null;
+  }
+}
+
+/**
+ * Debug function to get SDK status
+ */
+export function getSDKStatus(): {
+  initialized: boolean;
+  zenithAvailable: boolean;
+  ecsAvailable: boolean;
+  entityCount: number;
+} {
+  const zenith = getZenith();
+  const ecs = getECSManager();
+  
+  return {
+    initialized: isSDKInitialized(),
+    zenithAvailable: !!zenith,
+    ecsAvailable: !!ecs,
+    entityCount: ecs ? ecs.getAllEntities().length : 0
+  };
+}
+
+// Export aliases for backward compatibility
+export { setZenithReference as setKernelReference };
+export { getECSManager as getAppManager };

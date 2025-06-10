@@ -23,6 +23,8 @@ export interface ZKDirectives {
   zkEntity?: string;
   /** ZK verification strategy */
   zkStrategy?: 'eager' | 'lazy' | 'manual';
+  /** Validation errors */
+  errors?: string[];
 }
 
 export interface ECSBindings {
@@ -125,20 +127,40 @@ export class ZenithTemplateParser {
 
       // ZenithKernel-specific parsing
       if (this.options.enableZKDirectives) {
-        zkDirectives = this.parseZKDirectives(attributes);
+        try {
+          zkDirectives = this.parseZKDirectives(attributes);
+        } catch (error) {
+          errors.push(`ZK directive error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          if (this.options.strict) throw error;
+        }
       }
 
       if (this.options.enableECSDirectives) {
-        ecsBindings = this.parseECSBindings(attributes);
+        try {
+          ecsBindings = this.parseECSBindings(attributes);
+        } catch (error) {
+          errors.push(`ECS directive error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          if (this.options.strict) throw error;
+        }
       }
 
       if (this.options.enableHydrationDirectives) {
-        hydrationConfig = this.parseHydrationConfig(attributes);
+        try {
+          hydrationConfig = this.parseHydrationConfig(attributes);
+        } catch (error) {
+          errors.push(`Hydration directive error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          if (this.options.strict) throw error;
+        }
       }
 
       // Custom directive processing
       if (this.options.customDirectives) {
-        this.processCustomDirectives(attributes, this.options.customDirectives);
+        try {
+          this.processCustomDirectives(attributes, this.options.customDirectives);
+        } catch (error) {
+          errors.push(`Custom directive error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          if (this.options.strict) throw error;
+        }
       }
 
     } catch (err: any) {
@@ -260,28 +282,36 @@ export class ZenithTemplateParser {
     for (const [key, value] of Object.entries(attributes)) {
       try {
         if (key === 'zk-proof' || key === 'data-zk-proof') {
+          if (!ZenithTemplateParser.validateZKProof(value)) {
+            throw new Error(`Invalid zk-proof format: ${value}`);
+          }
           zkDirectives.zkProof = value;
         } else if (key === 'zk-trust' || key === 'data-zk-trust') {
-          if (['unverified', 'local', 'community', 'verified'].includes(value)) {
-            zkDirectives.zkTrust = value as ZKDirectives['zkTrust'];
-          } else {
+          if (!['unverified', 'local', 'community', 'verified'].includes(value)) {
             throw new Error(`Invalid zk-trust value: ${value}`);
           }
+          zkDirectives.zkTrust = value as ZKDirectives['zkTrust'];
         } else if (key === 'zk-entity' || key === 'data-zk-entity') {
+          if (!ZenithTemplateParser.validateEntityId(value)) {
+            throw new Error(`Invalid zk-entity value: ${value}`);
+          }
           zkDirectives.zkEntity = value;
         } else if (key === 'zk-strategy' || key === 'data-zk-strategy') {
-          if (['eager', 'lazy', 'manual'].includes(value)) {
-            zkDirectives.zkStrategy = value as ZKDirectives['zkStrategy'];
-          } else {
+          if (!['eager', 'lazy', 'manual'].includes(value)) {
             throw new Error(`Invalid zk-strategy value: ${value}`);
           }
+          zkDirectives.zkStrategy = value as ZKDirectives['zkStrategy'];
         }
       } catch (error) {
+        errors.push(error instanceof Error ? error.message : 'Unknown error');
         if (this.options.strict) {
           throw error;
         }
-        errors.push(`ZK directive error: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
+    }
+
+    if (errors.length > 0) {
+      zkDirectives.errors = errors;
     }
 
     return zkDirectives;

@@ -2,7 +2,7 @@ import { renderToString } from '../jsx-ssr-runtime';
 
 describe('SSR JSX Runtime', () => {
   it('renders a simple JSX element', () => {
-    const html = renderToString(<div>Hello SSR</div>);
+    const html = renderToString(<div>Hello SSR</div>); // Ensure JSX syntax is correct
     expect(html).toBe('<div>Hello SSR</div>');
   });
 
@@ -38,4 +38,4 @@ describe('SSR JSX Runtime', () => {
     const html = renderToString(<div>{null}{false}{undefined}X</div>);
     expect(html).toBe('<div>X</div>');
   });
-}); 
+});

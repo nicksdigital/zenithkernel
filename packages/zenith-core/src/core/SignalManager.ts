@@ -262,14 +262,35 @@ export class SignalManager {
     
     const eff = effect(() => {
         try {
+            // Early return if signal is disposed to prevent accessing disposed signal value
+            if (sigInstance.isDisposed) {
+                this._debug(`Signal for binding ${bindingId} is disposed, cleaning up binding`);
+                element.textContent = ''; // Clear content
+                this.removeDOMBinding(bindingId);
+                return;
+            }
+
             const val = sigInstance.value; 
             element.textContent = transform ? transform(val) : String(val ?? '');
         } catch (e) {
             console.error(`Error in DOM binding "${bindingId}" for textContent:`, e);
+            // If we get a SignalError about disposed signal, clean up the binding
+            if (e && e.name === 'SignalError' && e.message.includes('disposed')) {
+                element.textContent = '';
+                this.removeDOMBinding(bindingId);
+            }
         }
     }, { name: `dom_text_${bindingId}`, scheduler: 'sync' }); 
 
-    this._domBindings.set(bindingId, { id: bindingId, element: element as HTMLElement, property: 'textContent', cleanup: () => eff.dispose() });
+    this._domBindings.set(bindingId, { 
+        id: bindingId, 
+        element: element as HTMLElement, 
+        property: 'textContent', 
+        cleanup: () => {
+            eff.dispose();
+            element.textContent = ''; // Clear content on cleanup
+        }
+    });
     this._debug(`Bound textContent for ${bindingId}`);
     return bindingId;
   }
@@ -285,6 +306,14 @@ export class SignalManager {
 
     const eff = effect(() => {
         try {
+            // Early return if signal is disposed to prevent accessing disposed signal value
+            if (sigInstance.isDisposed) {
+                this._debug(`Signal for binding ${bindingId} is disposed, cleaning up binding`);
+                element.removeAttribute(attributeName); // Remove attribute
+                this.removeDOMBinding(bindingId);
+                return;
+            }
+
             const val = sigInstance.value; 
             const stringVal = transform ? transform(val) : String(val ?? '');
             if (val === null || val === undefined) { 
@@ -294,10 +323,23 @@ export class SignalManager {
             }
         } catch (e) {
             console.error(`Error in DOM binding "${bindingId}" for attribute ${attributeName}:`,e);
+            // If we get a SignalError about disposed signal, clean up the binding
+            if (e && e.name === 'SignalError' && e.message.includes('disposed')) {
+                element.removeAttribute(attributeName);
+                this.removeDOMBinding(bindingId);
+            }
         }
     }, { name: `dom_attr_${bindingId}_${attributeName}`, scheduler: 'sync' });
 
-    this._domBindings.set(bindingId, { id: bindingId, element, property: attributeName, cleanup: () => eff.dispose()});
+    this._domBindings.set(bindingId, { 
+        id: bindingId, 
+        element, 
+        property: attributeName, 
+        cleanup: () => {
+            eff.dispose();
+            element.removeAttribute(attributeName); // Remove attribute on cleanup
+        }
+    });
     this._debug(`Bound attribute [${attributeName}] for ${bindingId}`);
     return bindingId;
   }
@@ -312,6 +354,17 @@ export class SignalManager {
 
     const eff = effect(() => {
         try {
+            // Early return if signal is disposed to prevent accessing disposed signal value
+            if (sigInstance.isDisposed) {
+                this._debug(`Signal for binding ${bindingId} is disposed, cleaning up binding`);
+                // Clean up any previously added classes
+                previousClasses.forEach(cls => element.classList.remove(cls));
+                previousClasses.clear();
+                // Remove the binding since the signal is disposed
+                this.removeDOMBinding(bindingId);
+                return;
+            }
+
             const value = sigInstance.value; 
             const newClasses = new Set<string>();
             if (typeof value === 'string') {
@@ -333,9 +386,25 @@ export class SignalManager {
             previousClasses = newClasses;
         } catch (e) {
             console.error(`Error in DOM binding "${bindingId}" for classList:`, e);
+            // If we get a SignalError about disposed signal, clean up the binding
+            if (e && e.name === 'SignalError' && e.message.includes('disposed')) {
+                previousClasses.forEach(cls => element.classList.remove(cls));
+                previousClasses.clear();
+                this.removeDOMBinding(bindingId);
+            }
         }
     }, { name: `dom_class_${bindingId}`, scheduler: 'sync' });
-    this._domBindings.set(bindingId, { id: bindingId, element, property: 'classList', cleanup: () => eff.dispose() });
+    this._domBindings.set(bindingId, { 
+        id: bindingId, 
+        element, 
+        property: 'classList', 
+        cleanup: () => {
+            eff.dispose();
+            // Clean up any remaining classes on cleanup
+            previousClasses.forEach(cls => element.classList.remove(cls));
+            previousClasses.clear();
+        }
+    });
     this._debug(`Bound classList for ${bindingId}`);
     return bindingId;
   }
@@ -344,8 +413,10 @@ export class SignalManager {
   removeDOMBinding(id: string): boolean {
     const binding = this._domBindings.get(id);
     if (binding) {
-      binding.cleanup(); 
+      // First remove the binding from the map to prevent any potential re-entrancy issues
       this._domBindings.delete(id);
+      // Then run cleanup synchronously
+      binding.cleanup(); 
       this._debug(`Removed DOM binding: ${id}`);
       return true;
     }

@@ -1,358 +1,210 @@
 /**
- * Vite Plugin for ZenithKernel Hydra Islands
+ * Vite Plugin for Hydra Islands
  * 
- * This plugin provides:
- * - Automatic island discovery and registration
- * - Code splitting for individual islands
- * - Hot module replacement for islands
- * - Development server integration
- * - Build-time optimizations
+ * Handles discovery, transformation, and registration of island components
  */
 
-import { Plugin, ResolvedConfig, ViteDevServer } from 'vite';
+import { Plugin } from 'vite';
 import { glob } from 'glob';
-import path from 'path';
-import fs from 'fs/promises';
-import { createHash } from 'crypto';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
-export interface HydraViteOptions {
-  /** Directory containing island components */
+interface HydraPluginOptions {
   islandsDir?: string;
-  /** Pattern to match island files */
   islandPattern?: string;
-  /** Enable hot module replacement for islands */
-  hmr?: boolean;
-  /** Generate island registry file */
+  enableZKFiles?: boolean;
   generateRegistry?: boolean;
-  /** Output directory for generated files */
   outDir?: string;
-  /** Enable development mode features */
-  dev?: boolean;
+  hmr?: boolean;
 }
 
-export interface IslandManifest {
-  name: string;
-  path: string;
-  hash: string;
-  dependencies: string[];
-  metadata: any;
-}
-
-const DEFAULT_OPTIONS: Required<HydraViteOptions> = {
-  islandsDir: 'src/modules/Rendering/islands',
-  islandPattern: '**/*Island.{ts,tsx}',
-  hmr: true,
-  generateRegistry: true,
-  outDir: 'dist',
-  dev: false
-};
-
-export function hydraPlugin(options: HydraViteOptions = {}): Plugin {
-  const opts = { ...DEFAULT_OPTIONS, ...options };
-  let config: ResolvedConfig;
-  let server: ViteDevServer | undefined;
-  let islandManifests: Map<string, IslandManifest> = new Map();
-
-  const discoverIslands = async () => {
-	const islandsPath = path.resolve(config.root, opts.islandsDir);
-	const pattern = path.join(islandsPath, opts.islandPattern);
-	
-	try {
-	  const files = await glob(pattern);
-	  islandManifests.clear();
-	  
-	  for (const file of files) {
-		const manifest = await createIslandManifest(file);
-		if (manifest) {
-		  islandManifests.set(manifest.name, manifest);
-		}
-	  }
-	  
-	  console.log(`🏝️ Discovered ${islandManifests.size} islands`);
-	} catch (error) {
-	  console.error('Failed to discover islands:', error);
-	}
+export function hydraPlugin(options: HydraPluginOptions = {}): Plugin {
+  const defaultOptions = {
+    islandsDir: 'src/islands',
+    islandPattern: '**/*Island.{ts,tsx,zk}',
+    enableZKFiles: true,
+    generateRegistry: true,
+    outDir: 'dist',
+    hmr: true
   };
 
-  const createIslandManifest = async (filePath: string): Promise<IslandManifest | null> => {
-	try {
-	  const content = await fs.readFile(filePath, 'utf-8');
-	  const relativePath = path.relative(config.root, filePath);
-	  const name = path.basename(filePath, path.extname(filePath));
-	  
-	  // Generate hash for cache busting
-	  const hash = createHash('md5').update(content).digest('hex').slice(0, 8);
-	  
-	  // Extract metadata from file (look for export const metadata)
-	const metadataMatch = content.match(/export\s+const\s+metadata\s*=\s*({[\s\S]*?});/);
-let metadata = {};
-
-if (metadataMatch) {
-  try {
-    // Clean up the metadata string for better JSON parsing
-    let metaStr = metadataMatch[1]
-      .replace(/\/\*[\s\S]*?\*\//g, '') // Remove block comments
-      .replace(/\/\/.*$/gm, '') // Remove line comments
-      .replace(/,\s*([}\]])/g, '$1') // Remove trailing commas
-      .replace(/(\w+):/g, '"$1":') // Quote unquoted keys
-      .replace(/'/g, '"') // Replace single quotes with double quotes
-      .trim();
-    
-    // Additional cleanup for edge cases
-    if (metaStr.endsWith(',}')) {
-      metaStr = metaStr.slice(0, -2) + '}';
-    }
-    if (metaStr.endsWith(',]')) {
-      metaStr = metaStr.slice(0, -2) + ']';
-    }
-    
-    metadata = JSON.parse(metaStr);
-  } catch (e) {
-    console.warn(`Failed to parse metadata for ${name}. Skipping metadata.`, e);
-    console.log('Raw metadata match:', metadataMatch[1]);
-    metadata = {};
-  }
-} else {
-  // No metadata export found
-  metadata = {};
-}
-	console.log(metadataMatch?.[1]);
-	  
-	  // Extract dependencies (basic import analysis)
-	  const importMatches = content.match(/import.*from\s+['"]([^'"]*)['"];?/g) || [];
-	  const dependencies = importMatches
-		.map(imp => {
-		  const match = imp.match(/from\s+['"]([^'"]*)['"]/);
-		  return match ? match[1] : null;
-		})
-		.filter(Boolean) as string[];
-	  
-	  return {
-		name,
-		path: relativePath,
-		hash,
-		dependencies,
-		metadata
-	  };
-	} catch (error) {
-	  console.error(`Failed to create manifest for ${filePath}:`, error);
-	  return null;
-	}
-  };
-
-  const generateIslandRegistry = async () => {
-	const registryPath = path.resolve(config.root, opts.outDir, 'hydra');
-	
-	try {
-	  await fs.mkdir(registryPath, { recursive: true });
-	  
-	  const registryContent = generateRegistryContent();
-	  await fs.writeFile(
-		path.join(registryPath, 'island-registry.js'),
-		registryContent
-	  );
-	  
-	  // Also generate TypeScript definitions
-	  const typesContent = generateRegistryTypes();
-	  await fs.writeFile(
-		path.join(registryPath, 'island-registry.d.ts'),
-		typesContent
-	  );
-	  
-	  console.log(`📝 Generated island registry with ${islandManifests.size} islands`);
-	} catch (error) {
-	  console.error('Failed to generate island registry:', error);
-	}
-  };
-
-  const generateRegistryContent = (): string => {
-	const islands = Array.from(islandManifests.values());
-	
-	return `/**
- * Auto-generated Hydra Island Registry
- * Generated at: ${new Date().toISOString()}
- */
-
-// Island imports
-${islands.map(island => 
-  `import ${island.name} from '${island.path.replace(/\.(ts|tsx)$/, '')}';
-import { metadata as ${island.name}Metadata } from '${island.path.replace(/\.(ts|tsx)$/, '')}';
-`).join('')}
-
-// Registry data
-export const ISLANDS = {
-${islands.map(island => 
-  `  '${island.name}': {
-	component: ${island.name},
-	metadata: ${island.name}Metadata,
-	hash: '${island.hash}',
-	dependencies: ${JSON.stringify(island.dependencies)}
-  }`
-).join(',\n')}
-};
-
-// Auto-registration function
-export function registerAllIslands() {
-  if (typeof window !== 'undefined' && window.__HYDRA_RUNTIME__) {
-	Object.entries(ISLANDS).forEach(([name, island]) => {
-	  window.__HYDRA_RUNTIME__.registerIsland({
-		name,
-		component: island.component,
-		...island.metadata
-	  });
-	});
-  }
-}
-
-// Development hot reload support
-if (import.meta.hot) {
-  import.meta.hot.on('hydra:island-updated', (data) => {
-	console.log('🔄 Hot reloading island:', data.islandPath);
-	// Re-register islands on hot reload
-	registerAllIslands();
-  });
-}
-
-// Auto-register in development
-if (import.meta.env.DEV) {
-  registerAllIslands();
-}
-
-export default ISLANDS;
-`;
-  };
-
-  const generateRegistryTypes = (): string => {
-	const islands = Array.from(islandManifests.values());
-	
-	return `/**
- * Auto-generated Hydra Island Registry Types
- * Generated at: ${new Date().toISOString()}
- */
-
-import type { IslandComponent, IslandRegistration } from '../modules/Rendering/types';
-
-// Island type definitions
-${islands.map(island => 
-  `export interface ${island.name}Island extends IslandComponent {}
-`).join('')}
-
-// Registry interface
-export interface IslandRegistry {
-${islands.map(island => 
-  `  '${island.name}': {
-	component: ${island.name}Island;
-	metadata: any;
-	hash: string;
-	dependencies: string[];
-  };`
-).join('\n')}
-}
-
-export declare const ISLANDS: IslandRegistry;
-export declare function registerAllIslands(): void;
-export default ISLANDS;
-
-// Global type augmentation
-declare global {
-  interface Window {
-	__HYDRA_RUNTIME__?: {
-	  registerIsland: (registration: IslandRegistration) => void;
-	  [key: string]: any;
-	};
-  }
-}
-`;
-  };
+  const resolvedOptions = { ...defaultOptions, ...options };
+  let projectRoot: string;
+  let islands: Map<string, any> = new Map();
 
   return {
-	name: 'vite-plugin-hydra-islands',
-	
-	configResolved(resolvedConfig) {
-	  config = resolvedConfig;
-	  opts.dev = resolvedConfig.command === 'serve';
-	},
+    name: 'vite-plugin-hydra-islands',
 
-	configureServer(devServer) {
-	  server = devServer;
-	  
-	  // Add middleware for island registry API
-	  devServer.middlewares.use('/api/hydra/islands', async (req, res, next) => {
-		if (req.method === 'GET') {
-		  const islands = Array.from(islandManifests.values());
-		  res.setHeader('Content-Type', 'application/json');
-		  res.end(JSON.stringify({ islands }));
-		} else {
-		  next();
-		}
-	  });
+    configResolved(config) {
+      projectRoot = config.root;
+    },
 
-	  // Add middleware for individual island info
-	  devServer.middlewares.use('/api/hydra/islands/:name', async (req, res, next) => {
-		const islandName = req.url?.split('/').pop();
-		if (islandName && islandManifests.has(islandName)) {
-		  const manifest = islandManifests.get(islandName);
-		  res.setHeader('Content-Type', 'application/json');
-		  res.end(JSON.stringify(manifest));
-		} else {
-		  res.statusCode = 404;
-		  res.end(JSON.stringify({ error: 'Island not found' }));
-		}
-	  });
-	},
+    async buildStart() {
+      try {
+        // Discover islands
+        const pattern = path.join(resolvedOptions.islandsDir, resolvedOptions.islandPattern);
+        const files = await glob(pattern);
 
-	async buildStart() {
-	  // Discover islands at build start
-	  await discoverIslands();
-	  
-	  if (opts.generateRegistry) {
-		await generateIslandRegistry();
-	  }
-	},
+        // Process each island file
+        for (const file of files) {
+          const content = await fs.readFile(file, 'utf-8');
+          const isZKFile = file.endsWith('.zk');
 
-	async handleHotUpdate({ file, server }) {
-	  if (!opts.hmr || !server) return;
+          if (isZKFile && resolvedOptions.enableZKFiles) {
+            const parsed = this.parseZKFile(content);
+            islands.set(file, {
+              type: 'zk',
+              content: parsed,
+              metadata: this.extractMetadata(parsed.script)
+            });
+          } else {
+            islands.set(file, {
+              type: 'ts',
+              content,
+              metadata: this.extractMetadata(content)
+            });
+          }
+        }
 
-	  // Check if the changed file is an island
-	  const islandPath = path.relative(config.root, file);
-	  const isIsland = islandPath.includes(opts.islandsDir) && 
-					  (islandPath.endsWith('Island.ts') || islandPath.endsWith('Island.tsx'));
-	  
-	  if (isIsland) {
-		console.log(`🌊 Hot reloading island: ${path.basename(file)}`);
-		
-		// Re-discover islands and update registry
-		await discoverIslands();
-		
-		if (opts.generateRegistry) {
-		  await generateIslandRegistry();
-		}
-		
-		// Send custom HMR update for island registry
-		server.ws.send({
-		  type: 'custom',
-		  event: 'hydra:island-updated',
-		  data: {
-			islandPath,
-			timestamp: Date.now()
-		  }
-		});
-	  }
-	},
+        // Generate registry if enabled
+        if (resolvedOptions.generateRegistry) {
+          await this.generateRegistry();
+        }
+      } catch (error) {
+        console.error('Failed to discover islands:', error);
+      }
+    },
 
-	generateBundle(options, bundle) {
-	  // Add island manifests to bundle
-	  if (opts.generateRegistry) {
-		const registryContent = generateRegistryContent();
-		
-		this.emitFile({
-		  type: 'asset',
-		  fileName: 'hydra/island-registry.js',
-		  source: registryContent
-		});
-	  }
-	}
+    configureServer(server) {
+      // Add API endpoints for island discovery
+      server.middlewares.use('/api/hydra/islands', (req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ islands: Array.from(islands.keys()) }));
+      });
+
+      server.middlewares.use('/api/hydra/islands/:name', (req, res) => {
+        const islandPath = req.url?.split('/').pop();
+        const island = Array.from(islands.entries())
+          .find(([path]) => path.includes(islandPath || ''));
+
+        if (island) {
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(island[1]));
+        } else {
+          res.statusCode = 404;
+          res.end(JSON.stringify({ error: 'Island not found' }));
+        }
+      });
+    },
+
+    async handleHotUpdate({ file, server }) {
+      if (!resolvedOptions.hmr) return;
+
+      const isIsland = file.includes(resolvedOptions.islandsDir) &&
+        (file.endsWith('.zk') || file.match(/Island\.(ts|tsx)$/));
+
+      if (isIsland) {
+        const content = await fs.readFile(file, 'utf-8');
+        const isZKFile = file.endsWith('.zk');
+        const relativePath = path.relative(projectRoot, file);
+
+        server.ws.send({
+          type: 'custom',
+          event: 'hydra:island-updated',
+          data: {
+            islandPath: relativePath,
+            type: isZKFile ? 'zk' : 'ts',
+            content: isZKFile ? this.parseZKFile(content) : content
+          }
+        });
+      }
+    },
+
+    generateBundle() {
+      if (!resolvedOptions.generateRegistry) return;
+
+      const registry = Array.from(islands.entries()).map(([file, data]) => ({
+        path: file,
+        ...data
+      }));
+
+      this.emitFile({
+        type: 'asset',
+        fileName: 'hydra/island-registry.js',
+        source: `export const ISLANDS = ${JSON.stringify(registry, null, 2)};`
+      });
+    },
+
+    parseZKFile(content: string | undefined | null) {
+      if (!content) {
+        return {
+          template: '',
+          script: '',
+          style: '',
+          error: 'Invalid or empty content'
+        };
+      }
+
+      try {
+        const templateMatch = content.match(/<template>([\s\S]*?)<\/template>/);
+        const scriptMatch = content.match(/<script[^>]*>([\s\S]*?)<\/script>/);
+        const styleMatch = content.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+
+        return {
+          template: templateMatch ? templateMatch[1].trim() : '',
+          script: scriptMatch ? scriptMatch[1].trim() : '',
+          style: styleMatch ? styleMatch[1].trim() : '',
+          error: !templateMatch ? 'Missing template section' : undefined
+        };
+      } catch (error) {
+        return {
+          template: '',
+          script: '',
+          style: '',
+          error: error instanceof Error ? error.message : 'Failed to parse ZK file'
+        };
+      }
+    },
+
+    extractMetadata(content: string) {
+      try {
+        const metadataMatch = content.match(/export\s+const\s+metadata\s*=\s*({[\s\S]*?});/);
+        if (metadataMatch) {
+          return JSON.parse(metadataMatch[1]);
+        }
+      } catch (error) {
+        console.warn('Failed to parse metadata:', error);
+      }
+      return {};
+    },
+
+    async generateRegistry() {
+      try {
+        const outDir = path.join(projectRoot, resolvedOptions.outDir, 'hydra');
+        await fs.mkdir(outDir, { recursive: true });
+
+        const registry = Array.from(islands.entries()).map(([file, data]) => ({
+          path: file,
+          ...data
+        }));
+
+        await fs.writeFile(
+          path.join(outDir, 'island-registry.js'),
+          `export const ISLANDS = ${JSON.stringify(registry, null, 2)};`
+        );
+
+        await fs.writeFile(
+          path.join(outDir, 'island-registry.d.ts'),
+          `export declare const ISLANDS: Array<{
+  path: string;
+  type: 'zk' | 'ts';
+  content: any;
+  metadata: any;
+}>;`
+        );
+      } catch (error) {
+        console.error('Failed to generate island registry:', error);
+      }
+    }
   };
 }
-
-export default hydraPlugin;

@@ -289,17 +289,28 @@ export class Signal<T> {
     
     debugLog(`Disposing signal ${this._id}`, { name: this._name, subscribers: this._subscribers.size });
     
+    // First mark as disposed to prevent any new updates
     this._disposed = true;
+
+    // Immediately notify subscribers to trigger cleanup
     const subscribersToNotify = Array.from(this._subscribers);
     this._subscribers.clear(); 
+    
+    // Execute subscriber cleanup synchronously
     for (const comp of subscribersToNotify) {
-        comp.dependencies.delete(this); 
+        // First remove from dependencies to prevent re-entrancy
+        comp.dependencies.delete(this);
+        // Then execute the computation to trigger cleanup
+        if (!comp.isDisposed) {
+            comp.execute();
+        }
     }
     
+    // Clean up ECS integration
     if (typeof this._ecsEntity === 'number' && this._ecsManager && typeof this._ecsManager.removeComponent === 'function') {
       try {
         this._ecsManager.removeComponent(this._ecsEntity, SignalECSComponent); 
-         debugLog(`Signal ${this.id} removed from ECS entity ${this._ecsEntity}`);
+        debugLog(`Signal ${this.id} removed from ECS entity ${this._ecsEntity}`);
       } catch (error: any) {
         this._handleError(new SignalError(`Failed to cleanup ECS: ${error.message}`, this._id, this._name));
       }

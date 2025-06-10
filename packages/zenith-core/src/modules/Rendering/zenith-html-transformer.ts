@@ -134,9 +134,15 @@ export class ZenithHtmlTransformer {
         return `<${tag}${this.buildAttributeString(attrs)} />`;
       }
 
-      return `<${tag}${this.buildAttributeString(attrs)}>${innerHTML}</${tag}>`;
+      // Interpolate any expressions in innerHTML
+      const interpolatedContent = await this.interpolate(innerHTML);
+
+      return `<${tag}${this.buildAttributeString(attrs)}>${interpolatedContent}</${tag}>`;
 
     } catch (error) {
+      if (!this.options.fallbackToPlaceholder) {
+        throw error;
+      }
       return this.renderErrorPlaceholder(template, error);
     }
   }
@@ -326,11 +332,43 @@ export class ZenithHtmlTransformer {
    * Build inner HTML content
    */
   private async buildInnerHTML(template: ZenithParsedTemplate): Promise<string> {
-    const slotContents = await Promise.all(
-      Object.values(template.slots).map(content => this.interpolate(content))
-    );
-    
-    return slotContents.join('');
+    try {
+      // Handle slots first
+      const slotContents = await Promise.all(
+        Object.entries(template.slots).map(async ([name, content]) => {
+          const interpolated = await this.interpolate(content);
+          return `<slot name="${this.escapeHtml(name)}">${interpolated}</slot>`;
+        })
+      );
+
+      // Handle direct content if any
+      let content = '';
+      if (template.attributes['content']) {
+        content = await this.interpolate(template.attributes['content']);
+      }
+
+      // Handle expressions in template
+      const expressions = template.expressions || [];
+      const interpolatedExpressions = await Promise.all(
+        expressions.map(expr => this.evalInContext(expr).then(value => 
+          value != null ? String(value) : ''
+        ))
+      );
+
+      // Combine all content
+      const allContent = [
+        ...slotContents,
+        content,
+        ...interpolatedExpressions
+      ].filter(Boolean);
+
+      return allContent.join('') || template.attributes['default-content'] || '';
+    } catch (error) {
+      if (this.options.debugMode) {
+        console.warn('Failed to build inner HTML:', error);
+      }
+      return '';
+    }
   }
 
   /**
@@ -395,15 +433,15 @@ export class ZenithHtmlTransformer {
    */
   private async interpolate(content: string): Promise<string> {
     // Process all {{ expression }} patterns
-    const expressions = content.match(/\\{\\{\\s*([^}]+?)\\s*\\}\\}/g) || [];
+    const expressions = content.match(/\{\{\s*([^}]+?)\s*\}\}/g) || [];
     
     let result = content;
     for (const match of expressions) {
-      const expr = match.replace(/\\{\\{\\s*|\\s*\\}\\}/g, '');
+      const expr = match.replace(/\{\{\s*|\s*\}\}/g, '');
       try {
         const value = await this.evalInContext(expr);
         const stringValue = value != null ? String(value) : '';
-        result = result.replace(match, stringValue);
+        result = result.replace(match, this.escapeHtml(stringValue));
       } catch (error) {
         result = result.replace(match, '');
         if (this.options.debugMode) {
@@ -457,7 +495,10 @@ export class ZenithHtmlTransformer {
           return await this.context.verifySystem.verifyProof(id, proof);
         }
         return ZenithTemplateParser.validateZKProof(proof);
-      } catch {
+      } catch (error) {
+        if (this.options.debugMode) {
+          console.warn('ZK verification failed:', error);
+        }
         return false;
       }
     };
@@ -470,9 +511,12 @@ export class ZenithHtmlTransformer {
     return (entityId: Entity, componentType: string): any => {
       try {
         if (!this.context.ecsManager) return null;
-        const componentMap = this.context.ecsManager.dumpComponentMap().get(componentType);
-        return componentMap?.get(entityId) || null;
-      } catch {
+        const component = this.context.ecsManager.getComponent(entityId, componentType);
+        return component || null;
+      } catch (error) {
+        if (this.options.debugMode) {
+          console.warn('ECS get failed:', error);
+        }
         return null;
       }
     };
@@ -485,9 +529,12 @@ export class ZenithHtmlTransformer {
     return (entityId: Entity, componentType: string): boolean => {
       try {
         if (!this.context.ecsManager) return false;
-        const componentMap = this.context.ecsManager.dumpComponentMap().get(componentType);
-        return componentMap?.has(entityId) || false;
-      } catch {
+        const component = this.context.ecsManager.getComponent(entityId, componentType);
+        return !!component;
+      } catch (error) {
+        if (this.options.debugMode) {
+          console.warn('ECS has check failed:', error);
+        }
         return false;
       }
     };
@@ -501,7 +548,10 @@ export class ZenithHtmlTransformer {
       try {
         if (!this.context.ecsManager) return [];
         return this.context.ecsManager.getEntitiesWithQuery(queryId);
-      } catch {
+      } catch (error) {
+        if (this.options.debugMode) {
+          console.warn('ECS query failed:', error);
+        }
         return [];
       }
     };
@@ -513,11 +563,34 @@ export class ZenithHtmlTransformer {
   private renderZKVerificationPlaceholder(template: ZenithParsedTemplate, error?: string): string {
     const componentName = template.componentName || 'div';
     const errorMsg = error || 'ZK proof verification failed';
+    const attrs = { ...template.attributes };
     
-    return `<${componentName} class=\"zk-verification-placeholder\" data-zk-error=\"${errorMsg}\">
+    // Add ZK data attributes
+    if (template.zkDirectives) {
+      if (template.zkDirectives.zkProof) {
+        attrs['data-zk-proof'] = template.zkDirectives.zkProof;
+      }
+      if (template.zkDirectives.zkTrust) {
+        attrs['data-zk-trust'] = template.zkDirectives.zkTrust;
+      }
+      if (template.zkDirectives.zkEntity) {
+        attrs['data-zk-entity'] = template.zkDirectives.zkEntity;
+      }
+      if (template.zkDirectives.zkStrategy) {
+        attrs['data-zk-strategy'] = template.zkDirectives.zkStrategy;
+      }
+    }
+    
+    // Add placeholder classes and error data
+    attrs['class'] = ['zk-verification-placeholder', attrs['class']].filter(Boolean).join(' ');
+    attrs['data-zk-error'] = errorMsg;
+    
+    const attrString = this.buildAttributeString(attrs);
+    
+    return `<${componentName}${attrString}>
       <div class=\"zk-verification-message\">
         🔒 Verification Required
-        ${this.options.debugMode ? `<small>${errorMsg}</small>` : ''}
+        ${this.options.debugMode ? `<small>${this.escapeHtml(errorMsg)}</small>` : ''}
       </div>
     </${componentName}>`;
   }
@@ -528,15 +601,18 @@ export class ZenithHtmlTransformer {
   private renderErrorPlaceholder(template: ZenithParsedTemplate, error: any): string {
     const componentName = template.componentName || 'div';
     const errorMsg = error instanceof Error ? error.message : 'Rendering error';
+    const attrs = { ...template.attributes };
     
-    if (!this.options.fallbackToPlaceholder) {
-      throw error;
-    }
+    // Add error classes and data
+    attrs['class'] = ['render-error-placeholder', attrs['class']].filter(Boolean).join(' ');
+    attrs['data-error'] = this.escapeHtml(errorMsg);
     
-    return `<${componentName} class=\"render-error-placeholder\" data-error=\"${errorMsg}\">
+    const attrString = this.buildAttributeString(attrs);
+    
+    return `<${componentName}${attrString}>
       <div class=\"error-message\">
         ⚠️ Rendering Error
-        ${this.options.debugMode ? `<small>${errorMsg}</small>` : ''}
+        ${this.options.debugMode ? `<small>${this.escapeHtml(errorMsg)}</small>` : ''}
       </div>
     </${componentName}>`;
   }

@@ -2,210 +2,641 @@
   CounterIsland.zk - ZenithKernel Single-File Component
   
   This is a standard ZenithKernel SFC with three main sections:
-  1. <template> - The declarative UI structure
-  2. <script> - The component logic and exports
+  1. <template> - The declarative UI structure with ZK and ECS directives
+  2. <script> - The component logic with proper package imports
   3. <style> - Component-scoped styles
+  
+  ZK Features demonstrated:
+  - zk-entity binding for zero-knowledge entity verification
+  - ECS component integration through data attributes
+  - Hydration strategies and timing measurement
+  - Reactive state management with signals
 -->
 
 <template>
-  <Hydra type="island" id="counter-island" execType="local" context="{{ context }}">
+  <Hydra 
+    type="island" 
+    id="counter-island" 
+    execType="local" 
+    context="{{ context }}"
+    data-hydration-strategy="{{ context?.strategy || 'immediate' }}"
+    data-hydration-priority="normal"
+    data-ecs-entity="{{ entityId }}"
+    data-ecs-components='["Counter"]'
+    zk-entity="{{ entityId }}"
+    zk-trust="{{ context?.trustLevel || 'local' }}"
+  >
     <meta
       title="{{ title }}"
-      description="Interactive counter component with ECS integration"
+      description="Interactive counter component with ECS integration and ZK verification"
     />
     
-    <div class="counter-island">
+    <div class="counter-island" data-component="CounterIsland">
       <div class="island-header">
         <h3>{{ title }}</h3>
-        <span class="hydration-info">
-          Strategy: {{ context?.strategy || 'immediate' }} | 
-          Trust: {{ context?.trustLevel || 'local' }}
-        </span>
+        <div class="island-meta">
+          <span class="hydration-info">
+            Strategy: {{ context?.strategy || 'immediate' }} | 
+            Trust: {{ context?.trustLevel || 'local' }}
+          </span>
+          <span v-if="entityId" class="entity-badge" data-entity="{{ entityId }}">
+            Entity: {{ entityId }}
+          </span>
+        </div>
       </div>
       
       <div class="island-content">
-        <div class="count-display">{{ count }}</div>
+        <div class="count-display" :class="{ 'updating': isUpdating }">
+          {{ count }}
+        </div>
+        
         <div class="controls">
-          <button class="decrement-btn" @click="decrement" zk-entity="{{ entityId }}">-</button>
-          <button class="increment-btn" @click="increment" zk-entity="{{ entityId }}">+</button>
-          <button class="reset-btn" @click="reset" zk-entity="{{ entityId }}">Reset</button>
+          <button 
+            class="decrement-btn" 
+            @click="decrement" 
+            zk-entity="{{ entityId }}"
+            :disabled="isUpdating"
+            data-action="decrement"
+          >
+            -
+          </button>
+          
+          <button 
+            class="increment-btn" 
+            @click="increment" 
+            zk-entity="{{ entityId }}"
+            :disabled="isUpdating"
+            data-action="increment"
+          >
+            +
+          </button>
+          
+          <button 
+            class="reset-btn" 
+            @click="reset" 
+            zk-entity="{{ entityId }}"
+            :disabled="isUpdating"
+            data-action="reset"
+          >
+            Reset
+          </button>
         </div>
         
         <div v-if="entityId" class="entity-info">
-          Entity ID: {{ entityId }}
+          <div class="entity-details">
+            <span>Entity ID: {{ entityId }}</span>
+            <span class="entity-status" :class="ecsConnected ? 'connected' : 'disconnected'">
+              {{ ecsConnected ? '🟢 ECS Connected' : '🔴 ECS Disconnected' }}
+            </span>
+          </div>
+        </div>
+
+        <div v-if="debugMode" class="debug-info">
+          <details>
+            <summary>Debug Information</summary>
+            <div class="debug-content">
+              <p>Hydration Time: {{ hydrationTime }}ms</p>
+              <p>Update Count: {{ updateCount }}</p>
+              <p>Component State: {{ JSON.stringify(state, null, 2) }}</p>
+              <p>Context: {{ JSON.stringify(context, null, 2) }}</p>
+            </div>
+          </details>
         </div>
       </div>
       
       <div class="island-footer">
-        <span class="hydration-time">Hydrated in {{ hydrationTime }}ms</span>
+        <span class="hydration-time">⚡ Hydrated in {{ hydrationTime }}ms</span>
+        <span v-if="lastUpdate" class="last-update">
+          Last update: {{ formatTime(lastUpdate) }}
+        </span>
       </div>
     </div>
   </Hydra>
 </template>
 
 <script>
-  import { reactive, computed } from '../../../src/core/signals';
-  import type { IslandComponent } from '../../../src/modules/Rendering/types';
+  // Updated imports for the new package structure
+  import { reactive, computed } from '../../../packages/zenith-core/src/core/signals';
+  import type { IslandComponent } from '../../../packages/zenith-core/src/modules/Rendering/types';
   import { 
     createCounterController, 
-    setKernelReference,
+    setZenithReference,
     ComponentContext 
   } from '../sdk/ComponentSDK';
 
-  // Component logic
+  // Component metadata for island registration
+  export const metadata = {
+    name: 'CounterIsland',
+    version: '1.0.0',
+    trustLevel: 'local',
+    hydrationStrategies: ['immediate', 'visible', 'interaction', 'idle'],
+    ecsComponents: ['Counter'],
+    zkRequirements: {
+      proofType: 'counter-operation',
+      verificationLevel: 'local'
+    }
+  };
+
+  // Main component definition
   export default {
-    // Metadata for island registration
-    metadata: {
-      name: 'CounterIsland',
-      version: '1.0.0',
-      trustLevel: 'local',
-      hydrationStrategies: ['immediate', 'visible', 'interaction', 'idle'],
-      ecsComponents: ['Counter']
-    },
+    metadata,
     
-    // Component setup and reactivity using the SDK
+    // Component setup function with reactive state
     setup(props, context) {
-      // Use the kernel reference from context if available
+      console.log('🚀 Setting up CounterIsland with props:', props, 'context:', context);
+
+      // Set up ZenithKernel reference if available
       if (context?.kernel) {
-        setKernelReference(context.kernel);
+        setZenithReference(context.kernel);
       }
       
-      // Create a componentContext object from the hydra context
+      // Create component context for the controller
       const componentContext: ComponentContext = {
-        strategy: context?.strategy,
-        trustLevel: context?.trustLevel,
-        entityId: props.entityId
+        strategy: context?.strategy || 'immediate',
+        trustLevel: context?.trustLevel || 'local',
+        entityId: props.entityId || null
       };
       
-      // Create controller with SDK
-      const controller = createCounterController(props, componentContext);
+      // Create the counter controller using the SDK
+      const controller = createCounterController({
+        initialCount: props.initialCount || 0,
+        title: props.title || 'Counter Island',
+        entityId: props.entityId || null
+      }, componentContext);
       
-      // Get reactive state from controller
+      // Get reactive state from the controller
       const state = controller.getState();
       
-      // Start hydration timer
+      // Additional reactive state for UI
+      const isUpdating = reactive(false);
+      const updateCount = reactive(0);
+      const lastUpdate = reactive(null);
+      const ecsConnected = reactive(!!props.entityId);
+      const debugMode = reactive(props.debug || false);
+      
+      // Hydration timing
       const startTime = performance.now();
       console.log(`🌊 Hydrating CounterIsland at ${startTime}ms`);
       
       // Computed properties
-      const formattedTime = computed(() => `${state.hydrationTime}ms`);
-      
-      // Set hydration time when mounted
-      onMounted(() => {
-        state.hydrationTime = Math.round(performance.now() - startTime);
+      const hydrationTime = computed(() => {
+        return Math.round(performance.now() - startTime);
+      });
+
+      const formatTime = computed(() => (timestamp) => {
+        if (!timestamp) return '';
+        return new Date(timestamp).toLocaleTimeString();
       });
       
-      // Mount the controller
-      controller.mount();
+      // Action handlers with optimistic updates
+      const increment = async () => {
+        isUpdating.value = true;
+        updateCount.value++;
+        lastUpdate.value = Date.now();
+        
+        try {
+          await controller.increment();
+          console.log('✅ Counter incremented successfully');
+        } catch (error) {
+          console.error('❌ Failed to increment counter:', error);
+        } finally {
+          isUpdating.value = false;
+        }
+      };
+
+      const decrement = async () => {
+        isUpdating.value = true;
+        updateCount.value++;
+        lastUpdate.value = Date.now();
+        
+        try {
+          await controller.decrement();
+          console.log('✅ Counter decremented successfully');
+        } catch (error) {
+          console.error('❌ Failed to decrement counter:', error);
+        } finally {
+          isUpdating.value = false;
+        }
+      };
+
+      const reset = async () => {
+        isUpdating.value = true;
+        updateCount.value++;
+        lastUpdate.value = Date.now();
+        
+        try {
+          await controller.reset();
+          console.log('✅ Counter reset successfully');
+        } catch (error) {
+          console.error('❌ Failed to reset counter:', error);
+        } finally {
+          isUpdating.value = false;
+        }
+      };
       
-      // Return public API and state for the template
+      // Lifecycle management
+      const onMount = () => {
+        controller.mount();
+        console.log(`🎯 CounterIsland mounted with entity ${componentContext.entityId}`);
+      };
+
+      const onUnmount = () => {
+        controller.unmount();
+        console.log('🧹 CounterIsland unmounted and cleaned up');
+      };
+      
+      // Return the public API for the template
       return {
+        // State
         state,
-        formattedTime,
-        increment: () => controller.increment(),
-        decrement: () => controller.decrement(),
-        reset: () => controller.reset(),
-        context: componentContext
+        count: computed(() => state.count),
+        title: computed(() => state.title),
+        entityId: computed(() => state.entityId),
+        isUpdating,
+        updateCount,
+        lastUpdate,
+        ecsConnected,
+        debugMode,
+        hydrationTime,
+        
+        // Context
+        context: componentContext,
+        
+        // Actions
+        increment,
+        decrement,
+        reset,
+        
+        // Computed
+        formatTime,
+        
+        // Lifecycle
+        onMount,
+        onUnmount
       };
     },
     
-    // Component definition with declarative rendering
-    mount: async function(element, props, context) {
-      // Get the reactive data and methods
-      const { state, formattedTime, increment, decrement, reset } = this.setup(props, context);
+    // Component mount function for runtime integration
+    async mount(element, props, context) {
+      console.log('🔧 Mounting CounterIsland on element:', element);
       
-      // The template is automatically rendered based on the reactive state
-      // No direct DOM manipulation needed
+      // Get the setup result
+      const componentInstance = this.setup(props, context);
       
-      // Clean-up function
+      // Call the mount lifecycle
+      componentInstance.onMount();
+      
+      // Set up hydration timing
+      setTimeout(() => {
+        if (componentInstance.state) {
+          componentInstance.state.hydrationTime = componentInstance.hydrationTime.value;
+        }
+      }, 0);
+      
+      // Return cleanup function
       return () => {
-        console.log('CounterIsland: Unmounted and cleaned up');
+        componentInstance.onUnmount();
       };
     }
   };
   
-  // Lifecycle hooks
+  // Lifecycle hooks for advanced usage
   export const onBeforeMount = (props) => {
-    console.log('CounterIsland: Before mount hook', props);
+    console.log('🔄 CounterIsland: Before mount hook with props:', props);
+    
+    // Pre-mount validation
+    if (props.entityId && !props.entityId.match(/^[a-zA-Z0-9_-]+$/)) {
+      console.warn('⚠️ Invalid entity ID format:', props.entityId);
+    }
   };
   
-  // Lifecycle hooks
   export const onMounted = (callback) => {
-    // In a real implementation, this would register the callback
-    // to be executed when the component is mounted
-    setTimeout(callback, 0);
+    // Register post-mount callback
+    if (typeof callback === 'function') {
+      setTimeout(callback, 0);
+    }
+  };
+
+  export const onBeforeUnmount = () => {
+    console.log('🔄 CounterIsland: Before unmount hook');
+  };
+
+  // ZK verification hooks
+  export const onZKVerified = (proof, entityId) => {
+    console.log('🔐 ZK verification successful for entity:', entityId);
+  };
+
+  export const onZKVerificationFailed = (error, entityId) => {
+    console.error('🔒 ZK verification failed for entity:', entityId, error);
   };
 </script>
 
 <style>
-  /* Component-scoped styles */
+  /* Component-scoped styles with modern CSS features */
   .counter-island {
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin: 10px 0;
-    font-family: system-ui, sans-serif;
+    padding: 24px;
+    border: 1px solid #e1e5e9;
+    border-radius: 12px;
+    margin: 16px 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .counter-island::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #4CAF50, #2196F3, #9C27B0);
   }
   
   .island-header {
     display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .island-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .island-meta {
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 8px;
   }
   
   .hydration-info {
     font-size: 12px;
-    color: #666;
+    color: #6c757d;
+    background: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-family: 'Monaco', 'Consolas', monospace;
+  }
+
+  .entity-badge {
+    font-size: 11px;
+    color: #495057;
+    background: #e9ecef;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
   }
   
   .count-display {
-    font-size: 32px;
-    font-weight: bold;
+    font-size: 3rem;
+    font-weight: 700;
     text-align: center;
-    margin: 20px 0;
+    margin: 24px 0;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    padding: 16px;
+    border-radius: 12px;
+    background: #f8f9fa;
+    border: 2px solid transparent;
+  }
+
+  .count-display.updating {
+    transform: scale(1.05);
+    border-color: #007bff;
+    background: #e3f2fd;
+    color: #1976d2;
   }
   
   .controls {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
+    margin: 20px 0;
   }
   
   .controls button {
-    padding: 8px 16px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    min-width: 60px;
+  }
+
+  .controls button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  .controls button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .controls button:not(:disabled):active {
+    transform: translateY(0);
   }
   
   .increment-btn {
-    background-color: #4CAF50;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
     color: white;
   }
   
   .decrement-btn {
-    background-color: #f44336;
+    background: linear-gradient(135deg, #f44336, #d32f2f);
     color: white;
   }
   
   .reset-btn {
-    background-color: #2196F3;
+    background: linear-gradient(135deg, #2196F3, #1976d2);
     color: white;
   }
   
   .entity-info {
-    margin-top: 15px;
+    margin-top: 20px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+  }
+
+  .entity-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 13px;
+    color: #495057;
+  }
+
+  .entity-status {
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+
+  .entity-status.connected {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .entity-status.disconnected {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  .debug-info {
+    margin-top: 16px;
     font-size: 12px;
-    color: #666;
-    text-align: center;
+  }
+
+  .debug-info details {
+    background: #f1f3f4;
+    border-radius: 6px;
+    padding: 8px;
+  }
+
+  .debug-info summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #5f6368;
+    user-select: none;
+  }
+
+  .debug-content {
+    margin-top: 8px;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Consolas', monospace;
+    white-space: pre-wrap;
+    color: #333;
   }
   
   .island-footer {
-    margin-top: 15px;
-    font-size: 12px;
-    color: #666;
-    text-align: right;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: #6c757d;
+  }
+
+  .hydration-time {
+    background: #e8f5e8;
+    color: #2e7d32;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  .last-update {
+    font-style: italic;
+  }
+
+  /* Responsive design */
+  @media (max-width: 480px) {
+    .counter-island {
+      padding: 16px;
+      margin: 8px 0;
+    }
+
+    .count-display {
+      font-size: 2.5rem;
+      margin: 16px 0;
+    }
+
+    .controls {
+      gap: 8px;
+    }
+
+    .controls button {
+      padding: 10px 16px;
+      font-size: 14px;
+      min-width: 50px;
+    }
+
+    .island-meta {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .entity-details {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .island-footer {
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+    }
+  }
+
+  /* Animation for count changes */
+  @keyframes countChange {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  .count-display.updating {
+    animation: countChange 0.3s ease;
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .counter-island {
+      background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+      border-color: #4a5568;
+      color: #e2e8f0;
+    }
+
+    .island-header h3 {
+      color: #e2e8f0;
+    }
+
+    .count-display {
+      background: #4a5568;
+      color: #e2e8f0;
+    }
+
+    .count-display.updating {
+      background: #2b6cb0;
+      color: white;
+    }
+
+    .entity-info {
+      background: #4a5568;
+      border-left-color: #63b3ed;
+    }
+
+    .debug-info details {
+      background: #4a5568;
+    }
+
+    .debug-content {
+      background: #2d3748;
+      color: #e2e8f0;
+    }
   }
 </style>
