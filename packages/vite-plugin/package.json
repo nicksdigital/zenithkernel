@@ -1,6 +1,6 @@
 {
   "name": "@zenithcore/vite-plugin",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Vite plugin for ZenithKernel framework with .zk file support and optimizations",
   "type": "module",
   "main": "src/index.ts",
