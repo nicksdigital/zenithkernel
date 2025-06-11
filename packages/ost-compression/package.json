@@ -1,6 +1,6 @@
 {
   "name": "@zenithcore/ost-compression",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Okaily-Srivastava-Tbakhi (OST) encoding algorithm for textual data compression, optimized for JavaScript/TypeScript and ZenithKernel bundles",
   "type": "module",
   "main": "src/index.ts",
