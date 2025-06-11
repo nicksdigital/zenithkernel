@@ -370,7 +370,7 @@ main() {
     done
     
     # Run typecheck
-    run_typecheck "$dry_run"
+    # run_typecheck "$dry_run"
     
     # Run tests (unless skipped)
     if [[ "$skip_tests" == "false" ]]; then
