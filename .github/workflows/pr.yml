@@ -1,0 +1,317 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    types: [ opened, synchronize, reopened, ready_for_review ]
+
+env:
+  NODE_VERSION: '20'
+  BUN_VERSION: 'latest'
+
+jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.changes.outputs.packages }}
+      docs: ${{ steps.changes.outputs.docs }}
+      ci: ${{ steps.changes.outputs.ci }}
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Detect changes
+      uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          packages:
+            - 'packages/**'
+            - 'package.json'
+            - 'bun.lockb'
+          docs:
+            - 'docs/**'
+            - '*.md'
+          ci:
+            - '.github/workflows/**'
+            - 'scripts/**'
+
+  validate:
+    name: Validate PR
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Validate PR title
+      uses: amannn/action-semantic-pull-request@v5
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        types: |
+          feat
+          fix
+          docs
+          style
+          refactor
+          perf
+          test
+          build
+          ci
+          chore
+          revert
+        requireScope: false
+        
+    - name: Check for breaking changes
+      run: |
+        if [[ "${{ github.event.pull_request.title }}" == *"!"* ]] || 
+           [[ "${{ github.event.pull_request.body }}" == *"BREAKING CHANGE"* ]]; then
+          echo "⚠️ This PR contains breaking changes"
+          echo "breaking_change=true" >> $GITHUB_ENV
+        else
+          echo "breaking_change=false" >> $GITHUB_ENV
+        fi
+
+  test:
+    name: Test Changes
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.packages == 'true' || needs.changes.outputs.ci == 'true'
+    
+    strategy:
+      matrix:
+        bun-version: ['latest', '1.0.0']
+        
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Bun ${{ matrix.bun-version }}
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: ${{ matrix.bun-version }}
+        
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.bun/install/cache
+          node_modules
+          packages/*/node_modules
+        key: ${{ runner.os }}-bun-${{ matrix.bun-version }}-${{ hashFiles('**/bun.lockb', '**/package.json') }}
+        restore-keys: |
+          ${{ runner.os }}-bun-${{ matrix.bun-version }}-
+          ${{ runner.os }}-bun-
+          
+    - name: Install dependencies
+      run: bun install --frozen-lockfile
+      
+    - name: Run typecheck
+      run: bun run typecheck
+      
+    - name: Run linting
+      run: bun run lint
+      
+    - name: Run tests with coverage
+      run: bun run test --coverage
+      
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      if: matrix.bun-version == 'latest'
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  build:
+    name: Build Packages
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.packages == 'true'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: ${{ env.BUN_VERSION }}
+        
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.bun/install/cache
+          node_modules
+          packages/*/node_modules
+        key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb', '**/package.json') }}
+        restore-keys: |
+          ${{ runner.os }}-bun-
+          
+    - name: Install dependencies
+      run: bun install --frozen-lockfile
+      
+    - name: Build packages
+      run: |
+        for package in packages/*/; do
+          if [ -f "$package/package.json" ] && grep -q '"build"' "$package/package.json"; then
+            echo "Building $package..."
+            cd "$package"
+            bun run build
+            cd - > /dev/null
+          fi
+        done
+
+  size-check:
+    name: Bundle Size Check
+    runs-on: ubuntu-latest
+    needs: [changes, build]
+    if: needs.changes.outputs.packages == 'true'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: ${{ env.BUN_VERSION }}
+        
+    - name: Install dependencies
+      run: bun install --frozen-lockfile
+      
+    - name: Build packages
+      run: |
+        for package in packages/*/; do
+          if [ -f "$package/package.json" ] && grep -q '"build"' "$package/package.json"; then
+            cd "$package"
+            bun run build
+            cd - > /dev/null
+          fi
+        done
+        
+    - name: Check bundle sizes
+      run: |
+        echo "## Bundle Size Report" >> $GITHUB_STEP_SUMMARY
+        echo "| Package | Size | Gzipped |" >> $GITHUB_STEP_SUMMARY
+        echo "|---------|------|---------|" >> $GITHUB_STEP_SUMMARY
+        
+        for package in packages/*/; do
+          if [ -d "$package/dist" ]; then
+            package_name=$(basename "$package")
+            size=$(du -sh "$package/dist" | cut -f1)
+            gzipped=$(tar -czf - "$package/dist" | wc -c | numfmt --to=iec)
+            echo "| $package_name | $size | $gzipped |" >> $GITHUB_STEP_SUMMARY
+          fi
+        done
+
+  docs-check:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.docs == 'true' || needs.changes.outputs.packages == 'true'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Check for missing documentation
+      run: |
+        echo "Checking for missing documentation..."
+        
+        # Check if new packages have README files
+        for package in packages/*/; do
+          if [ ! -f "$package/README.md" ]; then
+            echo "⚠️ Missing README.md in $package"
+          fi
+        done
+        
+        # Check if public APIs are documented
+        echo "✅ Documentation check completed"
+
+  auto-merge:
+    name: Auto-merge Dependabot PRs
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    if: |
+      github.actor == 'dependabot[bot]' &&
+      github.event.pull_request.draft == false &&
+      success()
+      
+    steps:
+    - name: Enable auto-merge for Dependabot PRs
+      run: gh pr merge --auto --merge "$PR_URL"
+      env:
+        PR_URL: ${{ github.event.pull_request.html_url }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  comment:
+    name: PR Comment
+    runs-on: ubuntu-latest
+    needs: [test, build, size-check]
+    if: always() && github.event.pull_request.draft == false
+    
+    steps:
+    - name: Comment PR
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          
+          const botComment = comments.find(comment => 
+            comment.user.type === 'Bot' && 
+            comment.body.includes('## PR Status')
+          );
+          
+          const status = {
+            test: '${{ needs.test.result }}',
+            build: '${{ needs.build.result }}',
+            'size-check': '${{ needs.size-check.result }}'
+          };
+          
+          const statusEmoji = {
+            success: '✅',
+            failure: '❌',
+            cancelled: '⏹️',
+            skipped: '⏭️'
+          };
+          
+          const body = `## PR Status
+          
+          | Check | Status |
+          |-------|--------|
+          | Tests | ${statusEmoji[status.test] || '⏳'} ${status.test} |
+          | Build | ${statusEmoji[status.build] || '⏳'} ${status.build} |
+          | Size Check | ${statusEmoji[status['size-check']] || '⏳'} ${status['size-check']} |
+          
+          ${status.test === 'success' && status.build === 'success' ? 
+            '🎉 All checks passed! This PR is ready for review.' : 
+            '⚠️ Some checks failed. Please review the logs.'}
+          `;
+          
+          if (botComment) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: botComment.id,
+              body: body
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });
+          }

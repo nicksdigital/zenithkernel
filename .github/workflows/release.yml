@@ -1,0 +1,176 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - custom
+      custom_version:
+        description: 'Custom version (only if version_type is custom)'
+        required: false
+        type: string
+      release_notes:
+        description: 'Release notes'
+        required: false
+        type: string
+      prerelease:
+        description: 'Mark as prerelease'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+  BUN_VERSION: 'latest'
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+        
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: ${{ env.BUN_VERSION }}
+        
+    - name: Setup Node.js for npm publishing
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        registry-url: 'https://registry.npmjs.org'
+        
+    - name: Configure Git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.bun/install/cache
+          node_modules
+          packages/*/node_modules
+        key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb', '**/package.json') }}
+        restore-keys: |
+          ${{ runner.os }}-bun-
+          
+    - name: Install dependencies
+      run: bun install --frozen-lockfile
+      
+    - name: Make deploy script executable
+      run: chmod +x scripts/deploy.sh
+      
+    - name: Determine version arguments
+      id: version_args
+      run: |
+        if [ "${{ github.event.inputs.version_type }}" = "custom" ]; then
+          echo "args=${{ github.event.inputs.version_type }} -v ${{ github.event.inputs.custom_version }}" >> $GITHUB_OUTPUT
+        else
+          echo "args=${{ github.event.inputs.version_type }}" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Run deployment script
+      run: |
+        ./scripts/deploy.sh ${{ steps.version_args.outputs.args }} \
+          --tag \
+          --publish \
+          --message "chore: release version" \
+          --branch main
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        
+    - name: Get new version
+      id: get_version
+      run: |
+        VERSION=$(grep '"version"' package.json | sed 's/.*"version": *"\([^"]*\)".*/\1/')
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+        
+    - name: Generate changelog
+      id: changelog
+      run: |
+        # Get commits since last tag
+        LAST_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+        if [ -n "$LAST_TAG" ]; then
+          COMMITS=$(git log --pretty=format:"- %s (%h)" $LAST_TAG..HEAD)
+        else
+          COMMITS=$(git log --pretty=format:"- %s (%h)" --max-count=10)
+        fi
+        
+        # Create changelog
+        CHANGELOG="## What's Changed
+        
+$COMMITS
+
+**Full Changelog**: https://github.com/${{ github.repository }}/compare/$LAST_TAG...${{ steps.get_version.outputs.tag }}"
+        
+        # Save to output
+        echo "changelog<<EOF" >> $GITHUB_OUTPUT
+        echo "$CHANGELOG" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_version.outputs.tag }}
+        release_name: Release ${{ steps.get_version.outputs.version }}
+        body: |
+          ${{ github.event.inputs.release_notes || steps.changelog.outputs.changelog }}
+        draft: false
+        prerelease: ${{ github.event.inputs.prerelease }}
+        
+    - name: Upload release assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./packages/zenny/dist/zenny
+        asset_name: zenny-linux-x64
+        asset_content_type: application/octet-stream
+      continue-on-error: true
+        
+    - name: Notify success
+      uses: sarisia/actions-status-discord@v1
+      if: success()
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        status: success
+        title: "🚀 New Release Published!"
+        description: |
+          **Version:** ${{ steps.get_version.outputs.version }}
+          **Tag:** ${{ steps.get_version.outputs.tag }}
+          **Packages published to npm**
+          **GitHub release created**
+        color: 0x00ff00
+        
+    - name: Notify failure
+      uses: sarisia/actions-status-discord@v1
+      if: failure()
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        status: failure
+        title: "❌ Release Failed"
+        description: |
+          **Version:** ${{ github.event.inputs.version_type }}
+          **Branch:** ${{ github.ref_name }}
+          **Check the logs for details**
+        color: 0xff0000

@@ -48,6 +48,6 @@ export default defineConfig({
   },
 
   optimizeDeps: {
-    include: ['@zenithcore/core', '@zenithcore/sdk', '@zenithkernel/runtime']
+    include: ['@zenithcore/core', '@zenithcore/sdk', '@zenithcore/runtime']
   }
 });

@@ -15,7 +15,7 @@
   "dependencies": {
     "@zenithcore/core": "workspace:*",
     "@zenithcore/sdk": "workspace:*",
-    "@zenithkernel/runtime": "workspace:*"
+    "@zenithcore/runtime": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "latest",

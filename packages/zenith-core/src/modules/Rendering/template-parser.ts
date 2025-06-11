@@ -9,7 +9,7 @@
  * - Compatible with Vue.js-style directives (v-if, v-for, :bindings)
  */
 
-import type { HydraContext } from '@zenithkernel/runtime/hydra';
+import type { HydraContext } from '@zenithcore/runtime/hydra';
 
 /**
  * ZenithKernel-specific directive types

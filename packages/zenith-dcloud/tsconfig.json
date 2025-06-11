@@ -14,7 +14,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@zenithcore/core": ["../zenith-core/src"],
-      "@zenithkernel/runtime": ["../zenith-runtime/src"],
+      "@zenithcore/runtime": ["../zenith-runtime/src"],
       "@zenithcore/sdk": ["../zenith-sdk/src"]
     }
   },
