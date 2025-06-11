@@ -170,20 +170,7 @@ build_packages() {
         return
     fi
     
-    log_info "Building packages..."
-    for package in "${PACKAGES[@]}"; do
-        if [[ -f "$package/package.json" ]]; then
-            log_info "Building $package..."
-            cd "$package"
-            if [[ -f "tsconfig.json" ]] && grep -q '"build"' package.json; then
-                bun run build || {
-                    log_error "Build failed for $package"
-                    exit 1
-                }
-            fi
-            cd - > /dev/null
-        fi
-    done
+   
     log_success "All packages built successfully"
 }
 
