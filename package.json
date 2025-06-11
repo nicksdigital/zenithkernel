@@ -1,6 +1,6 @@
 {
   "name": "@zenithcore/zenithkernel",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Hyper-performant modular TypeScript microkernel framework with WASM support, islands architecture, and reactive signals",
   "type": "module",
   "private": false,
