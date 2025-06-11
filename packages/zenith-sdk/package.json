@@ -1,6 +1,6 @@
 {
   "name": "@zenithcore/sdk",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "Developer-friendly SDK for ZenithKernel applications",
   "type": "module",
   "main": "dist/index.js",
