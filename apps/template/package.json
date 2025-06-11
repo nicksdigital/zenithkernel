@@ -15,10 +15,10 @@
     "lint:fix": "eslint src --ext .ts,.tsx,.zk --fix"
   },
   "dependencies": {
-    "@zenithcore/core": "^0.1.1",
-    "@zenithcore/sdk": "^0.1.1",
-    "@zenithcore/runtime": "^0.1.1",
-    "@zenithcore/vite-plugin": "^0.1.1"
+    "@zenithcore/core": "workspace:*",
+    "@zenithcore/sdk": "workspace:*",
+    "@zenithcore/runtime": "workspace:*",
+    "@zenithcore/vite-plugin": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
