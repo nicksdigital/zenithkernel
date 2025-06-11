@@ -1,6 +1,6 @@
 {
   "name": "@zenithcore/zenny",
-  "version": "1.0.0-beta1",
+  "version": "1.1.0",
   "description": "Command-line interface for ZenithKernel framework",
   "type": "module",
   "main": "src/index.ts",
