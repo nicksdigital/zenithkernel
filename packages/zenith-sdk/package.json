@@ -1,6 +1,6 @@
 {
   "name": "@zenithcore/sdk",
-  "version": "1.5.0",
+  "version": "1.5.2",
   "description": "Developer-friendly SDK for ZenithKernel applications",
   "type": "module",
   "main": "dist/index.js",
@@ -25,7 +25,7 @@
     }
   },
   "scripts": {
-    "build": "bun build ./src/index.ts --outdir ./dist --target node",
+    "build": "bun build ./src/index.ts --outdir ./dist --target node --external @zenithcore/core",
     "dev": "bun build ./src/index.ts --outdir ./dist --target node --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
@@ -50,10 +50,10 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@zenithcore/core": "^0.1.0"
+    "@zenithcore/core": "^1.5.1"
   },
   "dependencies": {
-    "@zenithcore/core": "^0.1.0"
+    "@zenithcore/core": "^1.5.1"
   },
   "devDependencies": {
     "bun-types": "latest",

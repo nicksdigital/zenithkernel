@@ -1,19 +1,22 @@
 import { BaseSystem } from "../../core/BaseSystem";
 import { ECSManager } from "../../core/ECSManager";
-import { Entity } from "../../core/types";
+import { Entity } from "../../types";
 import { RouterComponent } from "./components/RouterComponent";
 import { RouteDefinition, RouteMatchResult } from "./types";
 import { BrowserHistoryAdapter } from "./adapters/BrowserHistoryAdapter";
 import { HistoryAdapter } from "./adapters/HistoryAdapter";
-import { registerSystem } from "../../decorators/RegisterSystem";
+import { RegisterSystem } from "../../decorators/RegisterSystem";
 
-@registerSystem("routing")
+@RegisterSystem("routing")
 export class RoutingSystem extends BaseSystem {
+  onUnload?(): void {
+    
+  }
   private routerEntity: Entity | null = null;
   private historyAdapter: HistoryAdapter;
   
   constructor(ecs: ECSManager) {
-    super(ecs);
+    super(ecs.kernel);
     this.historyAdapter = new BrowserHistoryAdapter();
   }
   

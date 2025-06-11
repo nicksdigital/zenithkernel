@@ -16,3 +16,5 @@ export interface Message {
   type: string;
   payload: any;
 }
+
+export type Entity = number;

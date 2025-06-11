@@ -3,12 +3,12 @@
  * Defines the structure for entity registry metadata
  */
 
-export interface RegistryMeta {
+export interface IRegistryMeta {
   /**
    * Unique identifier for the registry entry
    */
   id: string;
-  
+
   /**
    * Type of registry entry (e.g., 'hydra', 'component', 'system')
    */
@@ -40,4 +40,32 @@ export interface RegistryMeta {
   metadata?: {
     [key: string]: any;
   };
+}
+
+/**
+ * RegistryMeta class implementation
+ */
+export class RegistryMeta implements IRegistryMeta {
+  public id: string;
+  public type: 'hydra' | 'component' | 'system' | 'asset' | 'other';
+  public name: string;
+  public description?: string;
+  public version?: string;
+  public registeredAt: Date;
+  public metadata?: { [key: string]: any };
+
+  constructor(
+    id: string,
+    type: 'hydra' | 'component' | 'system' | 'asset' | 'other',
+    name: string,
+    options: Partial<IRegistryMeta> = {}
+  ) {
+    this.id = id;
+    this.type = type;
+    this.name = name;
+    this.description = options.description;
+    this.version = options.version || '1.0.0';
+    this.registeredAt = options.registeredAt || new Date();
+    this.metadata = options.metadata || {};
+  }
 }

@@ -1,17 +1,20 @@
 import { BaseSystem } from "../../../core/BaseSystem";
 import { ECSManager } from "../../../core/ECSManager";
-import { registerSystem } from "../../../decorators/RegisterSystem";
+import { RegisterSystem } from "../../../decorators/RegisterSystem";
 import { RoutingSystem } from "../RoutingSystem";
 import { RouteMiddleware, RouteMatchResult } from "../types";
 
-@registerSystem("routing-middleware")
+@RegisterSystem("routing-middleware")
 export class MiddlewareSystem extends BaseSystem {
+  onUnload?(): void {
+    this.dispose();
+  }
   private globalMiddleware: RouteMiddleware[] = [];
   private routeMiddleware: Map<string, RouteMiddleware[]> = new Map();
   private routingSystem: RoutingSystem | null = null;
   
   constructor(ecs: ECSManager) {
-    super(ecs);
+    super(ecs.kernel);
   }
   
   onLoad(): void {
@@ -91,6 +94,7 @@ export class MiddlewareSystem extends BaseSystem {
   }
   
   dispose(): void {
+    console.log("🛡️ Disposing RoutingMiddlewareSystem");
     this.ecs.off('navigation', this.handleNavigation.bind(this));
     this.globalMiddleware = [];
     this.routeMiddleware.clear();

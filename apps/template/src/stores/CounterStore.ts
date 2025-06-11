@@ -13,10 +13,18 @@ export interface CounterState {
 }
 
 export class CounterStore {
-  private [count, setCount] = createSignal(0);
-  private [history, setHistory] = createSignal<number[]>([]);
-  private [lastUpdated, setLastUpdated] = createSignal(new Date());
+  private countSignal = createSignal(0);
+  private historySignal = createSignal<number[]>([]);
+  private lastUpdatedSignal = createSignal(new Date());
   private subscribers = new Set<(state: CounterState) => void>();
+
+  // Getters for signals
+  private count = () => this.countSignal[0]();
+  private setCount = (value: number) => this.countSignal[1](value);
+  private history = () => this.historySignal[0]();
+  private setHistory = (value: number[]) => this.historySignal[1](value);
+  private lastUpdated = () => this.lastUpdatedSignal[0]();
+  private setLastUpdated = (value: Date) => this.lastUpdatedSignal[1](value);
 
   constructor() {
     // Effect to update history when count changes

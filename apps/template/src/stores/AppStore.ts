@@ -30,12 +30,24 @@ export interface Notification {
 }
 
 export class AppStore {
-  private [theme, setTheme] = createSignal<'light' | 'dark'>('light');
-  private [user, setUser] = createSignal<User | null>(null);
-  private [isLoading, setIsLoading] = createSignal(false);
-  private [notifications, setNotifications] = createSignal<Notification[]>([]);
-  private [settings, setSettings] = createSignal<Record<string, any>>({});
+  private themeSignal = createSignal<'light' | 'dark'>('light');
+  private userSignal = createSignal<User | null>(null);
+  private isLoadingSignal = createSignal(false);
+  private notificationsSignal = createSignal<Notification[]>([]);
+  private settingsSignal = createSignal<Record<string, any>>({});
   private subscribers = new Set<(state: AppState) => void>();
+
+  // Getters for signals
+  private theme = () => this.themeSignal[0]();
+  private setTheme = (value: 'light' | 'dark') => this.themeSignal[1](value);
+  private user = () => this.userSignal[0]();
+  private setUser = (value: User | null) => this.userSignal[1](value);
+  private isLoading = () => this.isLoadingSignal[0]();
+  private setIsLoading = (value: boolean) => this.isLoadingSignal[1](value);
+  private notifications = () => this.notificationsSignal[0]();
+  private setNotifications = (value: Notification[]) => this.notificationsSignal[1](value);
+  private settings = () => this.settingsSignal[0]();
+  private setSettings = (value: Record<string, any>) => this.settingsSignal[1](value);
 
   constructor() {
     // Effect to persist theme to localStorage
@@ -67,7 +79,7 @@ export class AppStore {
   }
 
   // Theme actions
-  setTheme(newTheme: 'light' | 'dark'): void {
+  updateTheme(newTheme: 'light' | 'dark'): void {
     this.setTheme(newTheme);
   }
 
@@ -76,7 +88,7 @@ export class AppStore {
   }
 
   // User actions
-  setUser(user: User | null): void {
+  updateUser(user: User | null): void {
     this.setUser(user);
     if (user) {
       this.addNotification({

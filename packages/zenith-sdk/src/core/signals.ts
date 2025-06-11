@@ -7,34 +7,29 @@
 
 // Import the underlying reactive system
 // Note: In practice, this would use ZenithKernel's actual reactive system
-import { reactive as _coreReactive, watch as _coreWatch } from '@zenithcore/core/signals';
+import { signal, computed as _coreComputed, effect as _coreEffect, batch as _coreBatch } from '@zenithcore/core';
 
 /**
  * Creates a reactive object that triggers updates when properties change
  */
 export function reactive<T extends object>(obj: T): T {
-  return _coreReactive(obj);
+  // For now, return the object as-is since ZenithKernel uses signals differently
+  // In a full implementation, this would wrap object properties in signals
+  return obj;
 }
 
 /**
  * Creates a reactive value
  */
 export function ref<T>(value: T) {
-  const r = reactive({ value });
-  return r;
+  return signal(value);
 }
 
 /**
  * Creates a computed value that updates when its dependencies change
  */
 export function computed<T>(getter: () => T) {
-  const result = ref<T>(getter());
-  
-  watch(getter, (newValue) => {
-    result.value = newValue;
-  });
-  
-  return result;
+  return _coreComputed(getter);
 }
 
 /**
@@ -47,34 +42,28 @@ export function watch<T>(
 ): () => void {
   const getter = typeof source === 'function' ? source : () => source.value;
   let oldValue = getter();
-  
+
   if (options.immediate) {
     callback(oldValue, oldValue);
   }
-  
-  // Use the underlying watch system or implement polling if not available
-  if (typeof _coreWatch === 'function') {
-    return _coreWatch(getter, callback);
-  } else {
-    // Fallback polling implementation
-    const interval = setInterval(() => {
-      const newValue = getter();
-      if (newValue !== oldValue) {
-        callback(newValue, oldValue);
-        oldValue = newValue;
-      }
-    }, 100);
-    
-    return () => clearInterval(interval);
-  }
+
+  // Use ZenithKernel's effect system to watch for changes
+  const computation = _coreEffect(() => {
+    const newValue = getter();
+    if (newValue !== oldValue) {
+      callback(newValue, oldValue);
+      oldValue = newValue;
+    }
+  });
+
+  return () => computation.dispose();
 }
 
 /**
  * Batches multiple updates to be processed in a single render cycle
  */
 export function batch(fn: () => void): void {
-  // In a real implementation, this would batch updates
-  fn();
+  return _coreBatch(fn);
 }
 
 /**

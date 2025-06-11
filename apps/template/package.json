@@ -15,13 +15,13 @@
     "lint:fix": "eslint src --ext .ts,.tsx,.zk --fix"
   },
   "dependencies": {
-    "@zenithcore/core": "workspace:*",
-    "@zenithcore/sdk": "workspace:*",
-    "@zenithcore/runtime": "workspace:*",
-    "@zenithcore/vite-plugin": "workspace:*"
+    "@zenithcore/core": "^1.5.1",
+    "@zenithcore/runtime": "^1.5.1",
+    "@zenithcore/sdk": "^1.5.0",
+    "@zenithcore/vite-plugin": "^1.5.1"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^20.14.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.0.0",

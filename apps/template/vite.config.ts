@@ -1,57 +1,29 @@
 import { defineConfig } from 'vite';
-import { zenithKernel } from '@zenithcore/vite-plugin';
+// import { zenithKernel } from '@zenithcore/vite-plugin';
 
 export default defineConfig({
+  root: '.',
   plugins: [
-    zenithKernel({
-      // Bootstrap configuration
-      bootstrap: {
-        name: 'zenith-template',
-        version: '1.0.0',
-        features: ['signals', 'stores', 'islands', 'router']
-      },
-      
-      // Auto-generation settings
-      autoGenerate: {
-        routes: true,
-        hydras: true,
-        manifests: true,
-        types: true
-      },
-      
-      // Optimization settings
-      optimization: {
-        quantumChunking: true,
-        zkOptimization: false, // Disabled for template
-        wasmInlining: true,
-        hydraPreloading: true
-      },
-      
-      // Development settings
-      development: {
-        hotReloadHydras: true,
-        mockZkProofs: true,
-        simulateQuantumConsensus: false,
-        enableDebugOverlay: true
-      },
-      
-      // Output settings
-      output: {
-        serviceWorker: true,
-        manifestGeneration: true,
-        typeDefinitions: true
-      }
-    })
+    // Temporarily disabled until TypeScript issue is resolved
+    // zenithKernel plugin will be enabled once the build issue is fixed
   ],
+
+  // Allow Vite to process TypeScript files from node_modules
+  optimizeDeps: {
+    exclude: ['@zenithcore/core', '@zenithcore/sdk', '@zenithcore/runtime'],
+    esbuildOptions: {
+      target: 'es2022'
+    }
+  },
   
   // Resolve configuration
   resolve: {
     alias: {
-      '@': '/src',
-      '@components': '/src/components',
-      '@pages': '/src/pages',
-      '@stores': '/src/stores',
-      '@types': '/src/types'
+      '@': './src',
+      '@components': './src/components',
+      '@pages': './src/pages',
+      '@stores': './src/stores',
+      '@types': './src/types'
     }
   },
   

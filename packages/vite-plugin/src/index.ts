@@ -356,8 +356,9 @@ function discoverHydras() {
 
 function optimizeQuantumChunks(bundle: any) {
   for (const [fileName, chunk] of Object.entries(bundle)) {
-    if (chunk.type === 'chunk') {
-      const modules = chunk.modules || [];
+    const chunkData = chunk as any;
+    if (chunkData.type === 'chunk') {
+      const modules = chunkData.modules || [];
       if (modules.length > 5) {
         console.log(`🌊 Quantum chunking optimized: ${fileName} (${modules.length} modules)`);
       }

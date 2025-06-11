@@ -1,6 +1,6 @@
 {
   "name": "@zenithcore/core",
-  "version": "1.5.0",
+  "version": "1.5.2",
   "description": "Core functionality for ZenithKernel framework",
   "type": "module",
   "main": "dist/index.js",
@@ -44,7 +44,7 @@
   },
   "peerDependencies": {},
   "dependencies": {
-    "@zenithcore/runtime": "^0.1.0",
+    "@zenithcore/runtime": "^1.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rxjs": "^7.8.1"

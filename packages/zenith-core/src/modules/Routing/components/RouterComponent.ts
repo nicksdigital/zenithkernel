@@ -1,5 +1,5 @@
 import { BehaviorSubject } from "rxjs";
-import { Signal } from "../../../core/reactive-state";
+import { Signal } from "../../../core/signals";
 import { RouteMatchResult, RouterState } from "../types";
 
 /**

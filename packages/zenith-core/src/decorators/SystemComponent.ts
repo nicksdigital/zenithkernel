@@ -1,5 +1,5 @@
 import { RegisterSystem } from "@decorators/RegisterSystem";
-import { SystemMeta } from "@components/SystemMeta";
+import { SystemMeta } from "../modules/SystemMeta";
 import { routeMap } from "@decorators/HttpRoute";
 import type { Entity } from "@core/ECS";
 import type { BaseSystem } from "@core/BaseSystem";
