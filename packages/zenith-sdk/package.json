@@ -41,9 +41,16 @@
   ],
   "author": "ZenithKernel Team",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicksdigital/zenithkernel.git",
+    "directory": "packages/zenith-sdk"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
-    "@zenithcore/core": "^0.1.0",
-    "zenith-kernel": ">=1.0.0"
+    "@zenithcore/core": "^0.1.0"
   },
   "dependencies": {
     "@zenithcore/core": "^0.1.0"
@@ -55,6 +62,5 @@
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.0.0",
     "@types/bun": "latest"
-  },
-  "private": true
+  }
 }

@@ -1,7 +1,0 @@
-{
-  "file": "tests/registryServerTest.ts",
-  "dependencies": [
-    "src/core/ZenithKernel.ts",
-    "src/utils/generateProof.ts"
-  ]
-}

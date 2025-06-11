@@ -1,6 +1,0 @@
-{
-  "file": "tests/lib/hydra-runtime.test.ts",
-  "dependencies": [
-    "src/lib/hydra-runtime.ts"
-  ]
-}

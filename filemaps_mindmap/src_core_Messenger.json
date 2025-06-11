@@ -1,8 +1,0 @@
-{
-  "file": "src/core/Messenger.ts",
-  "dependencies": [
-    "src/types.ts",
-    "src/core/ECSManager.ts",
-    "src/core/MessagingSystem.ts"
-  ]
-}

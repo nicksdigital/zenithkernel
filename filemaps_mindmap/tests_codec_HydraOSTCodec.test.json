@@ -1,6 +1,0 @@
-{
-  "file": "tests/codec/HydraOSTCodec.test.ts",
-  "dependencies": [
-    "runtime/codec/OSTCompression.ts"
-  ]
-}

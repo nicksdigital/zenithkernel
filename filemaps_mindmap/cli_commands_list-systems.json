@@ -1,6 +1,0 @@
-{
-  "file": "cli/commands/list-systems.ts",
-  "dependencies": [
-    "src/bootstrap/bootstrapKernel.ts"
-  ]
-}

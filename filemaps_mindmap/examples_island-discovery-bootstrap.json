@@ -1,7 +1,0 @@
-{
-  "file": "examples/island-discovery-bootstrap.ts",
-  "dependencies": [
-    "src/lib/hydra-runtime.ts",
-    "src/modules/Rendering/types.ts"
-  ]
-}

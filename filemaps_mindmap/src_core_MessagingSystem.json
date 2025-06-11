@@ -1,6 +1,0 @@
-{
-  "file": "src/core/MessagingSystem.ts",
-  "dependencies": [
-    "src/core/BaseSystem.ts"
-  ]
-}

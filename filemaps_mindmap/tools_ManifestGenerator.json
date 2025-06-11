@@ -1,7 +1,0 @@
-{
-  "file": "tools/ManifestGenerator.ts",
-  "dependencies": [
-    "src/utils/Blake3Hash.ts",
-    "src/utils/constants.ts"
-  ]
-}

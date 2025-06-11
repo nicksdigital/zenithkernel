@@ -1,7 +1,0 @@
-{
-  "file": "src/core/test-signal-manager.ts",
-  "dependencies": [
-    "src/core/ECSManager.ts",
-    "src/core/SignalManager.ts"
-  ]
-}

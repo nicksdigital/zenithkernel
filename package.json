@@ -1,11 +1,94 @@
 {
-  "name": "zenithcore",
+  "name": "@zenithcore/zenithkernel",
   "version": "0.1.0",
-  "description": "Hyper-performant modular TypeScript microkernel framework with WASM support",
+  "description": "Hyper-performant modular TypeScript microkernel framework with WASM support, islands architecture, and reactive signals",
   "type": "module",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "main": "./packages/zenith-core/dist/index.js",
+  "module": "./packages/zenith-core/dist/index.js",
+  "types": "./packages/zenith-core/dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./packages/zenith-core/dist/index.js",
+      "types": "./packages/zenith-core/dist/index.d.ts"
+    },
+    "./core": {
+      "import": "./packages/zenith-core/dist/index.js",
+      "types": "./packages/zenith-core/dist/index.d.ts"
+    },
+    "./runtime": {
+      "import": "./packages/zenith-runtime/dist/index.js",
+      "types": "./packages/zenith-runtime/dist/index.d.ts"
+    },
+    "./sdk": {
+      "import": "./packages/zenith-sdk/dist/index.js",
+      "types": "./packages/zenith-sdk/dist/index.d.ts"
+    }
+  },
   "scripts": {
+    "build": "echo 'TypeScript packages - no build needed'",
+    "typecheck": "bun run typecheck:packages",
+    "typecheck:packages": "bun run typecheck:core && bun run typecheck:runtime && bun run typecheck:sdk && bun run typecheck:zenny && bun run typecheck:ost && bun run typecheck:dcloud",
+    "typecheck:core": "cd packages/zenith-core && bun run typecheck",
+    "typecheck:runtime": "cd packages/zenith-runtime && bun run typecheck",
+    "typecheck:sdk": "cd packages/zenith-sdk && bun run typecheck",
+    "typecheck:zenny": "cd packages/zenny && bun run typecheck",
+    "typecheck:ost": "cd packages/ost-compression && bun run typecheck",
+    "typecheck:dcloud": "cd packages/zenith-dcloud && bun run typecheck",
+    "dev": "bun run --filter='packages/*' dev",
     "test": "vitest run --reporter verbose",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch",
+    "test:packages": "bun run --filter='packages/*' test",
+    "lint": "bun run --filter='packages/*' lint",
+    "clean": "bun run --filter='packages/*' clean && rm -rf dist",
+    "prepublishOnly": "bun run clean && bun run build && bun run test",
+    "demo": "cd apps/demo-app && bun run dev",
+    "zenny": "cd packages/zenny && bun run src/zenith.ts",
+    "publish:all": "bun run publish:packages",
+    "publish:packages": "bun run publish:core && bun run publish:runtime && bun run publish:sdk && bun run publish:ost && bun run publish:zenny && bun run publish:dcloud",
+    "publish:core": "cd packages/zenith-core && npm publish --access public",
+    "publish:runtime": "cd packages/zenith-runtime && npm publish --access public",
+    "publish:sdk": "cd packages/zenith-sdk && npm publish --access public",
+    "publish:ost": "cd packages/ost-compression && npm publish --access public",
+    "publish:zenny": "cd packages/zenny && npm publish --access public",
+    "publish:dcloud": "cd packages/zenith-dcloud && npm publish --access public",
+    "publish:dry": "bun run publish:dry-packages",
+    "publish:dry-packages": "cd packages/zenith-core && npm publish --dry-run && cd ../zenith-runtime && npm publish --dry-run && cd ../zenith-sdk && npm publish --dry-run && cd ../ost-compression && npm publish --dry-run && cd ../zenny && npm publish --dry-run && cd ../zenith-dcloud && npm publish --dry-run"
+  },
+  "keywords": [
+    "zenithkernel",
+    "framework",
+    "typescript",
+    "microkernel",
+    "ecs",
+    "signals",
+    "reactive",
+    "islands",
+    "hydration",
+    "spa",
+    "performance",
+    "bun"
+  ],
+  "author": "ZenithKernel Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicksdigital/zenithkernel.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nicksdigital/zenithkernel/issues"
+  },
+  "homepage": "https://github.com/nicksdigital/zenithkernel#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
@@ -15,14 +98,18 @@
     "@types/node": "^22.15.29",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "bun-types": "latest",
     "fs-extra": "^11.2.0",
     "glob": "^8.1.0",
     "intersection-observer": "^0.12.2",
     "jsdom": "^26.1.0",
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "typescript": "^5.4.5",
     "vite": "^6.3.5",
     "vitest": "^3.2.3"
+  },
+  "dependencies": {
+    "@types/bun": "^1.2.15"
   }
 }

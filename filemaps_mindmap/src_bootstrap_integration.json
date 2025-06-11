@@ -1,7 +1,0 @@
-{
-  "file": "src/bootstrap/integration.ts",
-  "dependencies": [
-    "src/bootstrap/ZenithBootstrap.ts",
-    "src/bootstrap/ZenithBootstrap.ts"
-  ]
-}

@@ -1,7 +1,0 @@
-{
-  "file": "src/bootstrap/LoadAllSystems.ts",
-  "dependencies": [
-    "src/core/ZenithKernel.ts",
-    "src/decorators/RegisterSystem.ts"
-  ]
-}

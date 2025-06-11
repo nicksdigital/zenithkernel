@@ -1,6 +1,0 @@
-{
-  "file": "src/router.ts",
-  "dependencies": [
-    "src/utils/router-utils.ts"
-  ]
-}

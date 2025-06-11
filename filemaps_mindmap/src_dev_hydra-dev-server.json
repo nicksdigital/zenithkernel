@@ -1,6 +1,0 @@
-{
-  "file": "src/dev/hydra-dev-server.ts",
-  "dependencies": [
-    "src/plugins/vite-plugin-hydra.ts"
-  ]
-}

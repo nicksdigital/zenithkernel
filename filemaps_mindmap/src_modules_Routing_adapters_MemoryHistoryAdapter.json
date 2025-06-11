@@ -1,6 +1,0 @@
-{
-  "file": "src/modules/Routing/adapters/MemoryHistoryAdapter.ts",
-  "dependencies": [
-    "src/modules/Routing/adapters/HistoryAdapter.ts"
-  ]
-}

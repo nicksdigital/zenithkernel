@@ -1,6 +1,0 @@
-{
-  "file": "src/modules/Rendering/components/LazyComponent.ts",
-  "dependencies": [
-    "src/modules/Rendering/components/Suspense.ts"
-  ]
-}

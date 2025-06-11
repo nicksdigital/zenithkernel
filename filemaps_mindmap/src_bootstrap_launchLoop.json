@@ -1,6 +1,0 @@
-{
-  "file": "src/bootstrap/launchLoop.ts",
-  "dependencies": [
-    "src/core/ZenithKernel.ts"
-  ]
-}

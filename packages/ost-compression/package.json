@@ -1,0 +1,78 @@
+{
+  "name": "@zenithcore/ost-compression",
+  "version": "0.1.0",
+  "description": "Okaily-Srivastava-Tbakhi (OST) encoding algorithm for textual data compression, optimized for JavaScript/TypeScript and ZenithKernel bundles",
+  "type": "module",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./algorithms": {
+      "import": "./src/algorithms/index.ts",
+      "types": "./src/algorithms/index.ts"
+    },
+    "./codecs": {
+      "import": "./src/codecs/index.ts",
+      "types": "./src/codecs/index.ts"
+    }
+  },
+  "files": [
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test": "bun test",
+    "benchmark": "bun run src/benchmark.ts",
+    "clean": "echo 'No build artifacts to clean'",
+    "prepublishOnly": "bun run typecheck"
+  },
+  "keywords": [
+    "zenithkernel",
+    "compression",
+    "ost",
+    "syntax-tree",
+    "huffman",
+    "zstd",
+    "optimization",
+    "bundling",
+    "codec",
+    "algorithm"
+  ],
+  "author": "ZenithKernel Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicksdigital/zenithkernel.git",
+    "directory": "packages/ost-compression"
+  },
+  "bugs": {
+    "url": "https://github.com/nicksdigital/zenithkernel/issues"
+  },
+  "homepage": "https://github.com/nicksdigital/zenithkernel#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  },
+  "dependencies": {
+    "fflate": "^0.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "bun-types": "latest",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0"
+  }
+}

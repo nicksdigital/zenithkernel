@@ -1,7 +1,0 @@
-{
-  "file": "tests/modules/Rendering/islands/ExampleIsland.test.ts",
-  "dependencies": [
-    "src/lib/hydra-runtime.ts",
-    "src/modules/Rendering/islands/ExampleIsland.ts"
-  ]
-}

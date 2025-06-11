@@ -1,6 +1,0 @@
-{
-  "file": "src/hooks/useHydraRegistry.ts",
-  "dependencies": [
-    "src/lib/hydra-runtime.ts"
-  ]
-}

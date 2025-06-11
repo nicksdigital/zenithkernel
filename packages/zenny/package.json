@@ -1,0 +1,83 @@
+{
+  "name": "@zenithcore/zenny",
+  "version": "0.1.0",
+  "description": "Command-line interface for ZenithKernel framework",
+  "type": "module",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "bin": {
+    "zenny": "./src/zenith.ts",
+    "zenith": "./src/zenith.ts"
+  },
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./cli": {
+      "import": "./src/zenith.ts",
+      "types": "./src/zenith.ts"
+    }
+  },
+  "files": [
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "bun run src/zenith.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test": "bun test",
+    "clean": "echo 'No build artifacts to clean'",
+    "prepublishOnly": "bun run typecheck"
+  },
+  "keywords": [
+    "zenithkernel",
+    "cli",
+    "zenny",
+    "scaffolding",
+    "framework",
+    "typescript",
+    "bun"
+  ],
+  "author": "ZenithKernel Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicksdigital/zenithkernel.git",
+    "directory": "packages/zenny"
+  },
+  "bugs": {
+    "url": "https://github.com/nicksdigital/zenithkernel/issues"
+  },
+  "homepage": "https://github.com/nicksdigital/zenithkernel#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "kleur": "^4.1.5",
+    "commander": "^11.0.0",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.3.0",
+    "@zenithcore/ost-compression": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "bun-types": "latest",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@zenithcore/core": "^0.1.0"
+  }
+}

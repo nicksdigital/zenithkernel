@@ -1,6 +1,0 @@
-{
-  "file": "tests/hooks/useHydraRegistry.test.tsx",
-  "dependencies": [
-    "src/hooks/useHydraRegistry.ts"
-  ]
-}

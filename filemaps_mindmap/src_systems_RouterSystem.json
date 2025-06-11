@@ -1,8 +1,0 @@
-{
-  "file": "src/systems/RouterSystem.ts",
-  "dependencies": [
-    "src/components/RouterComponent.ts",
-    "src/core/BaseSystem.ts",
-    "src/core/ECSManager.ts"
-  ]
-}

@@ -1,8 +1,0 @@
-{
-  "file": "examples/bootstrap-integration.ts",
-  "dependencies": [
-    "src/core/ZenithKernel.ts",
-    "src/modules/Rendering/types.ts",
-    "examples/island-discovery-bootstrap.ts"
-  ]
-}

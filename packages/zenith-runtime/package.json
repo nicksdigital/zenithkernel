@@ -1,5 +1,5 @@
 {
-  "name": "@zenithkernel/runtime",
+  "name": "@zenithcore/runtime",
   "version": "0.1.0",
   "description": "Runtime codec implementation for ZenithKernel framework",
   "type": "module",

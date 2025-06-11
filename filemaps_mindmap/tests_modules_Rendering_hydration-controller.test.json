@@ -1,7 +1,0 @@
-{
-  "file": "tests/modules/Rendering/hydration-controller.test.ts",
-  "dependencies": [
-    "src/lib/hydra-runtime.ts",
-    "src/modules/Rendering/hydration-controller.ts"
-  ]
-}

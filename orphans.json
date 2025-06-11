@@ -1,5 +1,0 @@
-[
-  "core/__tests__/run-benchmarks.js",
-  "core/__tests__/run-tests.js",
-  "dist/hydra/island-registry.js"
-]

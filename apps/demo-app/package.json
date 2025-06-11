@@ -1,0 +1,33 @@
+{
+  "name": "zenith-demo-app",
+  "version": "0.1.0",
+  "description": "Demo application showcasing ZenithKernel features with Bun and TypeScript",
+  "type": "module",
+  "main": "src/main.ts",
+  "scripts": {
+    "dev": "bun run --hot src/main.ts",
+    "build": "bun build src/main.ts --outdir dist --target bun",
+    "start": "bun run dist/main.js",
+    "test": "bun test",
+    "type-check": "tsc --noEmit",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@zenithcore/core": "workspace:*",
+    "@zenithcore/sdk": "workspace:*",
+    "@zenithkernel/runtime": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^22.15.29",
+    "typescript": "^5.4.5",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}

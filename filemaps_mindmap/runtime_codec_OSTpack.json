@@ -1,6 +1,0 @@
-{
-  "file": "runtime/codec/OSTpack.ts",
-  "dependencies": [
-    "runtime/codec/OSTCompression.ts"
-  ]
-}

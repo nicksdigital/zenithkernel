@@ -1,6 +1,0 @@
-{
-  "file": "src/hooks/useECSState.ts",
-  "dependencies": [
-    "src/core/ECSManager.ts"
-  ]
-}

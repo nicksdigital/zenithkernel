@@ -1,8 +1,0 @@
-{
-  "file": "src/core/router/guards.ts",
-  "dependencies": [
-    "src/modules/RegistryServer/ChallengeSystem.ts",
-    "src/modules/RegistryServer/VerifySystem.ts",
-    "src/core/router/index.ts"
-  ]
-}

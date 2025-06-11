@@ -1,6 +1,0 @@
-{
-  "file": "src/modules/Rendering/SSR/Hydration.ts",
-  "dependencies": [
-    "src/modules/Rendering/AsyncRenderer.ts"
-  ]
-}

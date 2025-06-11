@@ -1,6 +1,0 @@
-{
-  "file": "zenith-test-app/src/main.ts",
-  "dependencies": [
-    "zenith-test-app/src/zenith-framework/rendering/island-loader.ts"
-  ]
-}

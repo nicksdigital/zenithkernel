@@ -1,6 +1,0 @@
-{
-  "file": "src/modules/Routing/SSR/ServerHistoryAdapter.ts",
-  "dependencies": [
-    "src/modules/Routing/adapters/HistoryAdapter.ts"
-  ]
-}

@@ -1,0 +1,97 @@
+{
+  "name": "@zenithcore/dcloud",
+  "version": "0.1.0",
+  "description": "Decentralized cloud infrastructure for ZenithKernel with IPFS, enterprise storage, and distributed websites",
+  "type": "module",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./ipfs": {
+      "import": "./src/ipfs/index.ts",
+      "types": "./src/ipfs/index.ts"
+    },
+    "./storage": {
+      "import": "./src/storage/index.ts",
+      "types": "./src/storage/index.ts"
+    },
+    "./websites": {
+      "import": "./src/websites/index.ts",
+      "types": "./src/websites/index.ts"
+    },
+    "./enterprise": {
+      "import": "./src/enterprise/index.ts",
+      "types": "./src/enterprise/index.ts"
+    }
+  },
+  "files": [
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test": "bun test",
+    "clean": "echo 'No build artifacts to clean'",
+    "prepublishOnly": "bun run typecheck"
+  },
+  "keywords": [
+    "zenithkernel",
+    "dcloud",
+    "decentralized",
+    "ipfs",
+    "enterprise",
+    "storage",
+    "websites",
+    "p2p",
+    "distributed",
+    "cloud",
+    "blockchain",
+    "web3"
+  ],
+  "author": "ZenithKernel Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicksdigital/zenithkernel.git",
+    "directory": "packages/zenith-dcloud"
+  },
+  "bugs": {
+    "url": "https://github.com/nicksdigital/zenithkernel/issues"
+  },
+  "homepage": "https://github.com/nicksdigital/zenithkernel#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  },
+  "dependencies": {
+    "ipfs-core": "^0.18.1",
+    "ipfs-http-client": "^60.0.1",
+    "libp2p": "^0.46.0",
+    "orbit-db": "^0.29.0",
+    "multiformats": "^12.1.3",
+    "uint8arrays": "^4.0.6",
+    "it-all": "^3.0.4",
+    "it-map": "^3.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "bun-types": "latest",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@zenithcore/core": "^0.1.0"
+  }
+}

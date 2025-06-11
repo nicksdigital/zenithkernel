@@ -1,7 +1,0 @@
-{
-  "file": "src/core/hydra/SignalDOMBinder.ts",
-  "dependencies": [
-    "src/core/SignalManager.ts",
-    "src/core/signals.ts"
-  ]
-}

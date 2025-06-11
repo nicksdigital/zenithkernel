@@ -3,7 +3,7 @@
 
 ## 🔍 Overview
 
-`OSTCompression.ts` implements the core compression utilities used in the OST (Optimized System Transfer) protocol within ZenithCore. It handles stream optimization, segment merging, and fingerprint hashing for efficient component transport across distributed systems.
+`OSTCompression.ts` implements the core compression utilities used in the OST  protocol within ZenithCore. It handles stream optimization, segment merging, and fingerprint hashing for efficient component transport across distributed systems.
 
 ---
 

@@ -1,7 +1,0 @@
-{
-  "file": "examples/reactive-state-demo.tsx",
-  "dependencies": [
-    "src/core/ECSManager.ts",
-    "src/modules/Rendering/jsx-runtime.ts"
-  ]
-}

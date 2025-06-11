@@ -1,7 +1,0 @@
-{
-  "file": "src/core/store/observableState.ts",
-  "dependencies": [
-    "src/core/signals.ts",
-    "src/core/store/ZenithStore.ts"
-  ]
-}

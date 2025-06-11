@@ -1,7 +1,0 @@
-{
-  "file": "tests/components/HydraTrustBar.test.tsx",
-  "dependencies": [
-    "src/components/hydra/HydraTrustBar.tsx",
-    "src/modules/Rendering/jsx-runtime.ts"
-  ]
-}

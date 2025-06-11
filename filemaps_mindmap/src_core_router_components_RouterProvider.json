@@ -1,6 +1,0 @@
-{
-  "file": "src/core/router/components/RouterProvider.tsx",
-  "dependencies": [
-    "src/core/router/router.ts"
-  ]
-}

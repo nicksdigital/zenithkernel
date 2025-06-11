@@ -1,9 +1,0 @@
-{
-  "file": "src/modules/Routing/components/RouterView.ts",
-  "dependencies": [
-    "src/modules/Rendering/index.ts",
-    "src/modules/Rendering/utils/kernel-access.ts",
-    "src/modules/Routing/index.ts",
-    "src/modules/Routing/components/RouteErrorBoundaryComponent.ts"
-  ]
-}

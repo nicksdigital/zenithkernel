@@ -1,6 +1,0 @@
-{
-  "file": "src/types/module.ts",
-  "dependencies": [
-    "src/core/ZenithKernel.ts"
-  ]
-}

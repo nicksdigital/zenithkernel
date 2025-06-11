@@ -1,8 +1,0 @@
-{
-  "file": "tests/integration/HydraIntegration.test.tsx",
-  "dependencies": [
-    "src/components/hydra/HydraLoader.tsx",
-    "src/components/hydra/HydraTrustBar.tsx",
-    "src/modules/Rendering/jsx-runtime.ts"
-  ]
-}

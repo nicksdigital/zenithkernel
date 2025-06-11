@@ -1,6 +1,0 @@
-{
-  "file": "src/core/__tests__/ECSManager.test.ts",
-  "dependencies": [
-    "src/core/ECSManager.ts"
-  ]
-}

@@ -1,8 +1,0 @@
-{
-  "file": "src/adapters/KernelRouter.ts",
-  "dependencies": [
-    "src/decorators/HttpRoute.ts",
-    "src/decorators/ValidateBody.ts",
-    "src/utils/openapi.ts"
-  ]
-}

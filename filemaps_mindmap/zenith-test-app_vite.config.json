@@ -1,6 +1,0 @@
-{
-  "file": "zenith-test-app/vite.config.ts",
-  "dependencies": [
-    "zenith-test-app/src/zenith-framework/vite-plugins/vite-plugin-hydra.ts"
-  ]
-}

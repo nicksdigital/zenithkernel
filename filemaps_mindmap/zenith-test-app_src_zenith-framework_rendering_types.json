@@ -1,6 +1,0 @@
-{
-  "file": "zenith-test-app/src/zenith-framework/rendering/types.ts",
-  "dependencies": [
-    "zenith-test-app/src/zenith-framework/hydra-runtime/hydra-runtime.ts"
-  ]
-}

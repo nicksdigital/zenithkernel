@@ -1,7 +1,0 @@
-{
-  "file": "src/utils/router-utils.ts",
-  "dependencies": [
-    "src/systems/RouterSystem.ts",
-    "src/modules/Rendering/utils/kernel-access.ts"
-  ]
-}

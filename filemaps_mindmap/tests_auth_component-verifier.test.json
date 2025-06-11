@@ -1,7 +1,0 @@
-{
-  "file": "tests/auth/component-verifier.test.ts",
-  "dependencies": [
-    "src/modules/Auth/component-verifier.ts",
-    "src/modules/Crypto/pq-crypto.ts"
-  ]
-}
