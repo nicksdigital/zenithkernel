@@ -1,19 +1,15 @@
 import { BaseSystem } from "./BaseSystem";
 import { getRegisteredSystems } from "../decorators/RegisterSystem";
 import { ECSManager } from "./ECSManager";
+import { ZenithKernel } from "./ZenithKernel";
 
-export class SystemManager extends BaseSystem {
-    onLoad?(): void {
-        throw new Error("Method not implemented.");
-    }
-    onUnload?(): void {
-        throw new Error("Method not implemented.");
-    }
+export class SystemManager {
     private systems: Map<string, BaseSystem> = new Map();
     private loadOrder: string[] = [];
+    private kernel: ZenithKernel;
 
-    constructor(ecs: ECSManager) {
-        super(ecs);
+    constructor(kernel: ZenithKernel) {
+        this.kernel = kernel;
     }
 
     init() {
@@ -42,7 +38,7 @@ export class SystemManager extends BaseSystem {
         // Instantiate in order
         for (const id of this.loadOrder) {
             const entry = registry.find(r => r.id === id)!;
-            const instance = new entry.cls(this.ecs);
+            const instance = new entry.cls(this.kernel);
             instance.init?.();
             this.systems.set(id, instance);
         }

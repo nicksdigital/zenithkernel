@@ -1,13 +1,13 @@
 import { BaseSystem } from "./BaseSystem";
-import { ECSManager } from "./ECSManager";
+import { ZenithKernel } from "./ZenithKernel";
 
 export class Scheduler extends BaseSystem {
     static readonly id = "Scheduler";
     private static instance: Scheduler | null = null;
-    static getInstance(ecsManager: ECSManager): Scheduler {
+    static getInstance(kernel: ZenithKernel): Scheduler {
         if (!Scheduler.instance) {
-            Scheduler.instance = new Scheduler(ecsManager);
-           
+            Scheduler.instance = new Scheduler(kernel);
+
         }
         return Scheduler.instance;
     }

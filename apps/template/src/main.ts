@@ -8,8 +8,8 @@
  * - Component system
  */
 
-import { ZenithApp } from '@zenithcore/sdk';
-import { createSignal, createEffect, createComputed, quickBootstrap } from '@zenithcore/core';
+// Simple ZenithKernel template without complex dependencies
+// Using basic signal implementation for demonstration
 import { CounterStore } from './stores/CounterStore';
 import { AppStore } from './stores/AppStore';
 import { renderApp } from './ui/App';

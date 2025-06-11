@@ -36,6 +36,21 @@ export class ZenithKernel {
     return this.dynamicSystems.get(systemId);
   }
   
+  /**
+   * Start the kernel and initialize all systems
+   */
+  async start(): Promise<void> {
+    console.log('🌊 Starting ZenithKernel...');
+
+    // Initialize the kernel
+    this.init();
+
+    // Start the main loop
+    this.startLoop();
+
+    console.log('✅ ZenithKernel started successfully');
+  }
+
   startLoop() {
     console.log('Kernel loop started');
     return this;
@@ -53,7 +68,7 @@ export class ZenithKernel {
     private messenger: Messenger = new Messenger();
     private scheduler: Scheduler | undefined;
     private ecs = new ECSManager();
-    private systemManager = new SystemManager(this.ecs);
+    private systemManager = new SystemManager(this);
     private dynamicSystems = new Map<string, BaseSystem>();
     private router: KernelRouter | undefined;
     private islands = new Map<string, IslandRegistration>();
@@ -455,7 +470,7 @@ export class ZenithKernel {
         this.ecs = new ECSManager();
 
         this.ecs.setKernel(this); // 🔁 connect kernel back into ECS
-        this.scheduler = Scheduler.getInstance(this.ecs);
+        this.scheduler = Scheduler.getInstance(this);
        
 
 
@@ -505,10 +520,6 @@ export class ZenithKernel {
 
     getModule<T extends IZenithModule>(id: string): T | undefined {
         return this.modules.get(id) as T;
-    }
-
-    getECS(): ECSManager {
-        return this.ecs;
     }
 
     async loadWasmModule(path: string): Promise<WebAssembly.Exports> {

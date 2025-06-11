@@ -1,1 +1,420 @@
-/**\n * ZenithStore - Type-Safe Immutable State Management\n * Inspired by Redux but with minimal boilerplate and strong TypeScript integration\n */\n\nimport { Observable, BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs';\nimport { Signal, signal, computed, effect } from '../signals';\nimport { getSignalManager } from '../SignalManager';\n\n// Immutable update helpers\ntype Draft<T> = T;\ntype Immutable<T> = T;\n\n// Action types\nexport interface Action<T = any> {\n  type: string;\n  payload?: T;\n  meta?: Record<string, any>;\n}\n\n// Reducer type with strong typing\nexport type Reducer<S, A extends Action = Action> = (state: S, action: A) => S;\n\n// Store configuration\nexport interface StoreConfig<State> {\n  initialState: State;\n  reducers: Record<string, Reducer<any, any>>;\n  middleware?: Middleware<State>[];\n  devTools?: boolean;\n  enableTimeTravel?: boolean;\n}\n\n// Middleware type\nexport type Middleware<State> = (\n  store: { getState: () => State; dispatch: (action: Action) => void }\n) => (next: (action: Action) => void) => (action: Action) => void;\n\n// Selector type with memoization\nexport type Selector<State, Result> = (state: State) => Result;\n\n// Subscription options\nexport interface SubscriptionOptions {\n  immediate?: boolean;\n  distinctUntilChanged?: boolean;\n}\n\n/**\n * Immutable update utilities using structural sharing\n */\nexport const immer = {\n  produce<T>(state: T, updater: (draft: Draft<T>) => void | T): T {\n    // Simple immutable update implementation\n    // In production, you'd use Immer or similar\n    if (typeof state !== 'object' || state === null) {\n      return state;\n    }\n    \n    const draft = Array.isArray(state) \n      ? [...state] as Draft<T>\n      : { ...state } as Draft<T>;\n    \n    const result = updater(draft);\n    return result !== undefined ? result : draft;\n  },\n  \n  current<T>(draft: Draft<T>): T {\n    return draft;\n  }\n};\n\n/**\n * Type-safe action creators with payload inference\n */\nexport function createAction<T = void>(\n  type: string\n): T extends void \n  ? () => Action<void>\n  : (payload: T) => Action<T> {\n  return ((payload?: T) => ({\n    type,\n    payload,\n    meta: { timestamp: Date.now() }\n  })) as any;\n}\n\n/**\n * Async action creator with loading states\n */\nexport function createAsyncAction<Input, Success, Failure = Error>(\n  typePrefix: string\n) {\n  return {\n    request: createAction<Input>(`${typePrefix}_REQUEST`),\n    success: createAction<Success>(`${typePrefix}_SUCCESS`),\n    failure: createAction<Failure>(`${typePrefix}_FAILURE`)\n  };\n}\n\n/**\n * Main ZenithStore class\n */\nexport class ZenithStore<State extends Record<string, any>> {\n  private state$: BehaviorSubject<State>;\n  private reducers: Record<string, Reducer<any, any>>;\n  private middleware: Middleware<State>[];\n  private listeners: Set<(state: State) => void> = new Set();\n  private actionHistory: Action[] = [];\n  private stateHistory: State[] = [];\n  private currentHistoryIndex = 0;\n  private maxHistorySize = 50;\n  \n  // Signal integration\n  private stateSignal: Signal<State>;\n  private selectorCache = new Map<string, Signal<any>>();\n  \n  constructor(config: StoreConfig<State>) {\n    this.state$ = new BehaviorSubject(config.initialState);\n    this.reducers = config.reducers;\n    this.middleware = config.middleware || [];\n    \n    // Create reactive signal for state\n    this.stateSignal = signal(config.initialState);\n    \n    // Enable time travel if requested\n    if (config.enableTimeTravel) {\n      this.stateHistory.push(config.initialState);\n    }\n    \n    // Subscribe state$ to stateSignal\n    this.state$.subscribe(state => {\n      this.stateSignal.value = state;\n    });\n    \n    // DevTools integration\n    if (config.devTools && typeof window !== 'undefined') {\n      this.setupDevTools();\n    }\n  }\n  \n  /**\n   * Get current state\n   */\n  getState(): State {\n    return this.state$.value;\n  }\n  \n  /**\n   * Get state as signal for reactive access\n   */\n  getStateSignal(): Signal<State> {\n    return this.stateSignal;\n  }\n  \n  /**\n   * Get state as observable\n   */\n  getState$(): Observable<State> {\n    return this.state$.asObservable();\n  }\n  \n  /**\n   * Dispatch action with middleware support\n   */\n  dispatch = (action: Action): void => {\n    // Apply middleware\n    let dispatch = this.dispatchRaw;\n    \n    for (let i = this.middleware.length - 1; i >= 0; i--) {\n      dispatch = this.middleware[i]({\n        getState: () => this.getState(),\n        dispatch: this.dispatch\n      })(dispatch);\n    }\n    \n    dispatch(action);\n  }\n  \n  /**\n   * Raw dispatch without middleware\n   */\n  private dispatchRaw = (action: Action): void => {\n    const currentState = this.getState();\n    const newState = this.rootReducer(currentState, action);\n    \n    if (newState !== currentState) {\n      // Update history for time travel\n      if (this.stateHistory.length > 0) {\n        this.actionHistory.push(action);\n        this.stateHistory.push(newState);\n        this.currentHistoryIndex = this.stateHistory.length - 1;\n        \n        // Limit history size\n        if (this.stateHistory.length > this.maxHistorySize) {\n          this.stateHistory.shift();\n          this.actionHistory.shift();\n          this.currentHistoryIndex--;\n        }\n      }\n      \n      // Emit new state\n      this.state$.next(newState);\n      \n      // Notify listeners\n      this.listeners.forEach(listener => listener(newState));\n    }\n  }\n  \n  /**\n   * Root reducer that combines all reducers\n   */\n  private rootReducer = (state: State, action: Action): State => {\n    let hasChanged = false;\n    const nextState = {} as State;\n    \n    for (const [key, reducer] of Object.entries(this.reducers)) {\n      const previousStateForKey = state[key];\n      const nextStateForKey = reducer(previousStateForKey, action);\n      \n      nextState[key] = nextStateForKey;\n      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;\n    }\n    \n    return hasChanged ? nextState : state;\n  }\n  \n  /**\n   * Create a type-safe selector with memoization\n   */\n  select<Result>(\n    selector: Selector<State, Result>,\n    options: SubscriptionOptions = {}\n  ): Signal<Result> {\n    const selectorKey = selector.toString();\n    \n    if (this.selectorCache.has(selectorKey)) {\n      return this.selectorCache.get(selectorKey)!;\n    }\n    \n    // Create computed signal for selector\n    const selectorSignal = computed(() => {\n      return selector(this.stateSignal.value);\n    });\n    \n    this.selectorCache.set(selectorKey, selectorSignal);\n    return selectorSignal;\n  }\n  \n  /**\n   * Select state as observable with RxJS operators\n   */\n  select$<Result>(\n    selector: Selector<State, Result>\n  ): Observable<Result> {\n    return this.state$.pipe(\n      map(selector),\n      distinctUntilChanged()\n    );\n  }\n  \n  /**\n   * Subscribe to state changes\n   */\n  subscribe(\n    listener: (state: State) => void,\n    options: SubscriptionOptions = {}\n  ): () => void {\n    if (options.immediate !== false) {\n      listener(this.getState());\n    }\n    \n    this.listeners.add(listener);\n    \n    return () => {\n      this.listeners.delete(listener);\n    };\n  }\n  \n  /**\n   * Time travel: undo last action\n   */\n  undo(): boolean {\n    if (this.currentHistoryIndex > 0) {\n      this.currentHistoryIndex--;\n      const previousState = this.stateHistory[this.currentHistoryIndex];\n      this.state$.next(previousState);\n      return true;\n    }\n    return false;\n  }\n  \n  /**\n   * Time travel: redo last undone action\n   */\n  redo(): boolean {\n    if (this.currentHistoryIndex < this.stateHistory.length - 1) {\n      this.currentHistoryIndex++;\n      const nextState = this.stateHistory[this.currentHistoryIndex];\n      this.state$.next(nextState);\n      return true;\n    }\n    return false;\n  }\n  \n  /**\n   * Jump to specific point in history\n   */\n  jumpToAction(actionIndex: number): boolean {\n    if (actionIndex >= 0 && actionIndex < this.stateHistory.length) {\n      this.currentHistoryIndex = actionIndex;\n      const targetState = this.stateHistory[actionIndex];\n      this.state$.next(targetState);\n      return true;\n    }\n    return false;\n  }\n  \n  /**\n   * Get action history for debugging\n   */\n  getActionHistory(): Action[] {\n    return [...this.actionHistory];\n  }\n  \n  /**\n   * Reset store to initial state\n   */\n  reset(): void {\n    const initialState = this.stateHistory[0] || this.stateSignal.value;\n    this.state$.next(initialState);\n    this.actionHistory.length = 0;\n    this.stateHistory.length = 0;\n    this.stateHistory.push(initialState);\n    this.currentHistoryIndex = 0;\n  }\n  \n  /**\n   * Dispose store and cleanup\n   */\n  dispose(): void {\n    this.state$.complete();\n    this.listeners.clear();\n    this.selectorCache.clear();\n    this.actionHistory.length = 0;\n    this.stateHistory.length = 0;\n  }\n  \n  /**\n   * Setup Redux DevTools integration\n   */\n  private setupDevTools(): void {\n    if (typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION__) {\n      const devTools = (window as any).__REDUX_DEVTOOLS_EXTENSION__.connect({\n        name: 'ZenithStore',\n        features: {\n          pause: true,\n          lock: true,\n          persist: true,\n          export: true,\n          import: 'custom',\n          jump: true,\n          skip: true,\n          reorder: true,\n          dispatch: true,\n          test: true\n        }\n      });\n      \n      devTools.init(this.getState());\n      \n      // Listen to devtools actions\n      devTools.subscribe((message: any) => {\n        if (message.type === 'DISPATCH') {\n          switch (message.payload.type) {\n            case 'JUMP_TO_ACTION':\n            case 'JUMP_TO_STATE':\n              const actionIndex = message.payload.actionId;\n              this.jumpToAction(actionIndex);\n              break;\n            case 'RESET':\n              this.reset();\n              break;\n            case 'COMMIT':\n              this.stateHistory.length = 0;\n              this.actionHistory.length = 0;\n              this.stateHistory.push(this.getState());\n              this.currentHistoryIndex = 0;\n              break;\n          }\n        }\n      });\n      \n      // Send actions to devtools\n      const originalDispatch = this.dispatchRaw;\n      this.dispatchRaw = (action: Action) => {\n        originalDispatch(action);\n        devTools.send(action, this.getState());\n      };\n    }\n  }\n}\n\n/**\n * Create a strongly typed store\n */\nexport function createStore<State extends Record<string, any>>(\n  config: StoreConfig<State>\n): ZenithStore<State> {\n  return new ZenithStore(config);\n}\n\n/**\n * Common middleware implementations\n */\nexport const middleware = {\n  /**\n   * Logger middleware\n   */\n  logger<State>(): Middleware<State> {\n    return (store) => (next) => (action) => {\n      console.group(`Action: ${action.type}`);\n      console.log('Previous state:', store.getState());\n      console.log('Action:', action);\n      \n      next(action);\n      \n      console.log('Next state:', store.getState());\n      console.groupEnd();\n    };\n  },\n  \n  /**\n   * Async middleware for handling promises\n   */\n  async<State>(): Middleware<State> {\n    return (store) => (next) => (action: any) => {\n      if (typeof action === 'function') {\n        // Thunk support\n        return action(store.dispatch, store.getState);\n      }\n      \n      if (action.payload && typeof action.payload.then === 'function') {\n        // Promise support\n        const { type, payload, meta } = action;\n        \n        next({ type: `${type}_PENDING`, meta });\n        \n        return payload\n          .then((result: any) => {\n            next({ type: `${type}_FULFILLED`, payload: result, meta });\n            return result;\n          })\n          .catch((error: any) => {\n            next({ type: `${type}_REJECTED`, payload: error, meta });\n            throw error;\n          });\n      }\n      \n      return next(action);\n    };\n  },\n  \n  /**\n   * Persistence middleware\n   */\n  persist<State>(options: {\n    key: string;\n    storage?: Storage;\n    whitelist?: string[];\n    blacklist?: string[];\n  }): Middleware<State> {\n    const storage = options.storage || localStorage;\n    \n    return (store) => {\n      // Load initial state from storage\n      try {\n        const persisted = storage.getItem(options.key);\n        if (persisted) {\n          const state = JSON.parse(persisted);\n          // Merge with current state\n          Object.assign(store.getState(), state);\n        }\n      } catch (error) {\n        console.warn('Failed to load persisted state:', error);\n      }\n      \n      return (next) => (action) => {\n        const result = next(action);\n        \n        // Save state to storage\n        try {\n          let stateToSave = store.getState();\n          \n          if (options.whitelist) {\n            stateToSave = Object.fromEntries(\n              Object.entries(stateToSave).filter(([key]) => \n                options.whitelist!.includes(key)\n              )\n            ) as State;\n          }\n          \n          if (options.blacklist) {\n            stateToSave = Object.fromEntries(\n              Object.entries(stateToSave).filter(([key]) => \n                !options.blacklist!.includes(key)\n              )\n            ) as State;\n          }\n          \n          storage.setItem(options.key, JSON.stringify(stateToSave));\n        } catch (error) {\n          console.warn('Failed to persist state:', error);\n        }\n        \n        return result;\n      };\n    };\n  }\n};", "oldText": ""}]
+/**
+ * ZenithStore - Type-Safe Immutable State Management
+ * Inspired by Redux but with minimal boilerplate and strong TypeScript integration
+ */
+
+import { Observable, BehaviorSubject, distinctUntilChanged, map } from 'rxjs';
+import { Signal, signal, computed } from '../signals';
+
+// Action types
+export interface Action<T = any> {
+  type: string;
+  payload?: T;
+  meta?: Record<string, any>;
+}
+
+// Reducer type with strong typing
+export type Reducer<S, A extends Action = Action> = (state: S, action: A) => S;
+
+// Store configuration
+export interface StoreConfig<State> {
+  initialState: State;
+  reducers: Record<string, Reducer<any, any>>;
+  middleware?: Middleware<State>[];
+  devTools?: boolean;
+  enableTimeTravel?: boolean;
+}
+
+// Middleware type
+export type Middleware<State> = (
+  store: { getState: () => State; dispatch: (action: Action) => void }
+) => (next: (action: Action) => void) => (action: Action) => void;
+
+// Selector type with memoization
+export type Selector<State, Result> = (state: State) => Result;
+
+// Subscription options
+export interface SubscriptionOptions {
+  immediate?: boolean;
+  distinctUntilChanged?: boolean;
+}
+
+/**
+ * Type-safe action creators with payload inference
+ */
+export function createAction<T = void>(
+  type: string
+): T extends void
+  ? () => Action<void>
+  : (payload: T) => Action<T> {
+  return ((payload?: T) => ({
+    type,
+    payload,
+    meta: { timestamp: Date.now() }
+  })) as any;
+}
+
+/**
+ * Async action creator with loading states
+ */
+export function createAsyncAction<Input, Success, Failure = Error>(
+  typePrefix: string
+) {
+  return {
+    request: createAction<Input>(`${typePrefix}_REQUEST`),
+    success: createAction<Success>(`${typePrefix}_SUCCESS`),
+    failure: createAction<Failure>(`${typePrefix}_FAILURE`)
+  };
+}
+
+/**
+ * Immutable update utilities using structural sharing
+ */
+export const immer = {
+  produce<T>(state: T, updater: (draft: T) => void | T): T {
+    // Simple immutable update implementation
+    // In production, you'd use Immer or similar
+    if (typeof state !== 'object' || state === null) {
+      return state;
+    }
+
+    const draft = Array.isArray(state)
+      ? [...state] as T
+      : { ...state } as T;
+
+    const result = updater(draft);
+    return result !== undefined ? result : draft;
+  },
+
+  current<T>(draft: T): T {
+    return draft;
+  }
+};
+
+/**
+ * Common middleware implementations
+ */
+export const middleware = {
+  /**
+   * Logger middleware
+   */
+  logger<State>(): Middleware<State> {
+    return (store) => (next) => (action) => {
+      console.group(`Action: ${action.type}`);
+      console.log('Previous state:', store.getState());
+      console.log('Action:', action);
+
+      next(action);
+
+      console.log('Next state:', store.getState());
+      console.groupEnd();
+    };
+  },
+
+  /**
+   * Async middleware for handling promises
+   */
+  async<State>(): Middleware<State> {
+    return (store) => (next) => (action: any) => {
+      if (typeof action === 'function') {
+        // Thunk support
+        return action(store.dispatch, store.getState);
+      }
+
+      if (action.payload && typeof action.payload.then === 'function') {
+        // Promise support
+        const { type, payload, meta } = action;
+
+        next({ type: `${type}_PENDING`, meta });
+
+        return payload
+          .then((result: any) => {
+            next({ type: `${type}_FULFILLED`, payload: result, meta });
+            return result;
+          })
+          .catch((error: any) => {
+            next({ type: `${type}_REJECTED`, payload: error, meta });
+            throw error;
+          });
+      }
+
+      return next(action);
+    };
+  },
+
+  /**
+   * Performance monitoring middleware
+   */
+  performance<State>(options: { warnAfter?: number } = {}): Middleware<State> {
+    const { warnAfter = 16 } = options;
+
+    return (_store) => (next) => (action) => {
+      const start = performance.now();
+      const result = next(action);
+      const duration = performance.now() - start;
+
+      if (duration > warnAfter) {
+        console.warn(`[Performance] Action "${action.type}" took ${duration.toFixed(2)}ms`);
+      }
+
+      return result;
+    };
+  },
+
+  /**
+   * State persistence middleware
+   */
+  persistence<State>(options: {
+    key: string;
+    storage?: Storage;
+    whitelist?: string[];
+    blacklist?: string[];
+    predicate?: (state: State) => boolean;
+  }): Middleware<State> {
+    const { key, storage, whitelist, blacklist, predicate } = options;
+
+    return (store) => (next) => (action) => {
+      const result = next(action);
+
+      if (storage && (!predicate || predicate(store.getState()))) {
+        try {
+          const state = store.getState();
+          let stateToSave = state;
+
+          // Apply whitelist/blacklist filtering
+          if (whitelist || blacklist) {
+            stateToSave = {} as State;
+            for (const [k, v] of Object.entries(state as Record<string, any>)) {
+              const shouldInclude = whitelist ?
+                whitelist.some(path => k.startsWith(path.split('.')[0])) :
+                !blacklist?.some(path => k.startsWith(path.split('.')[0]));
+
+              if (shouldInclude) {
+                (stateToSave as any)[k] = v;
+              }
+            }
+          }
+
+          storage.setItem(key, JSON.stringify(stateToSave));
+        } catch (error) {
+          console.warn('[Persistence] Failed to save state:', error);
+        }
+      }
+
+      return result;
+    };
+  }
+};
+
+/**
+ * Main ZenithStore class
+ */
+export class ZenithStore<State extends Record<string, any>> {
+  private state$: BehaviorSubject<State>;
+  private reducers: Record<string, Reducer<any, any>>;
+  private middleware: Middleware<State>[];
+  private listeners: Set<(state: State) => void> = new Set();
+  private actionHistory: Action[] = [];
+  private stateHistory: State[] = [];
+  private currentHistoryIndex = 0;
+  private maxHistorySize = 50;
+  
+  // Signal integration
+  private stateSignal: Signal<State>;
+  private selectorCache = new Map<string, Signal<any>>();
+  
+  constructor(config: StoreConfig<State>) {
+    this.state$ = new BehaviorSubject(config.initialState);
+    this.reducers = config.reducers || {};
+    this.middleware = config.middleware || [];
+    
+    // Create reactive signal for state
+    this.stateSignal = signal(config.initialState);
+    
+    // Enable time travel if requested
+    if (config.enableTimeTravel) {
+      this.stateHistory.push(config.initialState);
+    }
+    
+    // Subscribe state$ to stateSignal
+    this.state$.subscribe(state => {
+      this.stateSignal.value = state;
+    });
+    
+    // DevTools integration
+    if (config.devTools && typeof window !== 'undefined') {
+      this.setupDevTools();
+    }
+  }
+  
+  /**
+   * Get current state
+   */
+  getState(): State {
+    return this.state$.value;
+  }
+  
+  /**
+   * Get state as signal for reactive access
+   */
+  getStateSignal(): Signal<State> {
+    return this.stateSignal;
+  }
+  
+  /**
+   * Get state as observable
+   */
+  getState$(): Observable<State> {
+    return this.state$.asObservable();
+  }
+  
+  /**
+   * Dispatch action with middleware support
+   */
+  dispatch = (action: Action): void => {
+    // Apply middleware
+    let dispatch = this.dispatchRaw;
+    
+    for (let i = this.middleware.length - 1; i >= 0; i--) {
+      dispatch = this.middleware[i]({
+        getState: () => this.getState(),
+        dispatch: this.dispatch
+      })(dispatch);
+    }
+    
+    dispatch(action);
+  }
+  
+  /**
+   * Raw dispatch without middleware
+   */
+  private dispatchRaw = (action: Action): void => {
+    const currentState = this.getState();
+    const newState = this.rootReducer(currentState, action);
+    
+    if (newState !== currentState) {
+      // Update history for time travel
+      if (this.stateHistory.length > 0) {
+        this.actionHistory.push(action);
+        this.stateHistory.push(newState);
+        this.currentHistoryIndex = this.stateHistory.length - 1;
+        
+        // Limit history size
+        if (this.stateHistory.length > this.maxHistorySize) {
+          this.stateHistory.shift();
+          this.actionHistory.shift();
+          this.currentHistoryIndex--;
+        }
+      }
+      
+      // Emit new state
+      this.state$.next(newState);
+      
+      // Notify listeners
+      this.listeners.forEach(listener => listener(newState));
+    }
+  }
+  
+  /**
+   * Root reducer that combines all reducers
+   */
+  private rootReducer = (state: State, action: Action): State => {
+    // If no reducers are defined, return the state unchanged
+    if (!this.reducers || Object.keys(this.reducers).length === 0) {
+      return state;
+    }
+
+    const reducerEntries = Object.entries(this.reducers);
+
+    // If there's only one reducer, treat it as a root reducer for the entire state
+    if (reducerEntries.length === 1) {
+      const [, reducer] = reducerEntries[0];
+      return reducer(state, action);
+    }
+
+    // Multiple reducers - combine them by slice
+    let hasChanged = false;
+    const nextState = { ...state };
+
+    for (const [key, reducer] of reducerEntries) {
+      const previousStateForKey = state[key];
+      const nextStateForKey = reducer(previousStateForKey, action);
+
+      (nextState as any)[key] = nextStateForKey;
+      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+    }
+
+    return hasChanged ? nextState : state;
+  }
+  
+  /**
+   * Create a type-safe selector with memoization
+   */
+  select<Result>(
+    selector: Selector<State, Result>,
+    options: SubscriptionOptions = {}
+  ): Signal<Result> {
+    const selectorKey = selector.toString();
+    
+    if (this.selectorCache.has(selectorKey)) {
+      return this.selectorCache.get(selectorKey)!;
+    }
+    
+    // Create computed signal for selector
+    const selectorSignal = computed(() => {
+      return selector(this.stateSignal.value);
+    });
+    
+    this.selectorCache.set(selectorKey, selectorSignal);
+    return selectorSignal;
+  }
+  
+  /**
+   * Select state as observable with RxJS operators
+   */
+  select$<Result>(
+    selector: Selector<State, Result>
+  ): Observable<Result> {
+    return this.state$.pipe(
+      map(selector),
+      distinctUntilChanged()
+    );
+  }
+  
+  /**
+   * Subscribe to state changes
+   */
+  subscribe(
+    listener: (state: State) => void,
+    options: SubscriptionOptions = {}
+  ): () => void {
+    if (options.immediate !== false) {
+      listener(this.getState());
+    }
+    
+    this.listeners.add(listener);
+    
+    return () => {
+      this.listeners.delete(listener);
+    };
+  }
+  
+  /**
+   * Setup Redux DevTools integration
+   */
+  private setupDevTools(): void {
+    // Simplified devtools setup
+    if (typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION__) {
+      console.log('DevTools integration available');
+    }
+  }
+}
+
+/**
+ * Create a strongly typed store
+ */
+export function createStore<State extends Record<string, any>>(
+  config: StoreConfig<State>
+): ZenithStore<State> {
+  return new ZenithStore(config);
+}

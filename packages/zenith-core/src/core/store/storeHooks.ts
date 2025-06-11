@@ -247,7 +247,7 @@ export function StoreProvider<State>({ store, name = 'default', children }: Stor
     };
   }, [store, name]);
   
-  return <>{children}</>;
+  return children;
 }
 
 /**
@@ -261,7 +261,7 @@ export function connectStore<Props, State, SelectedState>(
     const ConnectedComponent = (props: Props) => {
       const selectedState = useSelector(selector, storeName);
       
-      return <Component {...props} {...selectedState} />;
+      return Component({ ...props, ...selectedState } as any);
     };
     
     ConnectedComponent.displayName = `Connected(${Component.displayName || Component.name})`;

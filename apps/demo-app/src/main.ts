@@ -106,14 +106,11 @@ class DemoApp {
   private async initializeCore(): Promise<void> {
     // Register ECS components
     const ecs = this.kernel.getECS();
-    
+
     // Register counter component
     ecs.registerComponentType('Counter', CounterComponent);
-    
-    // Start the kernel
-    await this.kernel.start();
-    
-    // Start the ZenithApp
+
+    // Start the ZenithApp (this will start the kernel internally)
     this.app.start();
   }
 

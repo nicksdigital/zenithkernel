@@ -272,19 +272,18 @@ function appReducer(state: AppState, action: any): AppState {
 export function createAppStore() {
   const store = createStore({
     initialState,
-    reducer: appReducer,
+    reducers: {
+      root: appReducer
+    },
     middleware: [
       // Logger middleware for debugging
-      middleware.logger({
-        collapsed: true,
-        predicate: () => process.env.NODE_ENV === 'development'
-      }),
-      
+      middleware.logger(),
+
       // Performance middleware
       middleware.performance({
         warnAfter: 16 // Warn if action takes longer than 16ms
       }),
-      
+
       // Persistence middleware (optional)
       middleware.persistence({
         key: 'zenith-demo-app',
