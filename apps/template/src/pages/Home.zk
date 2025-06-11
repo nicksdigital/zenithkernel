@@ -1,0 +1,318 @@
+<!--
+  Home Page Component
+  
+  Main landing page demonstrating ZenithKernel features
+-->
+
+<template>
+  <div class="home-page">
+    <section class="hero">
+      <h1>🌊 Welcome to ZenithKernel</h1>
+      <p class="hero-subtitle">
+        Next-generation web framework with reactive signals, ECS architecture, and islands-based hydration
+      </p>
+      
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📡</div>
+          <h3>Reactive Signals</h3>
+          <p>Fine-grained reactivity with computed values and effects</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🏝️</div>
+          <h3>Islands Architecture</h3>
+          <p>Optimal performance with selective hydration</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🏪</div>
+          <h3>ZenithStore</h3>
+          <p>Powerful state management with time-travel debugging</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>ECS Architecture</h3>
+          <p>Entity-Component-System for scalable applications</p>
+        </div>
+      </div>
+    </section>
+    
+    <section class="demo-section">
+      <h2>Live Demo</h2>
+      <p>Try out the interactive counter component:</p>
+      
+      <Counter :store="counterStore" :initialValue="5" />
+      
+      <div class="demo-stats">
+        <div class="stat">
+          <span class="stat-label">Current Count:</span>
+          <span class="stat-value">{{ count() }}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Total Changes:</span>
+          <span class="stat-value">{{ totalChanges() }}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Last Updated:</span>
+          <span class="stat-value">{{ formatTime(lastUpdated()) }}</span>
+        </div>
+      </div>
+    </section>
+    
+    <section class="getting-started">
+      <h2>Getting Started</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Install ZenithKernel</h3>
+            <code>npm install @zenithcore/core @zenithcore/sdk</code>
+          </div>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Create Your App</h3>
+            <code>npx @zenithcore/zenny init my-app</code>
+          </div>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Start Building</h3>
+            <code>cd my-app && npm run dev</code>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { createComputed, createEffect } from '@zenithcore/core';
+import { CounterStore } from '../stores/CounterStore';
+import Counter from '../components/Counter.zk';
+
+// Create a counter store for the demo
+const counterStore = new CounterStore();
+
+// Reactive values from store
+const count = createComputed(() => counterStore.getState().count);
+const totalChanges = createComputed(() => counterStore.totalChanges);
+const lastUpdated = createComputed(() => counterStore.getState().lastUpdated);
+
+// Utility functions
+const formatTime = (date: Date): string => {
+  return date.toLocaleTimeString();
+};
+
+// Effects
+createEffect(() => {
+  console.log('Home page: Counter updated to', count());
+});
+</script>
+
+<style scoped>
+.home-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.hero h1 {
+  font-size: 48px;
+  margin: 0 0 16px 0;
+  background: linear-gradient(135deg, #00d9ff, #0099cc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: 20px;
+  color: #666;
+  margin: 0 0 40px 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.feature-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 30px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: #00d9ff;
+}
+
+.feature-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.feature-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.feature-card p {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.demo-section {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 40px;
+  margin: 60px 0;
+  text-align: center;
+}
+
+.demo-section h2 {
+  margin: 0 0 16px 0;
+  font-size: 32px;
+  color: #333;
+}
+
+.demo-section p {
+  margin: 0 0 30px 0;
+  color: #666;
+  font-size: 18px;
+}
+
+.demo-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #00d9ff;
+}
+
+.getting-started {
+  margin: 60px 0;
+}
+
+.getting-started h2 {
+  text-align: center;
+  margin: 0 0 40px 0;
+  font-size: 32px;
+  color: #333;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  background: #00d9ff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.step-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.step-content code {
+  background: #f3f4f6;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-size: 14px;
+  color: #374151;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 36px;
+  }
+  
+  .hero-subtitle {
+    font-size: 18px;
+  }
+  
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .demo-stats {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .step {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+</style>

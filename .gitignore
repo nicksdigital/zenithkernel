@@ -22,3 +22,4 @@ dist/
 /.bunfig.toml
 old
 vendors
+__nottopublish

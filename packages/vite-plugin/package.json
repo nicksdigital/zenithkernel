@@ -1,7 +1,7 @@
 {
-  "name": "@zenithcore/ost-compression",
+  "name": "@zenithcore/vite-plugin",
   "version": "0.1.1",
-  "description": "Okaily-Srivastava-Tbakhi (OST) encoding algorithm for textual data compression, optimized for JavaScript/TypeScript and ZenithKernel bundles",
+  "description": "Vite plugin for ZenithKernel framework with .zk file support and optimizations",
   "type": "module",
   "main": "src/index.ts",
   "module": "src/index.ts",
@@ -11,13 +11,13 @@
       "import": "./src/index.ts",
       "types": "./src/index.ts"
     },
-    "./algorithms": {
-      "import": "./src/algorithms/index.ts",
-      "types": "./src/algorithms/index.ts"
+    "./transforms": {
+      "import": "./src/transforms/index.ts",
+      "types": "./src/transforms/index.ts"
     },
-    "./codecs": {
-      "import": "./src/codecs/index.ts",
-      "types": "./src/codecs/index.ts"
+    "./utils": {
+      "import": "./src/utils/index.ts",
+      "types": "./src/utils/index.ts"
     }
   },
   "files": [
@@ -30,28 +30,26 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "bun test",
-    "benchmark": "bun run src/benchmark.ts",
     "clean": "echo 'No build artifacts to clean'",
     "prepublishOnly": "bun run typecheck"
   },
   "keywords": [
     "zenithkernel",
-    "compression",
-    "ost",
-    "syntax-tree",
-    "huffman",
-    "zstd",
-    "optimization",
-    "bundling",
-    "codec",
-    "algorithm"
+    "vite",
+    "plugin",
+    "zk-files",
+    "single-file-components",
+    "islands",
+    "hydration",
+    "typescript",
+    "framework"
   ],
   "author": "ZenithKernel Team",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/nicksdigital/zenithkernel.git",
-    "directory": "packages/ost-compression"
+    "directory": "packages/vite-plugin"
   },
   "bugs": {
     "url": "https://github.com/nicksdigital/zenithkernel/issues"
@@ -65,7 +63,10 @@
     "bun": ">=1.0.0"
   },
   "dependencies": {
-    "fflate": "^0.8.1"
+    "vite": "^5.0.0",
+    "@rollup/pluginutils": "^5.0.0",
+    "magic-string": "^0.30.0",
+    "estree-walker": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
@@ -74,5 +75,9 @@
     "bun-types": "latest",
     "eslint": "^8.0.0",
     "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@zenithcore/core": "^0.1.1",
+    "vite": "^4.0.0 || ^5.0.0"
   }
 }

@@ -1,0 +1,198 @@
+<!--
+  Counter Component (.zk file)
+  
+  This demonstrates a ZenithKernel Single File Component with:
+  - Reactive signals
+  - Event handling
+  - Store integration
+-->
+
+<template>
+  <div class="counter">
+    <h2>Counter Component</h2>
+    <div class="counter-display">
+      <span class="count">{{ count() }}</span>
+      <span class="status" :class="{ positive: isPositive(), even: isEven() }">
+        {{ isPositive() ? 'Positive' : 'Zero/Negative' }} • {{ isEven() ? 'Even' : 'Odd' }}
+      </span>
+    </div>
+    
+    <div class="counter-controls">
+      <button @click="decrement" :disabled="isLoading()">-</button>
+      <button @click="reset" :disabled="isLoading()">Reset</button>
+      <button @click="increment" :disabled="isLoading()">+</button>
+    </div>
+    
+    <div class="counter-actions">
+      <button @click="incrementBy5">+5</button>
+      <button @click="incrementAsync">Async +1</button>
+    </div>
+    
+    <div class="counter-history" v-if="history().length > 0">
+      <h3>History</h3>
+      <div class="history-list">
+        <span v-for="value in history()" :key="value" class="history-item">
+          {{ value }}
+        </span>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { createSignal, createComputed, createEffect } from '@zenithcore/core';
+import { CounterStore } from '../stores/CounterStore';
+
+// Props
+interface Props {
+  initialValue?: number;
+  store?: CounterStore;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  initialValue: 0
+});
+
+// Local state
+const [isLoading, setIsLoading] = createSignal(false);
+
+// Store integration
+const counterStore = props.store || new CounterStore();
+
+// Reactive values from store
+const count = createComputed(() => counterStore.getState().count);
+const history = createComputed(() => counterStore.getState().history);
+const isPositive = createComputed(() => counterStore.isPositive);
+const isEven = createComputed(() => counterStore.isEven);
+
+// Actions
+const increment = () => {
+  counterStore.increment();
+};
+
+const decrement = () => {
+  counterStore.decrement();
+};
+
+const reset = () => {
+  counterStore.reset();
+};
+
+const incrementBy5 = () => {
+  counterStore.incrementBy(5);
+};
+
+const incrementAsync = async () => {
+  setIsLoading(true);
+  await counterStore.incrementAsync(1000);
+  setIsLoading(false);
+};
+
+// Effects
+createEffect(() => {
+  console.log('Counter value changed:', count());
+});
+
+// Initialize with props
+if (props.initialValue !== 0) {
+  counterStore.incrementBy(props.initialValue);
+}
+</script>
+
+<style scoped>
+.counter {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-width: 400px;
+  margin: 20px auto;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.counter-display {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.count {
+  font-size: 48px;
+  font-weight: bold;
+  color: #333;
+  display: block;
+}
+
+.status {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+  display: block;
+}
+
+.status.positive {
+  color: #22c55e;
+}
+
+.status.even {
+  font-weight: bold;
+}
+
+.counter-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.counter-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+button:hover:not(:disabled) {
+  background: #f5f5f5;
+  border-color: #999;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.counter-history {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.counter-history h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.history-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.history-item {
+  padding: 4px 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #666;
+}
+</style>

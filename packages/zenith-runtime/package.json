@@ -1,6 +1,6 @@
 {
   "name": "@zenithcore/runtime",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Runtime codec implementation for ZenithKernel framework",
   "type": "module",
   "main": "dist/index.js",

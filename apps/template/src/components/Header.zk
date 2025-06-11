@@ -1,0 +1,376 @@
+<!--
+  Header Component (.zk file)
+  
+  Application header with theme toggle and user info
+-->
+
+<template>
+  <header class="app-header" :class="{ dark: theme() === 'dark' }">
+    <div class="header-content">
+      <div class="logo">
+        <h1>🌊 ZenithKernel</h1>
+        <span class="version">Template v1.0.0</span>
+      </div>
+      
+      <nav class="navigation">
+        <a href="/" :class="{ active: currentPath() === '/' }">Home</a>
+        <a href="/counter" :class="{ active: currentPath() === '/counter' }">Counter</a>
+        <a href="/about" :class="{ active: currentPath() === '/about' }">About</a>
+      </nav>
+      
+      <div class="header-actions">
+        <button @click="toggleTheme" class="theme-toggle" :title="themeToggleTitle()">
+          {{ theme() === 'light' ? '🌙' : '☀️' }}
+        </button>
+        
+        <div class="notifications" v-if="unreadCount() > 0">
+          <button @click="toggleNotifications" class="notification-button">
+            🔔 <span class="badge">{{ unreadCount() }}</span>
+          </button>
+          
+          <div v-if="showNotifications()" class="notification-dropdown">
+            <div class="notification-header">
+              <h3>Notifications</h3>
+              <button @click="clearAll" class="clear-all">Clear All</button>
+            </div>
+            <div class="notification-list">
+              <div 
+                v-for="notification in unreadNotifications()" 
+                :key="notification.id"
+                class="notification-item"
+                :class="notification.type"
+                @click="markAsRead(notification.id)"
+              >
+                <div class="notification-content">
+                  <span class="notification-message">{{ notification.message }}</span>
+                  <span class="notification-time">{{ formatTime(notification.timestamp) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="user-info" v-if="user()">
+          <img :src="user()?.avatar || '/default-avatar.png'" :alt="user()?.name" class="avatar">
+          <span class="username">{{ user()?.name }}</span>
+          <button @click="logout" class="logout-button">Logout</button>
+        </div>
+        
+        <div v-else class="auth-actions">
+          <button @click="login" class="login-button">Login</button>
+        </div>
+      </div>
+    </div>
+  </header>
+</template>
+
+<script setup lang="ts">
+import { createSignal, createComputed, createEffect } from '@zenithcore/core';
+import { AppStore } from '../stores/AppStore';
+
+// Props
+interface Props {
+  store?: AppStore;
+}
+
+const props = withDefaults(defineProps<Props>(), {});
+
+// Store integration
+const appStore = props.store || new AppStore();
+
+// Local state
+const [showNotifications, setShowNotifications] = createSignal(false);
+const [currentPath, setCurrentPath] = createSignal('/');
+
+// Reactive values from store
+const theme = createComputed(() => appStore.getState().theme);
+const user = createComputed(() => appStore.getState().user);
+const unreadNotifications = createComputed(() => appStore.unreadNotifications);
+const unreadCount = createComputed(() => appStore.unreadCount);
+
+// Computed values
+const themeToggleTitle = createComputed(() => 
+  `Switch to ${theme() === 'light' ? 'dark' : 'light'} theme`
+);
+
+// Actions
+const toggleTheme = () => {
+  appStore.toggleTheme();
+};
+
+const toggleNotifications = () => {
+  setShowNotifications(!showNotifications());
+};
+
+const markAsRead = (id: string) => {
+  appStore.markNotificationAsRead(id);
+};
+
+const clearAll = () => {
+  appStore.clearAllNotifications();
+  setShowNotifications(false);
+};
+
+const login = () => {
+  // Mock login
+  appStore.setUser({
+    id: '1',
+    name: 'ZenithKernel User',
+    email: 'user@zenithkernel.dev',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=zenith'
+  });
+};
+
+const logout = () => {
+  appStore.logout();
+};
+
+// Utility functions
+const formatTime = (date: Date): string => {
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const minutes = Math.floor(diff / 60000);
+  
+  if (minutes < 1) return 'Just now';
+  if (minutes < 60) return `${minutes}m ago`;
+  
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+};
+
+// Effects
+createEffect(() => {
+  // Update current path (in a real app, this would come from router)
+  setCurrentPath(window.location.pathname);
+});
+
+// Close notifications when clicking outside
+createEffect(() => {
+  if (showNotifications()) {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.notifications')) {
+        setShowNotifications(false);
+      }
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }
+});
+</script>
+
+<style scoped>
+.app-header {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0 20px;
+  transition: all 0.3s ease;
+}
+
+.app-header.dark {
+  background: #1f2937;
+  border-bottom-color: #374151;
+  color: white;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #00d9ff;
+}
+
+.logo .version {
+  font-size: 12px;
+  color: #666;
+  margin-left: 8px;
+}
+
+.navigation {
+  display: flex;
+  gap: 20px;
+}
+
+.navigation a {
+  text-decoration: none;
+  color: #666;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.navigation a:hover,
+.navigation a.active {
+  color: #00d9ff;
+  background: rgba(0, 217, 255, 0.1);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.theme-toggle {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s;
+}
+
+.theme-toggle:hover {
+  background: #f5f5f5;
+}
+
+.notifications {
+  position: relative;
+}
+
+.notification-button {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 8px 12px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.notification-button:hover {
+  background: #f5f5f5;
+}
+
+.badge {
+  background: #ef4444;
+  color: white;
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.notification-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.clear-all {
+  background: none;
+  border: none;
+  color: #00d9ff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.notification-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.notification-item:hover {
+  background: #f9f9f9;
+}
+
+.notification-item.error {
+  border-left: 4px solid #ef4444;
+}
+
+.notification-item.success {
+  border-left: 4px solid #22c55e;
+}
+
+.notification-item.warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.notification-item.info {
+  border-left: 4px solid #3b82f6;
+}
+
+.notification-message {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.notification-time {
+  font-size: 12px;
+  color: #666;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+}
+
+.username {
+  font-weight: 500;
+  color: #333;
+}
+
+.logout-button,
+.login-button {
+  background: #00d9ff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.logout-button:hover,
+.login-button:hover {
+  background: #0099cc;
+}
+</style>
