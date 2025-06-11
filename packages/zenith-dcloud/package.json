@@ -1,6 +1,6 @@
 {
   "name": "@zenithcore/dcloud",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Decentralized cloud infrastructure for ZenithKernel with IPFS, enterprise storage, and distributed websites",
   "type": "module",
   "main": "src/index.ts",
