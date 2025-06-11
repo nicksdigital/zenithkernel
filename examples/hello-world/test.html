@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenithKernel - Simple Test</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-2xl mx-auto text-center bg-white/80 rounded-lg p-8 shadow-lg">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">
+                Hello, <span class="text-blue-500" id="user-name">World</span>! 👋
+            </h1>
+            <p class="text-xl text-gray-600 mb-6">
+                Welcome to ZenithKernel - Simple Test
+            </p>
+            <div class="flex items-center justify-center space-x-4 mb-6">
+                <button onclick="decrementCounter()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">-</button>
+                <span class="text-2xl font-bold" id="counter-display">0</span>
+                <button onclick="incrementCounter()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">+</button>
+            </div>
+            <input 
+                type="text" 
+                placeholder="Enter your name..." 
+                onchange="updateUserName(this.value)"
+                class="w-full max-w-xs px-4 py-2 border rounded-lg mb-4"
+            />
+            <p class="text-sm text-gray-500">
+                Render count: <span id="render-count">0</span> | 
+                Status: <span id="status">Ready</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Simple state management
+        let state = {
+            counter: 0,
+            userName: '',
+            renderCount: 0
+        };
+
+        // Update display function
+        function updateDisplay() {
+            console.log('🔄 Updating display with state:', state);
+            
+            const counterDisplay = document.getElementById('counter-display');
+            const userNameDisplay = document.getElementById('user-name');
+            const renderCountDisplay = document.getElementById('render-count');
+            const statusDisplay = document.getElementById('status');
+            
+            if (counterDisplay) {
+                counterDisplay.textContent = state.counter;
+            }
+            
+            if (userNameDisplay) {
+                userNameDisplay.textContent = state.userName || 'World';
+            }
+            
+            if (renderCountDisplay) {
+                renderCountDisplay.textContent = state.renderCount;
+            }
+            
+            if (statusDisplay) {
+                statusDisplay.textContent = 'Updated';
+                setTimeout(() => {
+                    statusDisplay.textContent = 'Ready';
+                }, 500);
+            }
+            
+            state.renderCount++;
+        }
+
+        // Counter functions
+        function incrementCounter() {
+            console.log('➕ Incrementing counter');
+            state.counter++;
+            updateDisplay();
+        }
+
+        function decrementCounter() {
+            console.log('➖ Decrementing counter');
+            state.counter = Math.max(0, state.counter - 1);
+            updateDisplay();
+        }
+
+        // Name update function
+        function updateUserName(name) {
+            console.log('📝 Updating user name to:', name);
+            state.userName = name.trim();
+            updateDisplay();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Simple test initialized');
+            updateDisplay();
+        });
+    </script>
+</body>
+</html>

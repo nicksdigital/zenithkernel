@@ -59,6 +59,7 @@ export interface ZenithParsedTemplate {
   attributes: Record<string, string>;
   slots: Record<string, string>;
   expressions: string[];
+  content?: string; // Inner text content of the element
   directives?: {
     vIf?: string;
     vFor?: { item: string; iterable: string };
@@ -112,6 +113,7 @@ export class ZenithTemplateParser {
     let attributes = {};
     let slots = {};
     let expressions: string[] = [];
+    let content = '';
     let directives;
     let zkDirectives;
     let ecsBindings;
@@ -124,6 +126,9 @@ export class ZenithTemplateParser {
       slots = this.parseSlots(template);
       expressions = this.parseExpressions(template);
       directives = this.parseDirectives(attributes);
+
+      // Extract inner content
+      content = this.extractInnerContent(template);
 
       // ZenithKernel-specific parsing
       if (this.options.enableZKDirectives) {
@@ -177,6 +182,7 @@ export class ZenithTemplateParser {
       attributes,
       slots,
       expressions,
+      content,
       directives,
       zkDirectives,
       ecsBindings,
@@ -229,6 +235,26 @@ export class ZenithTemplateParser {
   }
 
   /**
+   * Extract inner content from template
+   */
+  private extractInnerContent(template: string): string {
+    // Match the content between opening and closing tags
+    const match = template.match(/^<[^>]*>([\s\S]*?)<\/[^>]*>$/);
+    if (match) {
+      return match[1].trim();
+    }
+
+    // Handle self-closing tags or plain text
+    const selfClosingMatch = template.match(/^<[^>]*\/>$/);
+    if (selfClosingMatch) {
+      return '';
+    }
+
+    // Return the template as-is if it doesn't match expected patterns
+    return template.trim();
+  }
+
+  /**
    * Parse expressions from template (from Archipelago)
    */
   private parseExpressions(template: string): string[] {
@@ -242,6 +268,14 @@ export class ZenithTemplateParser {
     }
 
     return expressions;
+  }
+
+  /**
+   * Remove expression placeholders from content to avoid double-processing
+   */
+  private removeExpressionsFromContent(content: string): string {
+    // Remove {{ }} expressions from content since they're processed separately
+    return content.replace(/\{\{\s*[^}]+?\s*\}\}/g, '').trim();
   }
 
   /**
@@ -424,7 +458,7 @@ export class ZenithTemplateParser {
    */
   public static validateZKProof(proof: string): boolean {
     // Basic validation - in real implementation this would be more sophisticated
-    return typeof proof === 'string' && proof.length > 0 && /^zk:[a-zA-Z0-9+/=]+$/.test(proof);
+    return typeof proof === 'string' && proof.length > 0 && /^zk:[a-zA-Z0-9+/=_-]+$/.test(proof);
   }
 
   /**

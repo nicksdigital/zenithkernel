@@ -269,14 +269,27 @@ const mockVerifySystem = {
   isVerified: vi.fn().mockReturnValue(true)
 };
 
-vi.mock('fs/promises', () => ({
-  readFile: vi.fn(async (filePath) => {
-    if (filePath.endsWith('CounterIsland.zk')) {
-      return mockCounterIslandZK; // Return mocked file content
-    }
-    throw new Error(`Mocked file not found: ${filePath}`);
-  }),
-}));
+vi.mock('fs/promises', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    default: {
+      ...actual.default,
+      readFile: vi.fn(async (filePath) => {
+        if (filePath.endsWith('CounterIsland.zk') || filePath === 'CounterIsland.zk') {
+          return mockCounterIslandZK; // Return mocked file content
+        }
+        throw new Error(`Mocked file not found: ${filePath}`);
+      }),
+    },
+    readFile: vi.fn(async (filePath) => {
+      if (filePath.endsWith('CounterIsland.zk') || filePath === 'CounterIsland.zk') {
+        return mockCounterIslandZK; // Return mocked file content
+      }
+      throw new Error(`Mocked file not found: ${filePath}`);
+    }),
+  };
+});
 
 describe('CounterIsland.zk Integration Tests', () => {
   let parser: ZenithTemplateParser;

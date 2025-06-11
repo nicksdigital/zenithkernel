@@ -5,6 +5,29 @@
 import { SignalManager, getSignalManager, resetSignalManager } from '../SignalManager';
 import { Signal, signal } from '../signals';
 import { ECSManager } from '../ECSManager';
+import { describe, test, expect, beforeEach, afterEach } from 'vitest';
+
+// Ensure DOM globals are available (fallback if global setup doesn't work)
+if (typeof document === 'undefined') {
+  const { JSDOM } = await import('jsdom');
+  const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+    url: 'http://localhost:3000/',
+    pretendToBeVisual: true,
+    resources: 'usable'
+  });
+
+  global.document = dom.window.document;
+  global.window = dom.window as any;
+  global.HTMLElement = dom.window.HTMLElement;
+
+  // Add requestAnimationFrame polyfill for tests
+  global.requestAnimationFrame = (callback: FrameRequestCallback) => {
+    return setTimeout(callback, 16); // ~60fps
+  };
+  global.cancelAnimationFrame = (id: number) => {
+    clearTimeout(id);
+  };
+}
 
 describe('SignalManager', () => {
   let manager: SignalManager;
@@ -253,8 +276,8 @@ describe('SignalManager', () => {
       
       const stats = manager.getStats();
       expect(stats.activeSignals).toBe(1);
-      expect(stats.domBindings).toBe(1);
-      expect(stats.hydraContexts).toBe(1);
+      expect(stats.domBindingCount).toBe(1);
+      expect(stats.hydraContextCount).toBe(1);
       
       manager.dispose();
       

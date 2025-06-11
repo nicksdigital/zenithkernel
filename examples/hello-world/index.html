@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenithKernel - Hello World</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        zenith: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom gradient background */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background-color: rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(209, 213, 219, 0.3);
+        }
+        
+        .dark .glass-effect {
+            background-color: rgba(17, 24, 39, 0.75);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <!-- Main App Container -->
+    <div id="app" class="min-h-screen flex items-center justify-center p-4">
+        <!-- Loading State -->
+        <div id="loading" class="text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+            <p class="text-white text-lg">Loading ZenithKernel...</p>
+        </div>
+        
+        <!-- App Content (will be rendered by ZenithKernel) -->
+        <div id="content" class="hidden">
+            <!-- Content will be injected here -->
+        </div>
+    </div>
+
+    <!-- ZenithKernel Scripts -->
+    <script>
+        console.log('🚀 ZenithKernel starting...');
+
+        // Simple state management
+        let appState = {
+            userName: '',
+            counter: 0,
+            renderCount: 0,
+            signalStatus: 'Active',
+            ecsStatus: 'Ready',
+            hydrationStatus: 'Complete',
+            loadTime: 0,
+            startTime: Date.now()
+        };
+
+        let zkTemplate = null;
+        // Simple functions for state management
+        function incrementCounter(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            console.log('➕ Incrementing counter');
+            appState.counter++;
+            appState.renderCount++;
+            updateDisplay();
+            return false;
+        }
+
+        function decrementCounter(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            console.log('➖ Decrementing counter');
+            appState.counter = Math.max(0, appState.counter - 1);
+            appState.renderCount++;
+            updateDisplay();
+            return false;
+        }
+
+        function updateUserName(name, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            console.log('📝 Updating name to:', name);
+            appState.userName = name.trim();
+            appState.renderCount++;
+            updateDisplay();
+            return false;
+        }
+
+        // Load ZK component
+        async function loadZKComponent() {
+            try {
+                console.log('📦 Loading ZK component...');
+
+                const response = await fetch('./components/HelloWorld.zk');
+                if (!response.ok) {
+                    throw new Error('Failed to load ZK component');
+                }
+
+                const zkContent = await response.text();
+                console.log('✅ ZK component loaded');
+
+                // Extract template
+                const templateMatch = zkContent.match(/<template>([\s\S]*?)<\/template>/);
+                if (templateMatch) {
+                    zkTemplate = templateMatch[1].trim();
+                    console.log('📋 Template extracted');
+                }
+
+                // Extract and apply styles
+                const styleMatch = zkContent.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+                if (styleMatch) {
+                    const styleElement = document.createElement('style');
+                    styleElement.textContent = styleMatch[1].trim();
+                    document.head.appendChild(styleElement);
+                    console.log('🎨 Styles applied');
+                }
+
+                return true;
+            } catch (error) {
+                console.error('❌ Failed to load ZK component:', error);
+                return false;
+            }
+        }
+
+        // Render template with current state
+        function renderTemplate() {
+            if (!zkTemplate) {
+                console.log('📋 No template loaded, showing fallback');
+                showFallback();
+                return;
+            }
+
+            console.log('🎨 Rendering template...');
+
+            let rendered = zkTemplate;
+
+            // Simple template interpolation
+            rendered = rendered.replace(/\{\{\s*([^}]+)\s*\}\}/g, function(match, expression) {
+                const trimmed = expression.trim();
+
+                if (trimmed in appState) {
+                    return String(appState[trimmed]);
+                }
+
+                if (trimmed.includes('||')) {
+                    const parts = trimmed.split('||').map(s => s.trim());
+                    const variable = parts[0];
+                    const fallback = parts[1];
+                    const value = appState[variable];
+                    if (value) return String(value);
+                    return fallback.replace(/['"]/g, '');
+                }
+
+                if (trimmed === 'currentYear') {
+                    return new Date().getFullYear();
+                }
+
+                return match;
+            });
+
+            // Replace event handlers with data attributes
+            rendered = rendered.replace(/@click="incrementCounter\(\)"/g, 'data-action="increment" type="button"');
+            rendered = rendered.replace(/@click="decrementCounter\(\)"/g, 'data-action="decrement" type="button"');
+            rendered = rendered.replace(/@input="updateUserName\([^)]+\)"/g, 'data-input="name"');
+            rendered = rendered.replace(/v-model="userName"/g, 'data-input="name"');
+
+            // Update DOM
+            const contentElement = document.getElementById('content');
+            if (contentElement) {
+                contentElement.innerHTML = rendered;
+                console.log('✅ Template rendered successfully');
+            }
+        }
+
+        // Update display (called when state changes)
+        function updateDisplay() {
+            console.log('🔄 Updating display with state:', appState);
+            appState.loadTime = Date.now() - appState.startTime;
+            renderTemplate();
+
+            // Re-attach event listeners after re-render
+            attachEventListeners();
+        }
+
+        // Attach event listeners to buttons and inputs
+        function attachEventListeners() {
+            // Counter buttons
+            const incBtn = document.querySelector('[data-action="increment"]');
+            const decBtn = document.querySelector('[data-action="decrement"]');
+            const nameInput = document.querySelector('[data-input="name"]');
+
+            if (incBtn) {
+                incBtn.removeEventListener('click', handleIncrement);
+                incBtn.addEventListener('click', handleIncrement);
+            }
+
+            if (decBtn) {
+                decBtn.removeEventListener('click', handleDecrement);
+                decBtn.addEventListener('click', handleDecrement);
+            }
+
+            if (nameInput) {
+                nameInput.removeEventListener('input', handleNameInput);
+                nameInput.addEventListener('input', handleNameInput);
+            }
+        }
+
+        // Event handlers
+        function handleIncrement(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            incrementCounter();
+            return false;
+        }
+
+        function handleDecrement(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            decrementCounter();
+            return false;
+        }
+
+        function handleNameInput(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            updateUserName(e.target.value);
+            return false;
+        }
+
+        // Show fallback interface
+        function showFallback() {
+            console.log('📋 Showing fallback interface...');
+            const contentElement = document.getElementById('content');
+            if (contentElement) {
+                contentElement.innerHTML =
+                    '<div class="max-w-2xl mx-auto text-center bg-white/80 rounded-lg p-8 shadow-lg">' +
+                        '<h1 class="text-4xl font-bold text-gray-800 mb-4">' +
+                            'Hello, <span class="text-blue-500">' + (appState.userName || 'World') + '</span>! 👋' +
+                        '</h1>' +
+                        '<p class="text-xl text-gray-600 mb-6">Welcome to ZenithKernel (Fallback Mode)</p>' +
+                        '<div class="flex items-center justify-center space-x-4 mb-6">' +
+                            '<button onclick="decrementCounter(event); return false;" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">-</button>' +
+                            '<span class="text-2xl font-bold">' + appState.counter + '</span>' +
+                            '<button onclick="incrementCounter(event); return false;" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">+</button>' +
+                        '</div>' +
+                        '<input type="text" placeholder="Enter your name..." onchange="updateUserName(this.value, event); return false;" ' +
+                            'class="w-full max-w-xs px-4 py-2 border rounded-lg" value="' + (appState.userName || '') + '">' +
+                        '<p class="mt-4 text-sm text-gray-500">Render count: ' + appState.renderCount + '</p>' +
+                    '</div>';
+            }
+        }
+
+        // Show content and hide loading
+        function showContent() {
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('content');
+
+            if (loading) loading.classList.add('hidden');
+            if (content) content.classList.remove('hidden');
+        }
+
+        // Initialize the app
+        async function initApp() {
+            try {
+                console.log('🎯 Initializing ZenithKernel app...');
+
+                // Try to load ZK component
+                const zkLoaded = await loadZKComponent();
+
+                if (zkLoaded && zkTemplate) {
+                    console.log('✅ Using ZK component');
+                    renderTemplate();
+                } else {
+                    console.log('📋 Using fallback interface');
+                    showFallback();
+                }
+
+                // Show content
+                showContent();
+
+                console.log('🎉 ZenithKernel initialized successfully!');
+
+            } catch (error) {
+                console.error('❌ Failed to initialize app:', error);
+                showFallback();
+                showContent();
+            }
+        }
+
+        // Start when DOM is ready
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

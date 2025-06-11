@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - No Refresh Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-2xl mx-auto text-center bg-white/80 rounded-lg p-8 shadow-lg">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">
+                Debug Test - <span id="user-name">World</span>! 👋
+            </h1>
+            
+            <!-- Counter Test -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold mb-4">Counter Test</h3>
+                <div class="flex items-center justify-center space-x-4">
+                    <button type="button" id="dec-btn" class="bg-red-500 text-white px-4 py-2 rounded">-</button>
+                    <span id="counter">0</span>
+                    <button type="button" id="inc-btn" class="bg-green-500 text-white px-4 py-2 rounded">+</button>
+                </div>
+            </div>
+            
+            <!-- Input Test -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold mb-4">Input Test</h3>
+                <input type="text" id="name-input" placeholder="Enter name..." class="px-4 py-2 border rounded">
+            </div>
+            
+            <!-- Status -->
+            <div>
+                <p>Counter: <span id="counter-status">0</span></p>
+                <p>Name: <span id="name-status">World</span></p>
+                <p>Events: <span id="event-log">None</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let counter = 0;
+        let userName = '';
+        let eventLog = [];
+        
+        function logEvent(event) {
+            eventLog.push(event);
+            document.getElementById('event-log').textContent = eventLog.slice(-3).join(', ');
+            console.log('Event:', event);
+        }
+        
+        function updateDisplay() {
+            document.getElementById('counter').textContent = counter;
+            document.getElementById('counter-status').textContent = counter;
+            document.getElementById('user-name').textContent = userName || 'World';
+            document.getElementById('name-status').textContent = userName || 'World';
+        }
+        
+        // Button event listeners
+        document.getElementById('inc-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            logEvent('increment');
+            counter++;
+            updateDisplay();
+            return false;
+        });
+        
+        document.getElementById('dec-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            logEvent('decrement');
+            counter = Math.max(0, counter - 1);
+            updateDisplay();
+            return false;
+        });
+        
+        // Input event listener
+        document.getElementById('name-input').addEventListener('input', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            logEvent('input');
+            userName = e.target.value;
+            updateDisplay();
+            return false;
+        });
+        
+        // Prevent any form submission
+        document.addEventListener('submit', function(e) {
+            e.preventDefault();
+            logEvent('form-submit-prevented');
+            return false;
+        });
+        
+        // Log page navigation attempts
+        window.addEventListener('beforeunload', function(e) {
+            console.log('Page is about to unload!');
+            logEvent('beforeunload');
+        });
+        
+        // Initialize
+        updateDisplay();
+        logEvent('initialized');
+    </script>
+</body>
+</html>

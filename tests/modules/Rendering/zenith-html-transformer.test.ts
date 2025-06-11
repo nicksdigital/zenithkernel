@@ -36,6 +36,7 @@ describe('ZenithHtmlTransformer', () => {
   let parser: ZenithTemplateParser;
 
   beforeEach(() => {
+    // Create fresh context for each test to avoid mutation issues
     context = {
       ecsManager: mockECSManager as any,
       verifySystem: mockVerifySystem,
@@ -54,10 +55,11 @@ describe('ZenithHtmlTransformer', () => {
       enableHydrationConfig: true,
       zkVerificationTimeout: 1000,
       fallbackToPlaceholder: true,
-      debugMode: true
+      debugMode: false
     };
 
-    transformer = new ZenithHtmlTransformer(context, options);
+    // Create fresh transformer for each test
+    transformer = new ZenithHtmlTransformer({ ...context }, { ...options });
     parser = new ZenithTemplateParser();
 
     // Reset mocks
@@ -99,25 +101,28 @@ describe('ZenithHtmlTransformer', () => {
 
   describe('Conditional Rendering (v-if)', () => {
     it('should render when v-if condition is true', async () => {
-      context.showElement = true;
+      const testContext = { ...context, showElement: true };
+      const testTransformer = new ZenithHtmlTransformer(testContext, options);
       const template = parser.parse('<div v-if="showElement">Visible content</div>');
-      const result = await transformer.transform(template);
-      
+      const result = await testTransformer.transform(template);
+
       expect(result).toContain('Visible content');
     });
 
     it('should not render when v-if condition is false', async () => {
-      context.showElement = false;
+      const testContext = { ...context, showElement: false };
+      const testTransformer = new ZenithHtmlTransformer(testContext, options);
       const template = parser.parse('<div v-if="showElement">Hidden content</div>');
-      const result = await transformer.transform(template);
-      
+      const result = await testTransformer.transform(template);
+
       expect(result).toBe('');
     });
 
     it('should handle complex v-if expressions', async () => {
-      context.user = { isAdmin: true };
+      const testContext = { ...context, user: { isAdmin: true } };
+      const testTransformer = new ZenithHtmlTransformer(testContext, options);
       const template = parser.parse('<div v-if="user && user.isAdmin">Admin content</div>');
-      const result = await transformer.transform(template);
+      const result = await testTransformer.transform(template);
       
       expect(result).toContain('Admin content');
     });
@@ -163,7 +168,7 @@ describe('ZenithHtmlTransformer', () => {
     it('should render when ZK verification passes', async () => {
       const template = parser.parse('<div zk-proof="zk:valid123">Verified content</div>');
       const result = await transformer.transform(template);
-      
+
       expect(result).toContain('Verified content');
       expect(mockVerifySystem.verifyProof).toHaveBeenCalledWith('test-peer', 'zk:valid123');
     });
@@ -280,10 +285,18 @@ describe('ZenithHtmlTransformer', () => {
   describe('Helper Functions', () => {
     it('should provide zkVerify helper', async () => {
       const template = parser.parse('<div>{{ await zkVerify("zk:test123") }}</div>');
+
+      // Debug: Check what's in the parsed template
+      expect(template.expressions).toBeDefined();
+      expect(template.expressions.length).toBeGreaterThan(0);
+      expect(template.expressions[0]).toBe('await zkVerify("zk:test123")');
+
       const result = await transformer.transform(template);
-      
-      expect(result).toContain('true');
+
+      // First check if the mock was called at all
+      expect(mockVerifySystem.verifyProof).toHaveBeenCalled();
       expect(mockVerifySystem.verifyProof).toHaveBeenCalledWith('test-peer', 'zk:test123');
+      expect(result).toContain('true');
     });
 
     it('should provide ecsGet helper', async () => {
@@ -377,19 +390,21 @@ describe('ZenithHtmlTransformer', () => {
 
   describe('HTML Escaping', () => {
     it('should escape HTML characters in attributes', async () => {
-      context.unsafeValue = '<script>alert("xss")</script>';
+      const testContext = { ...context, unsafeValue: '<script>alert("xss")</script>' };
+      const testTransformer = new ZenithHtmlTransformer(testContext, options);
       const template = parser.parse('<div :title="unsafeValue">Content</div>');
-      const result = await transformer.transform(template);
-      
+      const result = await testTransformer.transform(template);
+
       expect(result).toContain('&lt;script&gt;');
       expect(result).not.toContain('<script>');
     });
 
     it('should escape HTML characters in content', async () => {
-      context.unsafeContent = '<script>alert("xss")</script>';
+      const testContext = { ...context, unsafeContent: '<script>alert("xss")</script>' };
+      const testTransformer = new ZenithHtmlTransformer(testContext, options);
       const template = parser.parse('<div>{{ unsafeContent }}</div>');
-      const result = await transformer.transform(template);
-      
+      const result = await testTransformer.transform(template);
+
       expect(result).toContain('&lt;script&gt;');
       expect(result).not.toContain('<script>');
     });
@@ -399,7 +414,10 @@ describe('ZenithHtmlTransformer', () => {
     it('should handle complex template with all features', async () => {
       context.showItems = true;
       context.currentUser = { isVerified: true };
-      
+
+      // Create a new transformer with the updated context
+      transformer = new ZenithHtmlTransformer({ ...context }, { ...options });
+
       const template = parser.parse(`
         <div 
           v-if="showItems"

@@ -1,0 +1,39 @@
+{
+  "name": "zenithkernel-hello-world",
+  "version": "1.0.0",
+  "description": "Beautiful Hello World app showcasing ZenithKernel with Tailwind CSS",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "serve": "bun server.js",
+    "build": "echo 'No build step needed for this demo'",
+    "test": "echo 'No tests configured yet'"
+  },
+  "keywords": [
+    "zenithkernel",
+    "hello-world",
+    "tailwind",
+    "reactive",
+    "signals",
+    "ecs",
+    "web-components"
+  ],
+  "author": "ZenithKernel Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicksdigital/zenithkernel.git",
+    "directory": "examples/hello-world"
+  },
+  "bugs": {
+    "url": "https://github.com/nicksdigital/zenithkernel/issues"
+  },
+  "homepage": "https://github.com/nicksdigital/zenithkernel#readme"
+}

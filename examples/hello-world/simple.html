@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenithKernel - Working Version</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background-color: rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(209, 213, 219, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <!-- Main App Container -->
+    <div id="app" class="min-h-screen flex items-center justify-center p-4">
+        <!-- Loading State -->
+        <div id="loading" class="text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+            <p class="text-white text-lg">Loading ZenithKernel...</p>
+        </div>
+        
+        <!-- App Content -->
+        <div id="content" class="hidden">
+            <!-- Content will be injected here -->
+        </div>
+    </div>
+
+    <script>
+        console.log('🚀 ZenithKernel starting...');
+        
+        // Simple state
+        let appState = {
+            userName: '',
+            counter: 0,
+            renderCount: 0
+        };
+        
+        // Update functions
+        function incrementCounter() {
+            console.log('➕ Incrementing counter');
+            appState.counter++;
+            appState.renderCount++;
+            updateDisplay();
+        }
+        
+        function decrementCounter() {
+            console.log('➖ Decrementing counter');
+            appState.counter = Math.max(0, appState.counter - 1);
+            appState.renderCount++;
+            updateDisplay();
+        }
+        
+        function updateUserName(name) {
+            console.log('📝 Updating name to:', name);
+            appState.userName = name.trim();
+            appState.renderCount++;
+            updateDisplay();
+        }
+        
+        function updateDisplay() {
+            console.log('🔄 Updating display with state:', appState);
+            
+            const counterSpan = document.getElementById('counter-value');
+            const nameSpan = document.getElementById('user-name');
+            const renderSpan = document.getElementById('render-count');
+            const nameInput = document.getElementById('name-input');
+            
+            if (counterSpan) counterSpan.textContent = appState.counter;
+            if (nameSpan) nameSpan.textContent = appState.userName || 'World';
+            if (renderSpan) renderSpan.textContent = appState.renderCount;
+            if (nameInput) nameInput.value = appState.userName;
+        }
+        
+        // Initialize app
+        function initApp() {
+            console.log('🎯 Initializing app...');
+            
+            const contentElement = document.getElementById('content');
+            if (contentElement) {
+                contentElement.innerHTML = 
+                    '<div class="max-w-4xl mx-auto">' +
+                        '<div class="glass-effect rounded-3xl shadow-2xl p-8 md:p-12 text-center">' +
+                            '<div class="mb-8">' +
+                                '<h1 class="text-5xl md:text-7xl font-bold text-gray-800 mb-4">' +
+                                    'Hello, <span class="text-blue-500" id="user-name">World</span>! 👋' +
+                                '</h1>' +
+                                '<p class="text-xl md:text-2xl text-gray-600 mb-6">' +
+                                    'Welcome to <strong class="text-blue-600">ZenithKernel</strong> - The Future of Web Development' +
+                                '</p>' +
+                            '</div>' +
+                            
+                            '<div class="bg-white/30 rounded-2xl p-6 mb-8">' +
+                                '<h3 class="text-2xl font-bold text-gray-800 mb-4">Interactive Demo</h3>' +
+                                
+                                '<div class="flex items-center justify-center space-x-4 mb-6">' +
+                                    '<button onclick="decrementCounter()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-200 shadow-lg hover:shadow-xl">-</button>' +
+                                    '<div class="text-3xl font-bold text-gray-800 min-w-[60px]" id="counter-value">0</div>' +
+                                    '<button onclick="incrementCounter()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-200 shadow-lg hover:shadow-xl">+</button>' +
+                                '</div>' +
+                                
+                                '<div class="max-w-md mx-auto">' +
+                                    '<label class="block text-gray-700 text-sm font-bold mb-2">What\'s your name?</label>' +
+                                    '<input id="name-input" type="text" placeholder="Enter your name..." onchange="updateUserName(this.value)" ' +
+                                        'class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80">' +
+                                '</div>' +
+                            '</div>' +
+                            
+                            '<div class="bg-green-100 border border-green-200 rounded-lg p-4">' +
+                                '<h4 class="font-semibold text-green-800 mb-2">✅ System Status</h4>' +
+                                '<ul class="text-sm text-green-700 space-y-1">' +
+                                    '<li>• Template Engine: Active</li>' +
+                                    '<li>• Signal System: Working</li>' +
+                                    '<li>• Render Count: <span id="render-count">0</span></li>' +
+                                '</ul>' +
+                            '</div>' +
+                            
+                            '<div class="mt-8 pt-6 border-t border-gray-200">' +
+                                '<p class="text-gray-600 text-sm">' +
+                                    'Built with ❤️ using <strong>ZenithKernel</strong> • ' +
+                                    '<span class="text-blue-600">' + new Date().getFullYear() + '</span>' +
+                                '</p>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';
+                
+                console.log('✅ Content rendered');
+            }
+            
+            // Show content, hide loading
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('content');
+            
+            if (loading) loading.classList.add('hidden');
+            if (content) content.classList.remove('hidden');
+            
+            // Initial display update
+            updateDisplay();
+            
+            console.log('🎉 ZenithKernel initialized successfully!');
+        }
+        
+        // Start when DOM is ready
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

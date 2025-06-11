@@ -42,7 +42,8 @@ export function hydraPlugin(options: HydraPluginOptions = {}): Plugin {
     async buildStart() {
       try {
         // Discover islands
-        const pattern = path.join(resolvedOptions.islandsDir, resolvedOptions.islandPattern);
+        const islandsPath = path.resolve(projectRoot, resolvedOptions.islandsDir);
+        const pattern = path.join(islandsPath, resolvedOptions.islandPattern);
         const files = await glob(pattern);
 
         // Process each island file
@@ -117,6 +118,90 @@ export function hydraPlugin(options: HydraPluginOptions = {}): Plugin {
             content: isZKFile ? this.parseZKFile(content) : content
           }
         });
+      }
+    },
+
+    async transform(code: string, id: string) {
+      // Only transform .zk files
+      if (!id.endsWith('.zk')) {
+        return null;
+      }
+
+      try {
+        const parsed = this.parseZKFile(code);
+
+        if (parsed.error) {
+          throw new Error(parsed.error);
+        }
+
+        // Generate transformed code
+        const transformedCode = `
+// ZenithKernel Single File Component
+export const __ZK_SFC__ = true;
+export const __ZK_TEMPLATE__ = ${JSON.stringify(parsed.template)};
+export const __ZK_SCRIPT__ = ${JSON.stringify(parsed.script)};
+export const __ZK_STYLES__ = ${JSON.stringify(parsed.style)};
+
+// Re-export script content
+${parsed.script}
+
+// Default export for component
+export default {
+  template: __ZK_TEMPLATE__,
+  script: __ZK_SCRIPT__,
+  styles: __ZK_STYLES__
+};
+        `.trim();
+
+        return {
+          code: transformedCode,
+          map: null
+        };
+      } catch (error) {
+        console.error('Failed to transform .zk file:', error);
+        throw error;
+      }
+    },
+
+    async transform(code: string, id: string) {
+      // Only transform .zk files
+      if (!id.endsWith('.zk')) {
+        return null;
+      }
+
+      try {
+        const parsed = this.parseZKFile(code);
+
+        if (parsed.error) {
+          throw new Error(parsed.error);
+        }
+
+        // Generate transformed code
+        const transformedCode = `
+// ZenithKernel Single File Component
+export const __ZK_SFC__ = true;
+export const __ZK_TEMPLATE__ = ${JSON.stringify(parsed.template)};
+export const __ZK_SCRIPT__ = ${JSON.stringify(parsed.script)};
+export const __ZK_STYLES__ = ${JSON.stringify(parsed.style)};
+
+// Re-export script content
+${parsed.script}
+
+// Default export for component
+export default {
+  template: __ZK_TEMPLATE__,
+  script: __ZK_SCRIPT__,
+  styles: __ZK_STYLES__
+};
+        `.trim();
+
+        return {
+          code: transformedCode,
+          map: null
+        };
+      } catch (error) {
+        console.error('Failed to transform .zk file:', error);
+        throw error;
       }
     },
 

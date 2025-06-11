@@ -26,6 +26,24 @@ global.Event = dom.window.Event;
 global.DOMParser = dom.window.DOMParser;
 global.XMLSerializer = dom.window.XMLSerializer;
 
+// Ensure dispatchEvent is available on window
+if (!global.window.dispatchEvent) {
+  global.window.dispatchEvent = dom.window.dispatchEvent.bind(dom.window);
+}
+
+// Add performance API for benchmarks
+if (!global.performance) {
+  global.performance = {
+    now: () => Date.now(),
+    mark: vi.fn(),
+    measure: vi.fn(),
+    getEntriesByType: vi.fn(() => []),
+    getEntriesByName: vi.fn(() => []),
+    clearMarks: vi.fn(),
+    clearMeasures: vi.fn()
+  } as any;
+}
+
 // Mock IntersectionObserver
 class MockIntersectionObserver {
   observe() {}
@@ -307,6 +325,11 @@ beforeEach(() => {
 
   // Replace the global window object
   global.window = mockWindow;
+
+  // Ensure dispatchEvent is available on the new window object
+  if (!global.window.dispatchEvent) {
+    global.window.dispatchEvent = dom.window.dispatchEvent.bind(dom.window);
+  }
 
   // Mock history methods
   global.window.history.pushState = vi.fn((state: any, title: string, url?: string) => {

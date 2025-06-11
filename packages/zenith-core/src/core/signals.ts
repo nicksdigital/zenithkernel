@@ -12,6 +12,10 @@ let currentBatch: Set<Signal<any>> | null = null;
 let batchDepth = 0;
 let scheduledUpdate: number | null = null; // Can be number for RAF, or a truthy sentinel for microtask
 
+// Infinite loop prevention
+const MAX_EFFECT_EXECUTIONS_PER_COMPUTATION = 1000;
+const EXECUTION_TIME_WINDOW = 100; // ms
+
 // Signal ID counter for unique identification
 let signalIdCounter = 0;
 
@@ -348,15 +352,17 @@ export class Signal<T> {
 
 export class Computation {
   public dependencies = new Set<Signal<any>>();
-  private _fn: () => void | (() => void); 
+  private _fn: () => void | (() => void);
   private _cleanup?: () => void;
   private _name?: string;
   private _disposed = false;
   private _executing = false;
   private _executionCount = 0;
   private _lastExecution?: number;
-  private _errorHandler?: (error: Error) => void; 
-  public _isEffect = true; 
+  private _errorHandler?: (error: Error) => void;
+  public _isEffect = true;
+  private _recentExecutions: number[] = []; // Track recent execution times
+  private _pendingExecution = false; // Track if execution is pending
 
   constructor(fn: () => void | (() => void), options: EffectOptions = {}, isEffect:boolean = true) {
     this._fn = fn;
@@ -376,18 +382,34 @@ export class Computation {
         debugLog(`Attempted to execute disposed computation ${this._name || 'anonymous'}`);
         return;
     }
-    // For effects, prevent re-entrant execution to avoid common infinite loops.
-    // For pure computed signals (isEffect=false), allow re-entrancy if needed by complex synchronous graphs.
-    if (this._executing && this._isEffect) { 
-        debugLog(`Computation ${this._name || 'anonymous'} (effect) already executing, skipping re-entrant call.`);
+    // For effects, mark pending execution instead of blocking it
+    if (this._executing && this._isEffect) {
+        this._pendingExecution = true;
+        debugLog(`Computation ${this._name || 'anonymous'} (effect) already executing, marking for re-execution.`);
         return;
+    }
+
+    // Prevent infinite loops by tracking executions per computation
+    if (this._isEffect) {
+        const now = Date.now();
+        // Clean old executions outside the time window
+        this._recentExecutions = this._recentExecutions.filter(time => now - time < EXECUTION_TIME_WINDOW);
+
+        // Check if we're executing too frequently
+        if (this._recentExecutions.length >= MAX_EFFECT_EXECUTIONS_PER_COMPUTATION) {
+            debugLog(`Effect execution limit reached (${MAX_EFFECT_EXECUTIONS_PER_COMPUTATION} in ${EXECUTION_TIME_WINDOW}ms), preventing infinite loop for ${this._name || 'anonymous'}`);
+            return;
+        }
+
+        // Record this execution
+        this._recentExecutions.push(now);
     }
 
     this._executing = true;
     this._executionCount++;
     this._lastExecution = Date.now();
 
-    debugLog(`Executing computation ${this._name || 'anonymous'}`, { count: this._executionCount });
+    debugLog(`Executing computation ${this._name || 'anonymous'}`, { count: this._executionCount, recentExecutions: this._recentExecutions.length });
 
     // Before re-running, remove this computation from its old dependencies' subscriber lists
     for (const signal of this.dependencies) {
@@ -417,6 +439,13 @@ export class Computation {
     } finally {
       currentComputation = prevComputation;
       this._executing = false;
+
+      // Check if we need to run again due to changes during execution
+      if (this._pendingExecution && !this._disposed) {
+        this._pendingExecution = false;
+        debugLog(`Computation ${this._name || 'anonymous'} has pending execution, running again.`);
+        this.execute(); // Recursive call, but with protection against infinite loops
+      }
     }
   }
 

@@ -124,16 +124,16 @@ describe('ZenithTemplateParser', () => {
 
     it('should validate zk-trust values', () => {
       const template = '<div zk-trust="invalid">Content</div>';
-      const result = parser.parse(template);
-      
+      const result = parser.parseWithRecovery(template);
+
       expect(result.errors).toBeDefined();
       expect(result.errors?.some(e => e.includes('Invalid zk-trust value'))).toBe(true);
     });
 
     it('should validate zk-strategy values', () => {
       const template = '<div zk-strategy="invalid">Content</div>';
-      const result = parser.parse(template);
-      
+      const result = parser.parseWithRecovery(template);
+
       expect(result.errors).toBeDefined();
       expect(result.errors?.some(e => e.includes('Invalid zk-strategy value'))).toBe(true);
     });
@@ -222,8 +222,8 @@ describe('ZenithTemplateParser', () => {
 
     it('should validate hydration strategy values', () => {
       const template = '<div hydration-strategy="invalid">Content</div>';
-      const result = parser.parse(template);
-      
+      const result = parser.parseWithRecovery(template);
+
       expect(result.errors).toBeDefined();
       expect(result.errors?.some(e => e.includes('Invalid hydration strategy'))).toBe(true);
     });
