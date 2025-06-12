@@ -6,9 +6,81 @@
  */
 
 import { signal, computed, effect } from '@core/signals';
-import { CounterComponent, createCounter } from '../components/CounterComponent';
-import { TodoListComponent, createTodoList } from '../components/TodoListComponent';
 import { createAppStore } from '../stores/appStore';
+
+// Simple counter creator function
+function createCounter(initialValue = 0, options: any = {}) {
+  const count = signal(initialValue);
+  const updateCount = signal(0);
+  const min = options.min;
+  const max = options.max;
+
+  const isAtMin = computed(() => min !== undefined ? count.value <= min : false);
+  const isAtMax = computed(() => max !== undefined ? count.value >= max : false);
+
+  return {
+    valueSignal: count, // For compatibility
+    count,
+    updateCount,
+    isAtMin,
+    isAtMax,
+    increment() {
+      if (max === undefined || count.value < max) {
+        count.value++;
+        updateCount.value++;
+      }
+    },
+    decrement() {
+      if (min === undefined || count.value > min) {
+        count.value--;
+        updateCount.value++;
+      }
+    },
+    reset() {
+      count.value = initialValue;
+      updateCount.value++;
+    },
+    dispose() {
+      // Cleanup function
+    }
+  };
+}
+
+// Simple todo list creator function
+function createTodoList(store: any) {
+  const todos = signal([] as any[]);
+  const newTodoText = signal('');
+  const filteredTodos = computed(() => todos.value);
+
+  return {
+    todos,
+    newTodoText,
+    filteredTodos,
+    addTodo(text: string) {
+      const newTodo = {
+        id: Date.now(),
+        text,
+        completed: false
+      };
+      todos.value = [...todos.value, newTodo];
+      newTodoText.value = '';
+      store.dispatch({ type: 'ADD_TODO', payload: text });
+    },
+    toggleTodo(id: number) {
+      todos.value = todos.value.map((todo: any) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      );
+      store.dispatch({ type: 'TOGGLE_TODO', payload: id });
+    },
+    deleteTodo(id: number) {
+      todos.value = todos.value.filter((todo: any) => todo.id !== id);
+      store.dispatch({ type: 'DELETE_TODO', payload: id });
+    },
+    dispose() {
+      // Cleanup function
+    }
+  };
+}
 
 /**
  * Island Registry
@@ -297,7 +369,7 @@ function hydrateAllIslands(): void {
  * Clean up all islands
  */
 function cleanupAllIslands(): void {
-  activeIslands.forEach((cleanup, element) => {
+  activeIslands.forEach((cleanup) => {
     try {
       cleanup();
     } catch (error) {

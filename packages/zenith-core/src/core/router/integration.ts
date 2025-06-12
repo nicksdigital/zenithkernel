@@ -11,7 +11,7 @@ import { RegistryServer } from '@modules/RegistryServer/RegistryServer';
 import { signal, computed } from '../signals';
 import { handleVerifyRequest, VerifySystem } from '@modules/RegistryServer/VerifySystem';
 import { ComponentType } from 'react';
-import { HydraLoader } from '@components/hydra/HydraLoader';
+import { HydraLoader } from '@modules/Rendering/hydra/HydraLoader';
 import { ChallengeSystem } from '@modules/RegistryServer/ChallengeSystem';
 
 /**

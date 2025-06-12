@@ -1,6 +1,7 @@
 /**
  * ZenithRouter Test Suite
  * Comprehensive tests for all router functionality
+ * @vitest-environment jsdom
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
@@ -107,26 +108,32 @@ const mockRegistryServer = {
   query: vi.fn(),
 };
 
-// Mock browser APIs
-Object.defineProperty(window, 'history', {
+// Mock browser APIs for router tests
+Object.defineProperty(globalThis, 'window', {
   value: {
-    pushState: vi.fn(),
-    replaceState: vi.fn(),
-    back: vi.fn(),
-    forward: vi.fn(),
-    length: 1
-  }
-});
-
-Object.defineProperty(window, 'location', {
-  value: {
-    pathname: '/',
-    search: '',
-    hash: '',
-    origin: 'http://localhost'
+    location: {
+      origin: 'http://localhost:3000',
+      pathname: '/',
+      search: '',
+      hash: '',
+      href: 'http://localhost:3000/'
+    },
+    history: {
+      pushState: vi.fn(),
+      replaceState: vi.fn(),
+      back: vi.fn(),
+      forward: vi.fn(),
+      length: 1
+    },
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn()
   },
   writable: true
 });
+
+// Also set global references
+globalThis.location = globalThis.window.location;
+globalThis.history = globalThis.window.history;
 
 describe('ZenithRouter Core', () => {
   let router: ZenithRouter;

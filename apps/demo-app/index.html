@@ -6,16 +6,21 @@
     <title>ZenithKernel Demo App</title>
     <link rel="stylesheet" href="/src/styles/main.css">
 </head>
-<body>
-    <div class="app-container">
-        <header class="header">
-            <h1>🌊 ZenithKernel Demo</h1>
-            <p>Showcasing Signals, ECS, Stores, and Islands Architecture</p>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-dark-text-primary">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <header class="bg-dark-secondary/80 backdrop-blur-glass border-b border-dark-border sticky top-0 z-50 rounded-card mt-4">
+            <div class="flex items-center justify-between py-6 px-8">
+                <div class="text-2xl font-bold bg-gradient-to-r from-dark-accent to-dark-accent-purple bg-clip-text text-transparent">
+                    🌊 ZenithKernel
+                </div>
+                <div class="text-dark-text-secondary text-sm font-medium">Showcasing Signals, ECS, Stores, and Islands Architecture</div>
+            </div>
         </header>
-        
-        <div id="app">
-            <div class="loading">
-                🚀 Initializing ZenithKernel...
+
+        <div id="app" class="py-8">
+            <div class="text-center py-12">
+                <div class="animate-spin rounded-full h-8 w-8 border-2 border-dark-border border-t-dark-accent mx-auto mb-4"></div>
+                <div class="text-lg text-dark-text-secondary">🚀 Initializing ZenithKernel...</div>
             </div>
         </div>
     </div>

@@ -5,7 +5,8 @@
  */
 
 import { Plugin } from 'vite';
-import { glob } from 'glob';
+//@ts-ignore
+import glob from 'glob';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
@@ -32,6 +33,78 @@ export function hydraPlugin(options: HydraPluginOptions = {}): Plugin {
   let projectRoot: string;
   let islands: Map<string, any> = new Map();
 
+  const parseZKFile = (content: string | undefined | null) => {
+    if (!content) {
+      return {
+        template: '',
+        script: '',
+        style: '',
+        error: 'Invalid or empty content'
+      };
+    }
+
+    try {
+      const templateMatch = content.match(/<template>([\s\S]*?)<\/template>/);
+      const scriptMatch = content.match(/<script[^>]*>([\s\S]*?)<\/script>/);
+      const styleMatch = content.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+
+      return {
+        template: templateMatch ? templateMatch[1].trim() : '',
+        script: scriptMatch ? scriptMatch[1].trim() : '',
+        style: styleMatch ? styleMatch[1].trim() : '',
+        error: !templateMatch ? 'Missing template section' : undefined
+      };
+    } catch (error) {
+      return {
+        template: '',
+        script: '',
+        style: '',
+        error: error instanceof Error ? error.message : 'Failed to parse ZK file'
+      };
+    }
+  };
+
+  const extractMetadata = (content: string) => {
+    try {
+      const metadataMatch = content.match(/export\s+const\s+metadata\s*=\s*({[\s\S]*?});/);
+      if (metadataMatch) {
+        return JSON.parse(metadataMatch[1]);
+      }
+    } catch (error) {
+      console.warn('Failed to parse metadata:', error);
+    }
+    return {};
+  };
+
+  const generateRegistry = async () => {
+    try {
+      const outDir = path.join(projectRoot, resolvedOptions.outDir, 'hydra');
+      await fs.mkdir(outDir, { recursive: true });
+
+      const registry = Array.from(islands.entries()).map(([file, data]) => ({
+        path: file,
+        ...data
+      }));
+
+      await fs.writeFile(
+        path.join(outDir, 'island-registry.js'),
+        `export const ISLANDS = ${JSON.stringify(registry, null, 2)};`
+      );
+
+      await fs.writeFile(
+        path.join(outDir, 'island-registry.d.ts'),
+        `export declare const ISLANDS: Array<{
+  path: string;
+  type: 'zk' | 'ts';
+  content: any;
+  metadata: any;
+}>;`
+      );
+    } catch (error) {
+      console.error('Failed to generate island registry:', error);
+    }
+  };
+
   return {
     name: 'vite-plugin-hydra-islands',
 
@@ -44,7 +117,12 @@ export function hydraPlugin(options: HydraPluginOptions = {}): Plugin {
         // Discover islands
         const islandsPath = path.resolve(projectRoot, resolvedOptions.islandsDir);
         const pattern = path.join(islandsPath, resolvedOptions.islandPattern);
-        const files = await glob(pattern);
+        const files = await new Promise<string[]>((resolve, reject) => {
+          glob(pattern, (err, matches) => {
+            if (err) reject(err);
+            else resolve(matches);
+          });
+        });
 
         // Process each island file
         for (const file of files) {
@@ -52,24 +130,24 @@ export function hydraPlugin(options: HydraPluginOptions = {}): Plugin {
           const isZKFile = file.endsWith('.zk');
 
           if (isZKFile && resolvedOptions.enableZKFiles) {
-            const parsed = this.parseZKFile(content);
+            const parsed = parseZKFile(content);
             islands.set(file, {
               type: 'zk',
               content: parsed,
-              metadata: this.extractMetadata(parsed.script)
+              metadata: extractMetadata(parsed.script)
             });
           } else {
             islands.set(file, {
               type: 'ts',
               content,
-              metadata: this.extractMetadata(content)
+              metadata: extractMetadata(content)
             });
           }
         }
 
         // Generate registry if enabled
         if (resolvedOptions.generateRegistry) {
-          await this.generateRegistry();
+          await generateRegistry();
         }
       } catch (error) {
         console.error('Failed to discover islands:', error);
@@ -115,7 +193,7 @@ export function hydraPlugin(options: HydraPluginOptions = {}): Plugin {
           data: {
             islandPath: relativePath,
             type: isZKFile ? 'zk' : 'ts',
-            content: isZKFile ? this.parseZKFile(content) : content
+            content: isZKFile ? parseZKFile(content) : content
           }
         });
       }
@@ -128,49 +206,7 @@ export function hydraPlugin(options: HydraPluginOptions = {}): Plugin {
       }
 
       try {
-        const parsed = this.parseZKFile(code);
-
-        if (parsed.error) {
-          throw new Error(parsed.error);
-        }
-
-        // Generate transformed code
-        const transformedCode = `
-// ZenithKernel Single File Component
-export const __ZK_SFC__ = true;
-export const __ZK_TEMPLATE__ = ${JSON.stringify(parsed.template)};
-export const __ZK_SCRIPT__ = ${JSON.stringify(parsed.script)};
-export const __ZK_STYLES__ = ${JSON.stringify(parsed.style)};
-
-// Re-export script content
-${parsed.script}
-
-// Default export for component
-export default {
-  template: __ZK_TEMPLATE__,
-  script: __ZK_SCRIPT__,
-  styles: __ZK_STYLES__
-};
-        `.trim();
-
-        return {
-          code: transformedCode,
-          map: null
-        };
-      } catch (error) {
-        console.error('Failed to transform .zk file:', error);
-        throw error;
-      }
-    },
-
-    async transform(code: string, id: string) {
-      // Only transform .zk files
-      if (!id.endsWith('.zk')) {
-        return null;
-      }
-
-      try {
-        const parsed = this.parseZKFile(code);
+        const parsed = parseZKFile(code);
 
         if (parsed.error) {
           throw new Error(parsed.error);
@@ -218,78 +254,6 @@ export default {
         fileName: 'hydra/island-registry.js',
         source: `export const ISLANDS = ${JSON.stringify(registry, null, 2)};`
       });
-    },
-
-    parseZKFile(content: string | undefined | null) {
-      if (!content) {
-        return {
-          template: '',
-          script: '',
-          style: '',
-          error: 'Invalid or empty content'
-        };
-      }
-
-      try {
-        const templateMatch = content.match(/<template>([\s\S]*?)<\/template>/);
-        const scriptMatch = content.match(/<script[^>]*>([\s\S]*?)<\/script>/);
-        const styleMatch = content.match(/<style[^>]*>([\s\S]*?)<\/style>/);
-
-        return {
-          template: templateMatch ? templateMatch[1].trim() : '',
-          script: scriptMatch ? scriptMatch[1].trim() : '',
-          style: styleMatch ? styleMatch[1].trim() : '',
-          error: !templateMatch ? 'Missing template section' : undefined
-        };
-      } catch (error) {
-        return {
-          template: '',
-          script: '',
-          style: '',
-          error: error instanceof Error ? error.message : 'Failed to parse ZK file'
-        };
-      }
-    },
-
-    extractMetadata(content: string) {
-      try {
-        const metadataMatch = content.match(/export\s+const\s+metadata\s*=\s*({[\s\S]*?});/);
-        if (metadataMatch) {
-          return JSON.parse(metadataMatch[1]);
-        }
-      } catch (error) {
-        console.warn('Failed to parse metadata:', error);
-      }
-      return {};
-    },
-
-    async generateRegistry() {
-      try {
-        const outDir = path.join(projectRoot, resolvedOptions.outDir, 'hydra');
-        await fs.mkdir(outDir, { recursive: true });
-
-        const registry = Array.from(islands.entries()).map(([file, data]) => ({
-          path: file,
-          ...data
-        }));
-
-        await fs.writeFile(
-          path.join(outDir, 'island-registry.js'),
-          `export const ISLANDS = ${JSON.stringify(registry, null, 2)};`
-        );
-
-        await fs.writeFile(
-          path.join(outDir, 'island-registry.d.ts'),
-          `export declare const ISLANDS: Array<{
-  path: string;
-  type: 'zk' | 'ts';
-  content: any;
-  metadata: any;
-}>;`
-        );
-      } catch (error) {
-        console.error('Failed to generate island registry:', error);
-      }
     }
   };
 }

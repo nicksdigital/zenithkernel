@@ -1,0 +1,411 @@
+<template>
+  <div class="bg-white rounded-xl shadow-soft border border-slate-200/60 p-6 hover:shadow-medium transition-all duration-300 animate-slide-up">
+    <div class="mb-6 pb-4 border-b border-slate-200">
+      <h3 class="text-xl font-semibold text-slate-900 mb-2">📝 Todo List Demo</h3>
+      <p class="text-sm text-slate-600">Reactive state management with arrays</p>
+    </div>
+
+    <!-- Add Todo Form -->
+    <div class="mb-4">
+      <div class="flex gap-3">
+        <input
+          type="text"
+          v-model="newTodo"
+          @keyup.enter="addTodo"
+          placeholder="Add a new todo..."
+          class="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder-slate-400 transition-colors duration-200 flex-1"
+        />
+        <button
+          @click="addTodo"
+          :disabled="!newTodo.trim()"
+          class="inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 shadow-sm hover:shadow-md"
+        >
+          <span class="text-lg">+</span>
+          Add
+        </button>
+      </div>
+    </div>
+
+    <!-- Todo List -->
+    <div class="space-y-3">
+      <div
+        v-for="todo in todos"
+        :key="todo.id"
+        :class="[
+          'flex items-center gap-3 p-4 bg-slate-50 rounded-lg border transition-all duration-200',
+          {
+            'opacity-60 bg-slate-100': todo.completed,
+            'hover:bg-slate-100': !todo.completed
+          }
+        ]"
+      >
+        <input
+          type="checkbox"
+          :checked="todo.completed"
+          @change="toggleTodo(todo.id)"
+          class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500"
+        />
+        <span
+          :class="[
+            'flex-1 text-slate-900',
+            { 'line-through text-slate-500': todo.completed }
+          ]"
+        >
+          {{ todo.text }}
+        </span>
+        <button
+          @click="deleteTodo(todo.id)"
+          class="zk-btn-danger zk-btn-sm"
+        >
+          🗑️
+        </button>
+      </div>
+
+      <!-- Empty State -->
+      <div v-if="todos.length === 0" class="text-center py-12">
+        <div class="text-6xl mb-4">📝</div>
+        <p class="text-slate-500 text-lg">No todos yet. Add one above!</p>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div v-if="todos.length > 0" class="mt-6 pt-4 border-t border-slate-200">
+      <div class="flex justify-center gap-4">
+        <div class="zk-badge zk-badge-primary">
+          Total: {{ todos.length }}
+        </div>
+        <div class="zk-badge zk-badge-success">
+          Completed: {{ todos.filter(t => t.completed).length }}
+        </div>
+        <div class="zk-badge zk-badge-warning">
+          Remaining: {{ todos.filter(t => !t.completed).length }}
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { ref } from '@core/signals';
+
+export default {
+  name: 'TodoList',
+
+  setup() {
+    // Simple reactive state
+    const newTodo = ref('');
+    const todos = ref([]);
+
+    // Simple methods
+    const addTodo = () => {
+      const text = newTodo.value.trim();
+      if (!text) return;
+
+      todos.value.push({
+        id: Date.now(),
+        text,
+        completed: false
+      });
+
+      newTodo.value = '';
+    };
+
+    const toggleTodo = (id) => {
+      const todo = todos.value.find(t => t.id === id);
+      if (todo) {
+        todo.completed = !todo.completed;
+      }
+    };
+
+    const deleteTodo = (id) => {
+      const index = todos.value.findIndex(t => t.id === id);
+      if (index > -1) {
+        todos.value.splice(index, 1);
+      }
+    };
+
+    return {
+      newTodo,
+      todos,
+      addTodo,
+      toggleTodo,
+      deleteTodo
+    };
+  }
+};
+
+// Export for compatibility
+export class TodoListComponent {
+  constructor() {
+    this.todos = [];
+  }
+}
+</script>
+
+<style>
+.todo-list-component {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.todo-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.todo-header h3 {
+  margin: 0 0 5px 0;
+  color: #333;
+  font-size: 1.5em;
+}
+
+.subtitle {
+  margin: 0;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.add-todo-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.todo-input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 1em;
+  transition: border-color 0.2s ease;
+}
+
+.todo-input:focus {
+  outline: none;
+  border-color: #7c3aed;
+}
+
+.btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-add {
+  background: #7c3aed;
+  color: white;
+}
+
+.btn-add:hover:not(:disabled) {
+  background: #6d28d9;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 20px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  border-color: #7c3aed;
+}
+
+.filter-btn.active {
+  background: #7c3aed;
+  color: white;
+  border-color: #7c3aed;
+}
+
+.todo-stats {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 25px;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.stat-value {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #7c3aed;
+}
+
+.stat-label {
+  font-size: 0.8em;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.todo-list {
+  margin-bottom: 20px;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.todo-item:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.1);
+}
+
+.todo-item.completed {
+  opacity: 0.7;
+  background: #f9fafb;
+}
+
+.todo-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.todo-text {
+  flex: 1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.todo-item.completed .todo-text {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.todo-edit-input {
+  flex: 1;
+  padding: 6px;
+  border: 1px solid #7c3aed;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.todo-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.btn-edit,
+.btn-delete {
+  padding: 6px 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.9em;
+  transition: background-color 0.2s ease;
+}
+
+.btn-edit:hover {
+  background: #f3f4f6;
+}
+
+.btn-delete:hover {
+  background: #fee2e2;
+}
+
+.todo-meta {
+  font-size: 0.8em;
+  color: #9ca3af;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.bulk-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.btn-clear {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-clear:hover {
+  background: #dc2626;
+}
+
+.btn-complete-all {
+  background: #10b981;
+  color: white;
+}
+
+.btn-complete-all:hover {
+  background: #059669;
+}
+
+@media (max-width: 640px) {
+  .todo-list-component {
+    padding: 15px;
+  }
+  
+  .add-todo-form {
+    flex-direction: column;
+  }
+  
+  .todo-stats {
+    gap: 15px;
+  }
+  
+  .todo-item {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .todo-meta {
+    width: 100%;
+    text-align: right;
+  }
+  
+  .bulk-actions {
+    flex-direction: column;
+  }
+}
+</style>

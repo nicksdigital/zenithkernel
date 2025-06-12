@@ -45,6 +45,7 @@
   },
   "include": [
     "src/**/*",
+    "src/types/**/*",
     "../../packages/*/src/**/*"
   ],
   "exclude": [
